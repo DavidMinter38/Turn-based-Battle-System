@@ -5,8 +5,9 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     [SerializeField]
-    int health, attack, defence, speed;
-    //TODO Make this private;
+    int ID;
+
+    protected int health, attack, defence, speed;
 
     // Start is called before the first frame update
     void Start()
@@ -18,5 +19,21 @@ public class Character : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void TakeDamage(int damage)
+    {
+        health -= damage;
+        if(health <= 0)
+        {
+            //Character dies
+        }
+    }
+
+    IEnumerator Attack(Character target, int attack)
+    {
+        target.TakeDamage(attack);
+        //TODO make the damage more varied, and also have it influenced by correct button input timing
+        yield return new WaitForSeconds(1f);
     }
 }

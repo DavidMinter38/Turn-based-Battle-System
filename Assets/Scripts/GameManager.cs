@@ -23,8 +23,4 @@ public class GameManager : MonoBehaviour
 
     }
 
-    void Attack()
-    {
-
-    }
 }
