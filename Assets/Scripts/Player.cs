@@ -7,19 +7,30 @@ public class Player : Character
     [SerializeField]
     int playerID;  //This will be different for each player prefab, so that we know which player is which
 
+    [SerializeField]
+    protected int currentMP, maxMP;
+
+    [SerializeField]
+    bool knowsMagic;
+
     // Start is called before the first frame update
     void Start()
     {
-        GameData theData = FindObjectOfType<GameData>();
+        
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("This player's health is " + health);
-        Debug.Log("This player's attack is " + health);
-        Debug.Log("This player's defence is " + health);
-        Debug.Log("This player's speed is " + health);
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            TakeDamage(30);
+        }
     }
+
+    public bool CanUseMagic()
+    {
+        return knowsMagic;
+    } 
 }

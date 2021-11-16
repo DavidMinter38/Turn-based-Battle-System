@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
+    /*
     //Player data
     Player[] playerData = new Player[3];
 
@@ -21,7 +22,7 @@ public class GameData : MonoBehaviour
 
     //Enemy data
 
-    Enemy enemy1;
+    Enemy enemy1;*/
 
     // Start is called before the first frame update
     void Start()

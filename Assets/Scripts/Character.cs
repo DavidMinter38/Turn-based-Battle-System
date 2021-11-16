@@ -7,7 +7,12 @@ public class Character : MonoBehaviour
     [SerializeField]
     int ID;
 
-    protected int health, attack, defence, speed;
+    [SerializeField]
+    string characterName;
+
+    [SerializeField]
+    protected int currentHP, maxHP, attack, defence, speed;
+    //TODO remove serializefield and initialize value using GameData class
 
     // Start is called before the first frame update
     void Start()
@@ -18,22 +23,52 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+
     }
 
-    void TakeDamage(int damage)
+    void GainHealth(int healthToRecover)
     {
-        health -= damage;
-        if(health <= 0)
+        currentHP += healthToRecover;
+        if(currentHP > maxHP)
+        {
+            currentHP = maxHP;
+        }
+    }
+
+    protected void TakeDamage(int damage)
+    {
+        currentHP -= damage;
+        if (currentHP <= 0) { currentHP = 0; }
+
+        FindObjectOfType<BattleUI>().UpdateHealth(currentHP);
+        //TODO Make this so the system does not have to find UI.
+
+        if(currentHP <= 0)
         {
             //Character dies
         }
     }
 
-    IEnumerator Attack(Character target, int attack)
+    IEnumerator Attack(Character target, int attackDamage)
     {
-        target.TakeDamage(attack);
+        target.TakeDamage(attackDamage);
         //TODO make the damage more varied, and also have it influenced by correct button input timing
         yield return new WaitForSeconds(1f);
+    }
+
+    public string GetCharacterName()
+    {
+        return characterName;
+    }
+
+    public int GetCurrentHealth()
+    {
+        return currentHP;
+    }
+
+    public int GetMaxHealth()
+    {
+        return maxHP;
     }
 }
