@@ -57,6 +57,11 @@ public class Character : MonoBehaviour
         yield return new WaitForSeconds(1f);
     }
 
+    public int GetID()
+    {
+        return ID;
+    }
+
     public string GetCharacterName()
     {
         return characterName;
@@ -70,5 +75,10 @@ public class Character : MonoBehaviour
     public int GetMaxHealth()
     {
         return maxHP;
+    }
+
+    public int GetSpeed()
+    {
+        return speed;
     }
 }
