@@ -45,13 +45,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 1
-  characterName: Lucian
+  characterName: Hero
   currentHP: 100
   maxHP: 100
   attack: 12
   defence: 10
   speed: 15
   playerID: 1
+  currentMP: 0
+  maxMP: 0
+  knowsMagic: 0
 --- !u!212 &3889296162286969282
 SpriteRenderer:
   m_ObjectHideFlags: 0

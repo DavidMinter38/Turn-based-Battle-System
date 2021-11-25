@@ -50,9 +50,11 @@ public class Character : MonoBehaviour
         }
     }
 
-    IEnumerator Attack(Character target, int attackDamage)
+    public IEnumerator Attack(Character target, int attackDamage)
     {
         target.TakeDamage(attackDamage);
+        FindObjectOfType<GameManager>().NextTurn();
+        Debug.Log(this.GetCharacterName() + " has attacked " + target.GetCharacterName() + "!  Dealt " + attackDamage + " damage!");
         //TODO make the damage more varied, and also have it influenced by correct button input timing
         yield return new WaitForSeconds(1f);
     }

@@ -1543,7 +1543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 5
-  characterName: Thug
+  characterName: Bandit
   currentHP: 0
   maxHP: 0
   attack: 0
