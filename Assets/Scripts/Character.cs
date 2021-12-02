@@ -14,6 +14,8 @@ public class Character : MonoBehaviour
     protected int currentHP, maxHP, attack, defence, speed;
     //TODO remove serializefield and initialize value using GameData class
 
+    protected bool isPlayer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -79,8 +81,23 @@ public class Character : MonoBehaviour
         return maxHP;
     }
 
+    public int GetAttack()
+    {
+        return attack;
+    }
+
+    public int GetDefence()
+    {
+        return defence;
+    }
+
     public int GetSpeed()
     {
         return speed;
+    }
+
+    public bool IsPlayer()
+    {
+        return isPlayer;
     }
 }

@@ -16,7 +16,7 @@ public class Player : Character
     // Start is called before the first frame update
     void Start()
     {
-        
+        isPlayer = true;
         
     }
 

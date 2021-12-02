@@ -10,12 +10,17 @@ public class Enemy : Character
     // Start is called before the first frame update
     void Start()
     {
-        
+        isPlayer = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void SelectAttackTarget()
+    {
+        //Enemies can only attack players
     }
 }

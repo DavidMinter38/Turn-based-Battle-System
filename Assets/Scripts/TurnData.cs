@@ -6,11 +6,13 @@ public class TurnData
 {
     int ID;
     float speedValue;
+    bool player;
 
-    public TurnData(int inputID, float inputSpeedValue)
+    public TurnData(int inputID, float inputSpeedValue, bool inputPlayer)
     {
         ID = inputID;
         speedValue = inputSpeedValue;
+        player = inputPlayer;
     }
 
     public int GetID()
@@ -21,5 +23,10 @@ public class TurnData
     public float GetSpeed()
     {
         return speedValue;
+    }
+
+    public bool IsPlayer()
+    {
+        return player;
     }
 }

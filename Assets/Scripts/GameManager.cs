@@ -44,6 +44,14 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if((turnOrder[currentPlayerInTurn] as TurnData).IsPlayer())
+        {
+            //Stop, and let the player choose who to attack
+        } else
+        {
+            //Attack a player character
+        }
+
         //Debug code to check that the game progresses through each character in a round of combat
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -54,7 +62,11 @@ public class GameManager : MonoBehaviour
                 if (currentTurnPlayerID == characterID)
                 {
                     Character attackingCharacter = characters[i];
-                    StartCoroutine(attackingCharacter.Attack(characters[0], 10));
+
+
+                    //TODO add code so that the enemy can choose a character to attack
+                    Character defendingCharacter = characters[0];
+                    StartCoroutine(attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(),defendingCharacter.GetDefence())));
                 }
             }
         }
@@ -67,8 +79,9 @@ public class GameManager : MonoBehaviour
             //Goes through each character in the battle and adds their ID and speed values to the turn order.
             Character currentCharacter = characters[i];
             float currentCharacterSpeed = currentCharacter.GetSpeed();
+            bool currentCharacterIsPlayer = currentCharacter.IsPlayer();
             currentCharacterSpeed += Random.Range(-10, 10);
-            TurnData characterTurnData = new TurnData(currentCharacter.GetID(), currentCharacterSpeed);
+            TurnData characterTurnData = new TurnData(currentCharacter.GetID(), currentCharacterSpeed, currentCharacterIsPlayer);
             if (turnOrder.Count == 0)
             {
                 turnOrder.Add(characterTurnData);
@@ -92,6 +105,13 @@ public class GameManager : MonoBehaviour
                 turnOrder.Insert(position, characterTurnData);
             }
         }
+    }
+
+    int CalculateDamage(int attack, int defence)
+    {
+        int damage = (attack - defence) + Random.Range(-5, 5);
+        if(damage < 0) { damage = 0; }
+        return damage;
     }
 
     public void NextTurn()

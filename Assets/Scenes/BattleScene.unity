@@ -1544,10 +1544,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 5
   characterName: Bandit
-  currentHP: 0
-  maxHP: 0
-  attack: 0
-  defence: 0
+  currentHP: 40
+  maxHP: 40
+  attack: 20
+  defence: 15
   speed: 15
   enemyID: 0
 --- !u!4 &733383749
@@ -3323,10 +3323,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 6
   characterName: Thief
-  currentHP: 0
-  maxHP: 0
-  attack: 0
-  defence: 0
+  currentHP: 20
+  maxHP: 20
+  attack: 7
+  defence: 4
   speed: 50
   enemyID: 0
 --- !u!4 &1318189639
