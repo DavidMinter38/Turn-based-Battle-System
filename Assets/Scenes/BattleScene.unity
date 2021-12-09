@@ -1546,7 +1546,7 @@ MonoBehaviour:
   characterName: Bandit
   currentHP: 40
   maxHP: 40
-  attack: 20
+  attack: 1200
   defence: 15
   speed: 15
   enemyID: 0

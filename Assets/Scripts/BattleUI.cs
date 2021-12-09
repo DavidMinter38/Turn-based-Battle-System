@@ -14,6 +14,7 @@ public class BattleUI : MonoBehaviour
     [SerializeField]
     Image player1Image;
 
+    Player player1;
     int player1CurrentHealth;
     int player1MaxHealth;
     string player1Name;
@@ -21,7 +22,7 @@ public class BattleUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Player player1 = FindObjectOfType<Player>();
+        player1 = FindObjectOfType<Player>();
 
         player1MagicSlider.gameObject.SetActive(player1.CanUseMagic());
 
@@ -45,9 +46,9 @@ public class BattleUI : MonoBehaviour
         
     }
 
-    public void UpdateHealth(int newHealth)
+    public void UpdateHealth()
     {
-        player1CurrentHealth = newHealth;
+        player1CurrentHealth = player1.GetCurrentHealth();
         player1HealthSlider.value = player1CurrentHealth;
         player1HealthText.text = player1CurrentHealth.ToString() + "/" + player1MaxHealth.ToString();
     }

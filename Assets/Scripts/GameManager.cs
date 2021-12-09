@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
         }
 
         //Debug code to check that the game progresses through each character in a round of combat
+        //This code will be moved into the if statement above when debugging is no longer needed
         if (Input.GetKeyDown(KeyCode.A))
         {
             int currentTurnPlayerID = (turnOrder[currentPlayerInTurn] as TurnData).GetID();
@@ -61,12 +62,20 @@ public class GameManager : MonoBehaviour
                 int characterID = characters[i].GetID();
                 if (currentTurnPlayerID == characterID)
                 {
-                    Character attackingCharacter = characters[i];
-
-
-                    //TODO add code so that the enemy can choose a character to attack
-                    Character defendingCharacter = characters[0];
-                    StartCoroutine(attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(),defendingCharacter.GetDefence())));
+                    Character defendingCharacter = null;
+                    if (!characters[i].IsPlayer())
+                    {
+                        //Enemy must choose one of the player characters to attack
+                        Enemy attackingEnemy = (Enemy)characters[i];
+                        int targetID = attackingEnemy.SelectAttackTarget(characters);
+                        defendingCharacter = characters[targetID];
+                        StartCoroutine(attackingEnemy.Attack(defendingCharacter, CalculateDamage(attackingEnemy.GetAttack(), defendingCharacter.GetDefence())));
+                    } else
+                    {
+                        Character attackingCharacter = characters[i];
+                        defendingCharacter = characters[2];
+                        StartCoroutine(attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence())));
+                    }
                 }
             }
         }

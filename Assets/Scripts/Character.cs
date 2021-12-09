@@ -43,7 +43,7 @@ public class Character : MonoBehaviour
         currentHP -= damage;
         if (currentHP <= 0) { currentHP = 0; }
 
-        FindObjectOfType<BattleUI>().UpdateHealth(currentHP);
+        FindObjectOfType<BattleUI>().UpdateHealth();
         //TODO Make this so the system does not have to find UI.
 
         if(currentHP <= 0)
