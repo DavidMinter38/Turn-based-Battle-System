@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
             //Stop, and let the player choose who to attack
         } else
         {
-            //Attack a player character
+            //The next player is an enemy.  Attack a player character
         }
 
         //Debug code to check that the game progresses through each character in a round of combat
@@ -79,6 +79,32 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void Attack(int targetID)
+    {
+        Character attackingCharacter = null;
+        Character defendingCharacter = null;
+        int currentTurnPlayerID = (turnOrder[currentPlayerInTurn] as TurnData).GetID();
+        for (int i = 0; i < characters.Length; i++)
+        {
+            int characterID = characters[i].GetID();
+            if (currentTurnPlayerID == characterID)
+            {
+                attackingCharacter = characters[i];
+            }
+        }
+
+        for (int i = 0; i < characters.Length; i++)
+        {
+            int characterID = characters[i].GetID();
+            if (targetID == characterID)
+            {
+                defendingCharacter = characters[i];
+            }
+        }
+
+        StartCoroutine(attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence())));
     }
 
     private void SortCharacters()
@@ -140,6 +166,11 @@ public class GameManager : MonoBehaviour
         //Reset the turn order so that it's not always the same
         turnOrder.Clear();
         SortCharacters();
+    }
+
+    public Enemy[] GetEnemies()
+    {
+        return enemies;
     }
 
 }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour
 {
+    //Player stats
     [SerializeField]
     Slider player1HealthSlider, player1MagicSlider;
 
