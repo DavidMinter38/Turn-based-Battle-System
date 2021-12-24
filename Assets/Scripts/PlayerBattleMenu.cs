@@ -96,12 +96,19 @@ public class PlayerBattleMenu : MonoBehaviour
     private void SelectTarget()
     {
         targetMarker.DisplayMarker();
-        this.gameObject.SetActive(false);
+        FindObjectOfType<GameManager>().SetStatePlayerSelectTarget();
+        HideBattleMenu();
     }
 
     public void DisplayBattleMenu()
     {
         this.gameObject.SetActive(true);
+        highlightedButton = 0;
+    }
+
+    public void HideBattleMenu()
+    {
+        this.gameObject.SetActive(false);
     }
 
 }

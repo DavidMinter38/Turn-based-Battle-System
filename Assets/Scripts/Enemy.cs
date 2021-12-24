@@ -21,6 +21,7 @@ public class Enemy : Character
 
     public int SelectAttackTarget(Character[] characters)
     {
+        //TODO remove this function, as it is now redundant
         ArrayList avaliabletargets = new ArrayList();
         //Enemies can only attack players
         for(int i=0; i<characters.Length; i++)
@@ -42,5 +43,11 @@ public class Enemy : Character
         }
 
         return 0;
+    }
+
+    protected new void KillCharacter()
+    {
+        Debug.Log(this.GetCharacterName() + " has been destroyed!");
+        Destroy(this.gameObject);
     }
 }

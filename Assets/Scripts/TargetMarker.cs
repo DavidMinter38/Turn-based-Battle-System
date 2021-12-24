@@ -75,7 +75,7 @@ public class TargetMarker : MonoBehaviour
     {
         if (Input.GetButtonDown("Submit"))
         {
-            FindObjectOfType<GameManager>().Attack(targets[enemyToTarget].GetID());
+            FindObjectOfType<GameManager>().StartCoroutine("Attack", targets[enemyToTarget].GetID());
             this.gameObject.SetActive(false);
         }
     }
@@ -85,6 +85,7 @@ public class TargetMarker : MonoBehaviour
         if (Input.GetButtonDown("Cancel"))
         {
             playerMenu.DisplayBattleMenu();
+            FindObjectOfType<GameManager>().SetStatePlayerSelectMove();
             this.gameObject.SetActive(false);
         }
     }

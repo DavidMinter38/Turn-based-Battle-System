@@ -8,8 +8,12 @@ public class GameManager : MonoBehaviour
     private Enemy[] enemies;
     private Character[] characters;
 
+    BattleState battleState = BattleState.Start;
+
     ArrayList turnOrder = new ArrayList();
     int currentPlayerInTurn = 0;
+
+    PlayerBattleMenu playerMenu;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +28,10 @@ public class GameManager : MonoBehaviour
 
         //Sort the players and enemies to form a turn track
         SortCharacters();
+
+        playerMenu = FindObjectOfType<PlayerBattleMenu>();
+        if (playerMenu == null) { Debug.LogError("Player menu is not in the scene."); }
+        playerMenu.HideBattleMenu();
 
 
         //Debug code to check that the turn order is listed correctly.
@@ -47,42 +55,22 @@ public class GameManager : MonoBehaviour
         if((turnOrder[currentPlayerInTurn] as TurnData).IsPlayer())
         {
             //Stop, and let the player choose who to attack
+            if (!playerMenu.gameObject.activeInHierarchy && battleState != BattleState.PlayerTurnSelectTarget && battleState != BattleState.PlayerTurnAttack)
+            {
+                playerMenu.DisplayBattleMenu();
+                battleState = BattleState.PlayerTurnSelectMove;
+            }
         } else
         {
             //The next player is an enemy.  Attack a player character
-        }
-
-        //Debug code to check that the game progresses through each character in a round of combat
-        //This code will be moved into the if statement above when debugging is no longer needed
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            int currentTurnPlayerID = (turnOrder[currentPlayerInTurn] as TurnData).GetID();
-            for (int i = 0; i < characters.Length; i++)
-            {
-                int characterID = characters[i].GetID();
-                if (currentTurnPlayerID == characterID)
-                {
-                    Character defendingCharacter = null;
-                    if (!characters[i].IsPlayer())
-                    {
-                        //Enemy must choose one of the player characters to attack
-                        Enemy attackingEnemy = (Enemy)characters[i];
-                        int targetID = attackingEnemy.SelectAttackTarget(characters);
-                        defendingCharacter = characters[targetID];
-                        StartCoroutine(attackingEnemy.Attack(defendingCharacter, CalculateDamage(attackingEnemy.GetAttack(), defendingCharacter.GetDefence())));
-                    } else
-                    {
-                        Character attackingCharacter = characters[i];
-                        defendingCharacter = characters[2];
-                        StartCoroutine(attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence())));
-                    }
-                }
-            }
+            battleState = BattleState.EnemyTurn;
+            EnemyTurn();
         }
     }
 
-    public void Attack(int targetID)
+    public IEnumerator Attack(int targetID)
     {
+        //TODO tidy this up, as some code is redundant
         Character attackingCharacter = null;
         Character defendingCharacter = null;
         int currentTurnPlayerID = (turnOrder[currentPlayerInTurn] as TurnData).GetID();
@@ -105,6 +93,7 @@ public class GameManager : MonoBehaviour
         }
 
         StartCoroutine(attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence())));
+        yield return new WaitForSeconds(1f);
     }
 
     private void SortCharacters()
@@ -142,6 +131,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void EnemyTurn()
+    {
+        Enemy attackingEnemy = null;
+        int currentTurnPlayerID = (turnOrder[currentPlayerInTurn] as TurnData).GetID();
+        for (int i = 0; i < characters.Length; i++)
+        {
+            int characterID = characters[i].GetID();
+            if (currentTurnPlayerID == characterID)
+            {
+                attackingEnemy = (Enemy)characters[i];
+            }
+        }
+        int targetID = players[Random.Range(0, players.Length)].GetID();
+        StartCoroutine("Attack", targetID);
+    }
+
     int CalculateDamage(int attack, int defence)
     {
         int damage = (attack - defence) + Random.Range(-5, 5);
@@ -166,6 +171,16 @@ public class GameManager : MonoBehaviour
         //Reset the turn order so that it's not always the same
         turnOrder.Clear();
         SortCharacters();
+    }
+
+    public void SetStatePlayerSelectMove()
+    {
+        battleState = BattleState.PlayerTurnSelectMove;
+    }
+
+    public void SetStatePlayerSelectTarget()
+    {
+        battleState = BattleState.PlayerTurnSelectTarget;
     }
 
     public Enemy[] GetEnemies()

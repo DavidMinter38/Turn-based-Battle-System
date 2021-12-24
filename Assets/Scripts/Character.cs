@@ -49,6 +49,7 @@ public class Character : MonoBehaviour
         if(currentHP <= 0)
         {
             //Character dies
+            KillCharacter();
         }
     }
 
@@ -59,6 +60,10 @@ public class Character : MonoBehaviour
         Debug.Log(this.GetCharacterName() + " has attacked " + target.GetCharacterName() + "!  Dealt " + attackDamage + " damage!");
         //TODO make the damage more varied, and also have it influenced by correct button input timing
         yield return new WaitForSeconds(1f);
+    }
+
+    protected void KillCharacter()
+    {
     }
 
     public int GetID()
