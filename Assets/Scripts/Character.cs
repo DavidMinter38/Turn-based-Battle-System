@@ -5,7 +5,7 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     [SerializeField]
-    int ID;
+    int ID;  //This allows us to identify each character in the battle
 
     [SerializeField]
     string characterName;
@@ -55,15 +55,16 @@ public class Character : MonoBehaviour
 
     public IEnumerator Attack(Character target, int attackDamage)
     {
+        Debug.Log(this.GetCharacterName() + " has attacked " + target.GetCharacterName() + "!  Dealt " + attackDamage + " damage!");
         target.TakeDamage(attackDamage);
         FindObjectOfType<GameManager>().NextTurn();
-        Debug.Log(this.GetCharacterName() + " has attacked " + target.GetCharacterName() + "!  Dealt " + attackDamage + " damage!");
         //TODO make the damage more varied, and also have it influenced by correct button input timing
         yield return new WaitForSeconds(1f);
     }
 
-    protected void KillCharacter()
+    protected virtual void KillCharacter()
     {
+        Debug.Log("This message should not appear!");
     }
 
     public int GetID()

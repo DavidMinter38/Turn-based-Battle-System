@@ -1778,7 +1778,7 @@ MonoBehaviour:
   currentHP: 40
   maxHP: 40
   attack: 12
-  defence: 15
+  defence: 10
   speed: 15
   enemyID: 0
 --- !u!4 &733383749
@@ -3945,7 +3945,7 @@ MonoBehaviour:
   characterName: Thief
   currentHP: 20
   maxHP: 20
-  attack: 7
+  attack: 8
   defence: 4
   speed: 50
   enemyID: 0
@@ -6159,6 +6159,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3889296162286969292, guid: 5dc8c6b737a3ba54c88478fcdad8ce76, type: 3}
+      propertyPath: maxHP
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3889296162286969292, guid: 5dc8c6b737a3ba54c88478fcdad8ce76, type: 3}
+      propertyPath: attack
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 3889296162286969292, guid: 5dc8c6b737a3ba54c88478fcdad8ce76, type: 3}
+      propertyPath: currentHP
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 3889296162286969293, guid: 5dc8c6b737a3ba54c88478fcdad8ce76, type: 3}
       propertyPath: m_RootOrder
       value: 3

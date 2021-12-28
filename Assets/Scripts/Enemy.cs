@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : Character
 {
     [SerializeField]
-    int enemyID; //If we are having multiple types of enemies, this will allow us to figure out what type of enemy it is.
+    int enemyID; //If we are having multiple types of enemies, this will allow us to figure out what type of enemy it is.  Note that the enemyID is not the same as the character ID
 
     // Start is called before the first frame update
     void Start()
@@ -19,35 +19,10 @@ public class Enemy : Character
         
     }
 
-    public int SelectAttackTarget(Character[] characters)
-    {
-        //TODO remove this function, as it is now redundant
-        ArrayList avaliabletargets = new ArrayList();
-        //Enemies can only attack players
-        for(int i=0; i<characters.Length; i++)
-        {
-            if (characters[i].IsPlayer())
-            {
-                avaliabletargets.Add(characters[i]);
-            }
-        }
-        Character targetCharacter = (Character)avaliabletargets[Random.Range(0, avaliabletargets.Count)];
-        int targetID = targetCharacter.GetID();
-        for(int i=0; i<characters.Length; i++)
-        {
-            int characterID = characters[i].GetID();
-            if(characterID == targetID)
-            {
-                return i;
-            }
-        }
-
-        return 0;
-    }
-
-    protected new void KillCharacter()
+    protected override void KillCharacter()
     {
         Debug.Log(this.GetCharacterName() + " has been destroyed!");
+        FindObjectOfType<GameManager>().RemoveEnemy(this.GetID());
         Destroy(this.gameObject);
     }
 }

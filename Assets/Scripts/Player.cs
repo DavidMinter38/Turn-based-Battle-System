@@ -13,7 +13,7 @@ public class Player : Character
     [SerializeField]
     bool knowsMagic;
 
-    bool isConscious;
+    bool isConscious = true;
 
     // Start is called before the first frame update
     void Start()
@@ -28,15 +28,19 @@ public class Player : Character
 
     }
 
-    protected new void KillCharacter()
+    protected override void KillCharacter()
     {
         Debug.Log(this.GetCharacterName() + " has fallen!");
         isConscious = false;
-        //TODO check how many players are conscious.  If 0, game ends.
     }
 
     public bool CanUseMagic()
     {
         return knowsMagic;
-    } 
+    }
+
+    public bool IsConscious()
+    {
+        return isConscious;
+    }
 }

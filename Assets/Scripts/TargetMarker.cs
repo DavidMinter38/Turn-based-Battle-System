@@ -48,20 +48,27 @@ public class TargetMarker : MonoBehaviour
             if (Input.GetAxis("Horizontal") > 0)
             {
                 inputPressed = true;
-                enemyToTarget--;
-                if (enemyToTarget < 0)
+                do
                 {
-                    enemyToTarget = targets.Length - 1;
-                }
+                    enemyToTarget--;
+                    if (enemyToTarget < 0)
+                    {
+                        enemyToTarget = targets.Length - 1;
+                    }
+                } while (targets[enemyToTarget] == null);
+
             }
             if (Input.GetAxis("Horizontal") < 0)
             {
                 inputPressed = true;
-                enemyToTarget++;
-                if (enemyToTarget > targets.Length - 1)
+                do
                 {
-                    enemyToTarget = 0;
-                }
+                    enemyToTarget++;
+                    if (enemyToTarget > targets.Length - 1)
+                    {
+                        enemyToTarget = 0;
+                    }
+                } while (targets[enemyToTarget] == null);
             }
             SetTarget(enemyToTarget);
         }
@@ -76,7 +83,7 @@ public class TargetMarker : MonoBehaviour
         if (Input.GetButtonDown("Submit"))
         {
             FindObjectOfType<GameManager>().StartCoroutine("Attack", targets[enemyToTarget].GetID());
-            this.gameObject.SetActive(false);
+            HideMarker();
         }
     }
 
@@ -86,12 +93,35 @@ public class TargetMarker : MonoBehaviour
         {
             playerMenu.DisplayBattleMenu();
             FindObjectOfType<GameManager>().SetStatePlayerSelectMove();
-            this.gameObject.SetActive(false);
+            HideMarker();
         }
     }
 
     public void DisplayMarker()
     {
         this.gameObject.SetActive(true);
+        if(targets[enemyToTarget] == null)
+        {
+            //Find a new target
+            for(int i=0; i<targets.Length; i++)
+            {
+                if(targets[i] != null)
+                {
+                    enemyToTarget = i;
+                    SetTarget(enemyToTarget);
+                }
+            }
+        }
+    }
+
+    public void HideMarker()
+    {
+        this.gameObject.SetActive(false);
+    }
+
+    public void SetEnemyTargets(Enemy[] newTargets)
+    {
+        //Updates the avalaible targets
+        targets = newTargets;
     }
 }
