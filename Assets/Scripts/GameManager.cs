@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class GameManager : MonoBehaviour
 
     PlayerBattleMenu playerMenu;
     TargetMarker targetMarker;
+
+    float cooldown = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -37,67 +40,75 @@ public class GameManager : MonoBehaviour
         targetMarker = FindObjectOfType<TargetMarker>();
         if (targetMarker == null) { Debug.LogError("Target marker is not in the scene."); }
 
-        //Debug code to check that the turn order is listed correctly.
-        foreach(TurnData listEntry in turnOrder)
-        {
-            int currentID = listEntry.GetID();
-            for(int i=0; i<characters.Length; i++)
-            {
-                int characterID = characters[i].GetID();
-                if(currentID == characterID)
-                {
-                    Debug.Log(characters[i].GetCharacterName());
-                }
-            }
-        }
+        CreateTrack();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (battleState != BattleState.Victory && battleState != BattleState.Defeat)
+        if (cooldown <= 0)
         {
-            if ((turnOrder[currentPlayerInTurn] as TurnData).IsPlayer())
+            CreateTrack();
+            if (battleState != BattleState.Victory && battleState != BattleState.Defeat)
             {
-                //Stop, and let the player choose who to attack
-                int currentTurnPlayerID = (turnOrder[currentPlayerInTurn] as TurnData).GetID();
-                Player currentTurnPlayer = (Player)GetCharacter(currentTurnPlayerID);
-                if (!currentTurnPlayer.IsConscious())
+                if ((turnOrder[currentPlayerInTurn] as TurnData).IsPlayer())
                 {
-                    //If the player is unconscious, skip their turn and move on to the next character
-                    NextTurn();
-                    return;
+                    //Stop, and let the player choose who to attack
+                    int currentTurnPlayerID = GetCurrentTurnPlayerID();
+                    Player currentTurnPlayer = (Player)GetCharacter(currentTurnPlayerID);
+                    if (!currentTurnPlayer.IsConscious())
+                    {
+                        //If the player is unconscious, skip their turn and move on to the next character
+                        NextTurn(false);
+                        return;
+                    }
+                    if (!playerMenu.gameObject.activeInHierarchy && battleState != BattleState.PlayerTurnSelectTarget && battleState != BattleState.PlayerTurnAttack)
+                    {
+                        if (currentTurnPlayer.IsGuarding())
+                        {
+                            currentTurnPlayer.FinishGuard();
+                        }
+                        playerMenu.DisplayBattleMenu();
+                        battleState = BattleState.PlayerTurnSelectMove;
+                        FindObjectOfType<BattleMessages>().UpdateMessage("It's " + GetCurrentTurnPlayer().GetCharacterName() + "'s turn!");
+                    }
                 }
-                if (!playerMenu.gameObject.activeInHierarchy && battleState != BattleState.PlayerTurnSelectTarget && battleState != BattleState.PlayerTurnAttack)
+                else
                 {
-                    playerMenu.DisplayBattleMenu();
-                    battleState = BattleState.PlayerTurnSelectMove;
+                    //The next character is an enemy.  Attack a player character
+                    battleState = BattleState.EnemyTurn;
+                    EnemyTurn();
                 }
             }
-            else
-            {
-                //The next character is an enemy.  Attack a player character
-                battleState = BattleState.EnemyTurn;
-                EnemyTurn();
-            }
+        } else
+        {
+            cooldown -= Time.deltaTime;
         }
     }
 
-    public IEnumerator Attack(int targetID)
+    public void Attack(int targetID)
     {
-        int currentTurnPlayerID = (turnOrder[currentPlayerInTurn] as TurnData).GetID();
+        int currentTurnPlayerID = GetCurrentTurnPlayerID();
         Character attackingCharacter = GetCharacter(currentTurnPlayerID);
         Character defendingCharacter = GetCharacter(targetID);
-
-        StartCoroutine(attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence())));
-        yield return new WaitForSeconds(1f);
+        if (defendingCharacter.IsPlayer())
+        {
+            Player defendingPlayer = (Player)defendingCharacter;
+            if (defendingPlayer.IsGuarding())
+            {
+                Debug.Log("Guarded!");
+                attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence() * 2));
+                return;
+            }
+        }
+        attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence()));
     }
 
     private void SortCharacters()
     {
         for (int i = 0; i < characters.Length; i++)
         {
-            if(characters[i] == null) { return; }
+            if (characters[i] == null) { continue; }
             //Goes through each character in the battle and adds their ID and speed values to the turn order.
             Character currentCharacter = characters[i];
             float currentCharacterSpeed = currentCharacter.GetSpeed();
@@ -112,7 +123,7 @@ public class GameManager : MonoBehaviour
             {
                 //Search through the turn order and place the character according to their speed value.
                 int position = 0;
-                foreach(TurnData data in turnOrder)
+                foreach (TurnData data in turnOrder)
                 {
                     if (currentCharacterSpeed >= data.GetSpeed())
                     {
@@ -147,27 +158,33 @@ public class GameManager : MonoBehaviour
 
     private void EnemyTurn()
     {
-        int currentTurnPlayerID = (turnOrder[currentPlayerInTurn] as TurnData).GetID();
+        int currentTurnPlayerID = GetCurrentTurnPlayerID();
         Enemy attackingEnemy = (Enemy)GetCharacter(currentTurnPlayerID);
         if (attackingEnemy != null)
         {
-            int targetID = players[Random.Range(0, players.Length)].GetID();
-            StartCoroutine("Attack", targetID);
+            int randomTarget = Random.Range(0, players.Length);
+            //If the enemy is targetting an unconscious player, find a new target until the enemy is targetting a conscious player
+            while (!players[randomTarget].IsConscious())
+            {
+                randomTarget = Random.Range(0, players.Length);
+            }
+            int targetID = players[randomTarget].GetID();
+            Attack(targetID);
         } else
         {
             //Enemy does not exist and should be ignored.
-            NextTurn();
+            NextTurn(false);
         }
     }
 
     int CalculateDamage(int attack, int defence)
     {
         int damage = (attack - defence) + Random.Range(-5, 5);
-        if(damage < 0) { damage = 0; }
+        if (damage < 0) { damage = 0; }
         return damage;
     }
 
-    public void NextTurn()
+    public void NextTurn(bool startCooldown)
     {
         //If no players are alive, game ends.
         if (!AnyAlivePlayers())
@@ -184,18 +201,24 @@ public class GameManager : MonoBehaviour
         }
 
         currentPlayerInTurn++;
+        battleState = BattleState.Start;
 
         if (currentPlayerInTurn > turnOrder.Count - 1)
         {
             //Round of combat has ended
             NewRound();
         }
+        if (startCooldown)
+        {
+            cooldown = 1f;
+        }
+        //TODO find a way to use a coroutine instead
+        //The cooldown timer is still used even when the enemy has been defeated
     }
 
     public void NewRound()
     {
         currentPlayerInTurn = 0;
-        battleState = BattleState.Start;
         //Reset the turn order so that it's not always the same
         turnOrder.Clear();
         SortCharacters();
@@ -204,14 +227,14 @@ public class GameManager : MonoBehaviour
     public void Victory()
     {
         battleState = BattleState.Victory;
-        Debug.Log("You Win!");
+        FindObjectOfType<BattleMessages>().UpdateMessage("You win!");
         EndBattle();
     }
 
     public void GameOver()
     {
         battleState = BattleState.Defeat;
-        Debug.Log("Game Over");
+        FindObjectOfType<BattleMessages>().UpdateMessage("Game over.");
         EndBattle();
     }
 
@@ -232,7 +255,6 @@ public class GameManager : MonoBehaviour
                 if (enemyID == characterID)
                 {
                     characters[i] = null;
-                    Debug.Log("Enemy removed from character array");
                 }
             }
         }
@@ -245,12 +267,63 @@ public class GameManager : MonoBehaviour
                 if (enemyID == characterID)
                 {
                     enemies[i] = null;
-                    Debug.Log("Enemy removed from enemy array");
                 }
             }
         }
 
+        for (int i=0; i<turnOrder.Count; i++)
+        {
+            if((turnOrder[i] as TurnData).GetID() == enemyID)
+            {
+                turnOrder.RemoveAt(i);
+            }
+        }
+
         targetMarker.SetEnemyTargets(enemies);
+
+        CreateTrack();
+    }
+
+    public void CreateTrack()
+    {
+        ArrayList sprites = new ArrayList();
+        int counter = 0;
+        foreach (TurnData listEntry in turnOrder)
+        {
+            if (counter >= currentPlayerInTurn)
+            {
+                int currentID = listEntry.GetID();
+                for (int i = 0; i < characters.Length; i++)
+                {
+                    if (characters[i] != null)
+                    {
+                        if (characters[i].IsPlayer())
+                        {
+                            Player currentPlayer = (Player)characters[i];
+                            if (currentPlayer.IsConscious())
+                            {
+                                int characterID = characters[i].GetID();
+                                if (currentID == characterID)
+                                {
+                                    sprites.Add(characters[i].GetSprite());
+                                }
+                                //TODO refactor to remove duplicate code
+                            }
+                        }
+                        else 
+                        {
+                            int characterID = characters[i].GetID();
+                            if (currentID == characterID)
+                            {
+                                sprites.Add(characters[i].GetSprite());
+                            }
+                        }
+                    }
+                }
+            }
+            counter++;
+        }
+        FindObjectOfType<TurnOrderTrack>().UpdateTrack(sprites);
     }
 
     public void SetStatePlayerSelectMove()
@@ -261,6 +334,27 @@ public class GameManager : MonoBehaviour
     public void SetStatePlayerSelectTarget()
     {
         battleState = BattleState.PlayerTurnSelectTarget;
+    }
+
+    public Player GetCurrentTurnPlayer()
+    {
+        if ((turnOrder[currentPlayerInTurn] as TurnData).IsPlayer())
+        {
+            int currentTurnPlayerID = GetCurrentTurnPlayerID();
+            Player currentTurnPlayer = (Player)GetCharacter(currentTurnPlayerID);
+            return currentTurnPlayer;
+        }
+        return null;
+    }
+
+    public int GetCurrentTurnPlayerID()
+    {
+        return (turnOrder[currentPlayerInTurn] as TurnData).GetID();
+    }
+
+    public Player[] GetPlayers()
+    {
+        return players;
     }
 
     public Enemy[] GetEnemies()

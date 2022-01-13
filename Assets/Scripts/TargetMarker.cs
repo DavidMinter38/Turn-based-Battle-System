@@ -36,9 +36,23 @@ public class TargetMarker : MonoBehaviour
 
     private void SetTarget(int target)
     {
+        if (targets[target] == null) {
+            FindNewTarget();
+        }
         Vector3 targetMarkerPosition = new Vector3(targets[target].transform.position.x, targets[target].transform.position.y + distanceAboveTarget, 0);
         transform.position = targetMarkerPosition;
         targetName.text = targets[enemyToTarget].GetCharacterName();
+    }
+
+    private void FindNewTarget()
+    {
+        for(int i=0; i<targets.Length; i++)
+        {
+            if(targets[i] != null)
+            {
+                enemyToTarget = i;
+            }
+        }
     }
 
     private void UpdateSelection()
@@ -82,7 +96,7 @@ public class TargetMarker : MonoBehaviour
     {
         if (Input.GetButtonDown("Submit"))
         {
-            FindObjectOfType<GameManager>().StartCoroutine("Attack", targets[enemyToTarget].GetID());
+            FindObjectOfType<GameManager>().Attack(targets[enemyToTarget].GetID());
             HideMarker();
         }
     }

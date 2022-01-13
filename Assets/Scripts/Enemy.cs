@@ -21,7 +21,7 @@ public class Enemy : Character
 
     protected override void KillCharacter()
     {
-        Debug.Log(this.GetCharacterName() + " has been destroyed!");
+        FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has been destroyed!");
         FindObjectOfType<GameManager>().RemoveEnemy(this.GetID());
         Destroy(this.gameObject);
     }

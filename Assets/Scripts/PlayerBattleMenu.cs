@@ -78,13 +78,16 @@ public class PlayerBattleMenu : MonoBehaviour
             switch (highlightedButton)
             {
                 case 0:
+                    //Attack
                     SelectTarget();
                     break;
                 case 1:
                     //Magic
+                    OpenMagicMenu();
                     break;
                 case 2:
                     //Guard
+                    SelectGuard();
                     break;
                 case 3:
                     //Flee
@@ -97,6 +100,21 @@ public class PlayerBattleMenu : MonoBehaviour
     {
         targetMarker.DisplayMarker();
         FindObjectOfType<GameManager>().SetStatePlayerSelectTarget();
+        HideBattleMenu();
+    }
+
+    private void OpenMagicMenu()
+    {
+        //Can only use if the character knows magic
+        if (FindObjectOfType<GameManager>().GetCurrentTurnPlayer().CanUseMagic())
+        {
+            //TODO create magic menu
+        }
+    }
+
+    private void SelectGuard()
+    {
+        FindObjectOfType<GameManager>().GetCurrentTurnPlayer().UseGuard();
         HideBattleMenu();
     }
 

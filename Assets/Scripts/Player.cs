@@ -14,12 +14,12 @@ public class Player : Character
     bool knowsMagic;
 
     bool isConscious = true;
+    bool isGuarding = false;
 
     // Start is called before the first frame update
     void Start()
     {
         isPlayer = true;
-        
     }
 
     // Update is called once per frame
@@ -28,10 +28,38 @@ public class Player : Character
 
     }
 
+    public void UseGuard()
+    {
+        isGuarding = true;
+        FindObjectOfType<GameManager>().NextTurn(true);
+        FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has got their guard up!");
+    }
+
+    public void FinishGuard()
+    {
+        isGuarding = false;
+    }
+
     protected override void KillCharacter()
     {
-        Debug.Log(this.GetCharacterName() + " has fallen!");
+        FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has fallen!");
         isConscious = false;
+        FindObjectOfType<GameManager>().CreateTrack();
+    }
+
+    public int GetPlayerID()
+    {
+        return playerID;
+    }
+
+    public int GetCurrentMagic()
+    {
+        return currentMP;
+    }
+
+    public int GetMaxMagic()
+    {
+        return maxMP;
     }
 
     public bool CanUseMagic()
@@ -42,5 +70,10 @@ public class Player : Character
     public bool IsConscious()
     {
         return isConscious;
+    }
+
+    public bool IsGuarding()
+    {
+        return isGuarding;
     }
 }

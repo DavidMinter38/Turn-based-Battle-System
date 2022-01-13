@@ -1,44 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour
 {
-    //Player stats
     [SerializeField]
-    Slider player1HealthSlider, player1MagicSlider;
-
-    [SerializeField]
-    Text player1HealthText, player1MagicText, player1NameText;
-
-    [SerializeField]
-    Image player1Image;
-
-    Player player1;
-    int player1CurrentHealth;
-    int player1MaxHealth;
-    string player1Name;
+    PlayerHealthUI player1HealthUI, player2HealthUI, player3HealthUI, player4HealthUI;
 
     // Start is called before the first frame update
     void Start()
     {
-        player1 = FindObjectOfType<Player>();
 
-        player1MagicSlider.gameObject.SetActive(player1.CanUseMagic());
-
-        //Get values from player
-        player1CurrentHealth = player1.GetCurrentHealth();
-        player1MaxHealth = player1.GetMaxHealth();
-        player1Name = player1.GetCharacterName();
-
-        //Set up health slider
-        player1HealthSlider.maxValue = player1MaxHealth;
-        player1HealthSlider.value = player1CurrentHealth;
-        player1HealthText.text = player1CurrentHealth.ToString() + "/" + player1MaxHealth.ToString();
-
-
-        player1NameText.text = player1Name;
     }
 
     // Update is called once per frame
@@ -47,10 +19,27 @@ public class BattleUI : MonoBehaviour
         
     }
 
-    public void UpdateHealth()
+    public void UpdateUI()
     {
-        player1CurrentHealth = player1.GetCurrentHealth();
-        player1HealthSlider.value = player1CurrentHealth;
-        player1HealthText.text = player1CurrentHealth.ToString() + "/" + player1MaxHealth.ToString();
+        //TODO perhaps remove this, and only update the health value that needs to be updated
+        if (player1HealthUI.gameObject.activeInHierarchy)
+        {
+            player1HealthUI.UpdateHealth();
+        }
+
+        if (player2HealthUI.gameObject.activeInHierarchy)
+        {
+            player2HealthUI.UpdateHealth();
+        }
+
+        if (player3HealthUI.gameObject.activeInHierarchy)
+        {
+            player3HealthUI.UpdateHealth();
+        }
+
+        if (player4HealthUI.gameObject.activeInHierarchy)
+        {
+            player4HealthUI.UpdateHealth();
+        }
     }
 }
