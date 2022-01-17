@@ -6,33 +6,64 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
-    /*
-    //Player data
-    Player[] playerData = new Player[3];
-
-    //Player 1
-
-    int player1ID = 1;
-    int player1MaxHealth = 100;
-    int player1CurrentHealth = 100;
-    int player1Attack = 12;
-    int player1Defence = 10;
-    int player1Speed = 15;
-
-
-    //Enemy data
-
-    Enemy enemy1;*/
-
-    // Start is called before the first frame update
-    void Start()
+    [System.Serializable]
+    public struct PlayerStats
     {
-        
+        [Header("Player infomation")]
+        [Tooltip("The unique ID used to identify the player.")]
+        public int playerID;
+        [Tooltip("The name that will be used for the player in game.")]
+        public string playerName;
+        [Header("Player attributes")]
+        public int currentHP;
+        public int maxHP;
+        public int currentMP;
+        public int maxMP;
+        public int attack;
+        public int defence;
+        public int magicAttack;
+        public int magicDefence;
+        public int speed;
+        [Header("Player features")]
+        public bool knowsMagic;
+        public bool[] avaliableMagic;
+        [Header("Player status")]
+        [Tooltip("If unmarked, the player is not currently a member of the party.")]
+        public bool isAvaliable;
+        public bool isConscious;
     }
 
-    // Update is called once per frame
-    void Update()
+    [System.Serializable]
+    public struct EnemyStats
     {
-        
+        [Header("Enemy infomation")]
+        [Tooltip("The unique ID used to identify the enemy.")]
+        public int enemyID;
+        [Tooltip("The name that will be used for the enemy in game.")]
+        public string enemyName;
+        [Header("Enemy attributes")]
+        public int currentHP;
+        public int maxHP;
+        public int attack;
+        public int defence;
+        public int magicAttack;
+        public int magicDefence;
+        public int speed;
+    }
+
+    [SerializeField]
+    PlayerStats[] playerList;
+
+    [SerializeField]
+    EnemyStats[] enemyTypes;
+
+    public PlayerStats GetPlayerStats(int playerID)
+    {
+        return playerList[playerID];
+    }
+
+    public EnemyStats GetEnemyStats(int enemyID)
+    {
+        return enemyTypes[enemyID];
     }
 }

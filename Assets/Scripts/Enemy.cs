@@ -11,6 +11,16 @@ public class Enemy : Character
     void Start()
     {
         isPlayer = false;
+
+        GameData.EnemyStats enemyStats = FindObjectOfType<GameData>().GetEnemyStats(enemyID);
+        characterName = enemyStats.enemyName;
+        currentHP = enemyStats.currentHP;
+        maxHP = enemyStats.maxHP;
+        attack = enemyStats.attack;
+        defence = enemyStats.defence;
+        magicAttack = enemyStats.magicAttack;
+        magicDefence = enemyStats.magicDefence;
+        speed = enemyStats.speed;
     }
 
     // Update is called once per frame

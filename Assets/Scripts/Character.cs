@@ -9,11 +9,9 @@ public class Character : MonoBehaviour
     int ID;  //This allows us to identify each character in the battle
 
     [SerializeField]
-    string characterName;
+    protected string characterName;
 
-    [SerializeField]
-    protected int currentHP, maxHP, attack, defence, speed;
-    //TODO remove serializefield and initialize value using GameData class
+    protected int currentHP, maxHP, attack, defence, magicAttack, magicDefence, speed;
 
     [SerializeField]
     Sprite characterSprite;

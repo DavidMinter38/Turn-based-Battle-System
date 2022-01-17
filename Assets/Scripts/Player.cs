@@ -7,10 +7,8 @@ public class Player : Character
     [SerializeField]
     int playerID;  //This will be different for each player prefab, so that we know which player is which
 
-    [SerializeField]
     protected int currentMP, maxMP;
 
-    [SerializeField]
     bool knowsMagic;
 
     bool isConscious = true;
@@ -20,6 +18,25 @@ public class Player : Character
     void Start()
     {
         isPlayer = true;
+
+        GameData.PlayerStats playerStats = FindObjectOfType<GameData>().GetPlayerStats(playerID);
+        characterName = playerStats.playerName;
+        currentHP = playerStats.currentHP;
+        maxHP = playerStats.maxHP;
+        currentMP = playerStats.currentMP;
+        maxMP = playerStats.maxMP;
+        attack = playerStats.attack;
+        defence = playerStats.defence;
+        magicAttack = playerStats.magicAttack;
+        magicDefence = playerStats.magicDefence;
+        speed = playerStats.speed;
+        knowsMagic = playerStats.knowsMagic;
+        isConscious = playerStats.isConscious;
+
+        if (!playerStats.isAvaliable)
+        {
+            this.gameObject.SetActive(false);
+        }
     }
 
     // Update is called once per frame
