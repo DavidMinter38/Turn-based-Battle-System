@@ -9,10 +9,14 @@ public class PlayerBattleMenu : MonoBehaviour
     Image[] buttons;
 
     [SerializeField]
+    PlayerMagicMenu magicMenu;
+
+    [SerializeField]
     TargetMarker targetMarker;
 
     int highlightedButton = 0;
     bool inputPressed = false;
+    bool menuDisabled = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +33,7 @@ public class PlayerBattleMenu : MonoBehaviour
 
     private void UpdateSelection()
     {
-        if (!inputPressed)
+        if (!inputPressed && !menuDisabled)
         {
             if (Input.GetAxis("Vertical") > 0)
             {
@@ -108,8 +112,15 @@ public class PlayerBattleMenu : MonoBehaviour
         //Can only use if the character knows magic
         if (FindObjectOfType<GameManager>().GetCurrentTurnPlayer().CanUseMagic())
         {
-            //TODO create magic menu
+            magicMenu.gameObject.SetActive(true);
+            menuDisabled = true;
         }
+    }
+
+    public void HideMagicMenu()
+    {
+        magicMenu.gameObject.SetActive(false);
+        menuDisabled = false;
     }
 
     private void SelectGuard()
@@ -121,6 +132,7 @@ public class PlayerBattleMenu : MonoBehaviour
     public void DisplayBattleMenu()
     {
         this.gameObject.SetActive(true);
+        magicMenu.gameObject.SetActive(false);
         highlightedButton = 0;
     }
 

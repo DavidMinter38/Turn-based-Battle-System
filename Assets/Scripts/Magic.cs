@@ -9,6 +9,7 @@ public class Magic : MonoBehaviour
     {
         public int magicID;
         public string magicName;
+        public string magicDescription;
         public int magicCost;
         public int magicStrength;
         public bool affectsAll;
