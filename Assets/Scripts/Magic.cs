@@ -20,4 +20,9 @@ public class Magic : MonoBehaviour
 
     [SerializeField]
     MagicStats[] magicList;
+
+    public MagicStats GetMagicInfomation(int magicID)
+    {
+        return magicList[magicID];
+    }
 }

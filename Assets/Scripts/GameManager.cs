@@ -96,7 +96,6 @@ public class GameManager : MonoBehaviour
             Player defendingPlayer = (Player)defendingCharacter;
             if (defendingPlayer.IsGuarding())
             {
-                Debug.Log("Guarded!");
                 attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence() * 2));
                 return;
             }
@@ -162,17 +161,10 @@ public class GameManager : MonoBehaviour
         Enemy attackingEnemy = (Enemy)GetCharacter(currentTurnPlayerID);
         if (attackingEnemy != null)
         {
-            int randomTarget = Random.Range(0, players.Length);
-            //If the enemy is targetting an unconscious player, find a new target until the enemy is targetting a conscious player
-            while (!players[randomTarget].IsConscious())
-            {
-                randomTarget = Random.Range(0, players.Length);
-            }
-            int targetID = players[randomTarget].GetID();
-            Attack(targetID);
+            Attack(FindObjectOfType<EnemyAI>().SelectTarget(players));
         } else
         {
-            //Enemy does not exist and should be ignored.
+            //Enemy does not exist and should be ignored
             NextTurn(false);
         }
     }

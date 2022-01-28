@@ -12,7 +12,7 @@ public class TargetMarker : MonoBehaviour
     Text targetName;
 
     Enemy[] targets;
-    int enemyToTarget = 0;
+    int characterToTarget = 0;
     float distanceAboveTarget = 1.5f;
     bool inputPressed = false;
 
@@ -22,7 +22,7 @@ public class TargetMarker : MonoBehaviour
         targets = FindObjectOfType<GameManager>().GetEnemies();
         if(targets == null) { Debug.LogError("No enemies are active in the scene."); }
 
-        SetTarget(enemyToTarget);
+        SetTarget(characterToTarget);
         this.gameObject.SetActive(false);
     }
 
@@ -34,6 +34,16 @@ public class TargetMarker : MonoBehaviour
         Cancel();
     }
 
+    private void OnEnable()
+    {
+        
+    }
+
+    private void OnDisable()
+    {
+        
+    }
+
     private void SetTarget(int target)
     {
         if (targets[target] == null) {
@@ -41,7 +51,7 @@ public class TargetMarker : MonoBehaviour
         }
         Vector3 targetMarkerPosition = new Vector3(targets[target].transform.position.x, targets[target].transform.position.y + distanceAboveTarget, 0);
         transform.position = targetMarkerPosition;
-        targetName.text = targets[enemyToTarget].GetCharacterName();
+        targetName.text = targets[characterToTarget].GetCharacterName();
     }
 
     private void FindNewTarget()
@@ -50,7 +60,7 @@ public class TargetMarker : MonoBehaviour
         {
             if(targets[i] != null)
             {
-                enemyToTarget = i;
+                characterToTarget = i;
             }
         }
     }
@@ -64,12 +74,12 @@ public class TargetMarker : MonoBehaviour
                 inputPressed = true;
                 do
                 {
-                    enemyToTarget--;
-                    if (enemyToTarget < 0)
+                    characterToTarget--;
+                    if (characterToTarget < 0)
                     {
-                        enemyToTarget = targets.Length - 1;
+                        characterToTarget = targets.Length - 1;
                     }
-                } while (targets[enemyToTarget] == null);
+                } while (targets[characterToTarget] == null);
 
             }
             if (Input.GetAxis("Horizontal") < 0)
@@ -77,14 +87,14 @@ public class TargetMarker : MonoBehaviour
                 inputPressed = true;
                 do
                 {
-                    enemyToTarget++;
-                    if (enemyToTarget > targets.Length - 1)
+                    characterToTarget++;
+                    if (characterToTarget > targets.Length - 1)
                     {
-                        enemyToTarget = 0;
+                        characterToTarget = 0;
                     }
-                } while (targets[enemyToTarget] == null);
+                } while (targets[characterToTarget] == null);
             }
-            SetTarget(enemyToTarget);
+            SetTarget(characterToTarget);
         }
         if (Input.GetAxis("Horizontal") == 0)
         {
@@ -96,7 +106,7 @@ public class TargetMarker : MonoBehaviour
     {
         if (Input.GetButtonDown("Submit"))
         {
-            FindObjectOfType<GameManager>().Attack(targets[enemyToTarget].GetID());
+            FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetID());
             HideMarker();
         }
     }
@@ -114,15 +124,15 @@ public class TargetMarker : MonoBehaviour
     public void DisplayMarker()
     {
         this.gameObject.SetActive(true);
-        if(targets[enemyToTarget] == null)
+        if(targets[characterToTarget] == null)
         {
             //Find a new target
             for(int i=0; i<targets.Length; i++)
             {
                 if(targets[i] != null)
                 {
-                    enemyToTarget = i;
-                    SetTarget(enemyToTarget);
+                    characterToTarget = i;
+                    SetTarget(characterToTarget);
                 }
             }
         }

@@ -10,6 +10,7 @@ public class Player : Character
     protected int currentMP, maxMP;
 
     bool knowsMagic;
+    bool[] avaliableMagic;
 
     bool isConscious = true;
     bool isGuarding = false;
@@ -31,6 +32,7 @@ public class Player : Character
         magicDefence = playerStats.magicDefence;
         speed = playerStats.speed;
         knowsMagic = playerStats.knowsMagic;
+        avaliableMagic = playerStats.avaliableMagic;
         isConscious = playerStats.isConscious;
 
         if (!playerStats.isAvaliable)
@@ -82,6 +84,11 @@ public class Player : Character
     public bool CanUseMagic()
     {
         return knowsMagic;
+    }
+
+    public bool[] GetKnownMagic()
+    {
+        return avaliableMagic;
     }
 
     public bool IsConscious()
