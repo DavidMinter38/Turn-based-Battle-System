@@ -14,6 +14,9 @@ public class PlayerMagicMenu : MonoBehaviour
     [SerializeField]
     Image upArrow, downArrow;
 
+    [SerializeField]
+    TargetMarker targetMarker;
+
     int highlightedButton = 0;
     bool inputPressed = false;
 
@@ -74,6 +77,7 @@ public class PlayerMagicMenu : MonoBehaviour
 
     private void OnEnable()
     {
+        playerMagicInfomation.Clear();
         GetMagicInfomation();
     }
 
@@ -106,6 +110,10 @@ public class PlayerMagicMenu : MonoBehaviour
                 Magic.MagicStats magic = FindObjectOfType<Magic>().GetMagicInfomation(i);
                 playerMagicInfomation.Add(magic);
                 magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().text = ((Magic.MagicStats)playerMagicInfomation[numberOfAvaliableMagic]).magicName;
+                if(magic.magicCost > currentPlayer.GetCurrentMagic())
+                {
+                    magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().color = new Color(1f, 0.5f, 0.5f);
+                }
                 
                 numberOfAvaliableMagic++;
             }
@@ -132,26 +140,44 @@ public class PlayerMagicMenu : MonoBehaviour
 
     private void UpdateDescription()
     {
-        magicDescryptionText.text = ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicDescription;
+        magicDescryptionText.text = "Cost: " + ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost.ToString() + "MP\n";
+        magicDescryptionText.text += ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicDescription;
     }
 
     private void SelectMagicButton()
     {
         if (Input.GetButtonDown("Submit"))
         {
-            FindObjectOfType<BattleMessages>().UpdateMessage(FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCharacterName() + " casts " + ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicName + "!");
-            if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsAll)
+            //The player needs enough MP in order to use the magic
+            if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost <= FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCurrentMagic())
             {
-                //Automatically apply the effect to either the players or enemies
-                return;
-            }
+                FindObjectOfType<PlayerBattleMenu>().HideMagicMenu();
+                FindObjectOfType<BattleMessages>().UpdateMessage(FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCharacterName() + " casts " + ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicName + "!");
+                if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsAll)
+                {
+                    //Automatically apply the effect to either the players or enemies
+                    FindObjectOfType<PlayerBattleMenu>().HideBattleMenu();
+                    FindObjectOfType<GameManager>().GetCurrentTurnPlayer().LoseMagic(((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost);
+                    FindObjectOfType<GameManager>().AttackAll(((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicStrength);
+                    return;
+                }
 
-            if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsPlayers)
-            {
-                //Set up the target marker so that only players can be selected
-            } else
-            {
-                //Set up the target marker to target enemies as usual
+                if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsPlayers)
+                {
+                    //Set up the target marker so that only players can be selected
+                    targetMarker.SetPlayerTargets(FindObjectOfType<GameManager>().GetPlayers());
+                    targetMarker.DisplayMarker();
+                    FindObjectOfType<GameManager>().SetStatePlayerSelectTarget();
+                }
+                else
+                {
+                    //Set up the target marker to target enemies as usual
+                    targetMarker.SetEnemyTargets(FindObjectOfType<GameManager>().GetEnemies());
+                    targetMarker.DisplayMarker();
+                    FindObjectOfType<GameManager>().SetStatePlayerSelectTarget();
+                }
+                //TODO handle setting up the target marker for resurrection spells (Only target unconscious players)
+                FindObjectOfType<PlayerBattleMenu>().HideBattleMenu();
             }
         }
     }

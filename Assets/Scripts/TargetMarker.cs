@@ -11,7 +11,7 @@ public class TargetMarker : MonoBehaviour
     [SerializeField]
     Text targetName;
 
-    Enemy[] targets;
+    Character[] targets;
     int characterToTarget = 0;
     float distanceAboveTarget = 1.5f;
     bool inputPressed = false;
@@ -22,7 +22,7 @@ public class TargetMarker : MonoBehaviour
         targets = FindObjectOfType<GameManager>().GetEnemies();
         if(targets == null) { Debug.LogError("No enemies are active in the scene."); }
 
-        SetTarget(characterToTarget);
+        SetTarget();
         this.gameObject.SetActive(false);
     }
 
@@ -44,12 +44,12 @@ public class TargetMarker : MonoBehaviour
         
     }
 
-    private void SetTarget(int target)
+    private void SetTarget()
     {
-        if (targets[target] == null) {
+        if (targets[characterToTarget] == null) {
             FindNewTarget();
         }
-        Vector3 targetMarkerPosition = new Vector3(targets[target].transform.position.x, targets[target].transform.position.y + distanceAboveTarget, 0);
+        Vector3 targetMarkerPosition = new Vector3(targets[characterToTarget].transform.position.x, targets[characterToTarget].transform.position.y + distanceAboveTarget, 0);
         transform.position = targetMarkerPosition;
         targetName.text = targets[characterToTarget].GetCharacterName();
     }
@@ -94,7 +94,7 @@ public class TargetMarker : MonoBehaviour
                     }
                 } while (targets[characterToTarget] == null);
             }
-            SetTarget(characterToTarget);
+            SetTarget();
         }
         if (Input.GetAxis("Horizontal") == 0)
         {
@@ -106,7 +106,8 @@ public class TargetMarker : MonoBehaviour
     {
         if (Input.GetButtonDown("Submit"))
         {
-            FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetID());
+            //TODO change to accomodate magic usage
+            FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetID(), false, false, 0);
             HideMarker();
         }
     }
@@ -132,7 +133,7 @@ public class TargetMarker : MonoBehaviour
                 if(targets[i] != null)
                 {
                     characterToTarget = i;
-                    SetTarget(characterToTarget);
+                    SetTarget();
                 }
             }
         }
@@ -143,9 +144,18 @@ public class TargetMarker : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
+    public void SetPlayerTargets(Player[] newTargets)
+    {
+        targets = newTargets;
+        characterToTarget = 0;
+        SetTarget();
+    }
+
     public void SetEnemyTargets(Enemy[] newTargets)
     {
         //Updates the avalaible targets
         targets = newTargets;
+        characterToTarget = 0;
+        SetTarget();
     }
 }

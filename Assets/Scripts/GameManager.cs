@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Attack(int targetID)
+    public void Attack(int targetID, bool attackAll, bool useMagicAttackStat, int magicStrength)
     {
         int currentTurnPlayerID = GetCurrentTurnPlayerID();
         Character attackingCharacter = GetCharacter(currentTurnPlayerID);
@@ -94,13 +94,40 @@ public class GameManager : MonoBehaviour
         if (defendingCharacter.IsPlayer())
         {
             Player defendingPlayer = (Player)defendingCharacter;
-            if (defendingPlayer.IsGuarding())
+            if (defendingPlayer.IsGuarding() && !useMagicAttackStat)
             {
                 attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence() * 2));
                 return;
             }
+        } else
+        {
+            Enemy defendingEnemy = (Enemy)defendingCharacter;
+            defendingEnemy.MarkAttacker(currentTurnPlayerID);
         }
-        attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence()));
+
+        if (useMagicAttackStat)
+        {
+            attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetMagicAttack() + magicStrength, defendingCharacter.GetMagicDefence()));
+        } else
+        {
+            attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence()));
+        }
+
+        if (!attackAll)
+        {
+            NextTurn(true);
+        }
+    }
+
+    public void AttackAll(int magicStrength)
+    {
+        foreach (Enemy enemy in enemies){
+            if (enemy != null)
+            {
+                Attack(enemy.GetID(), true, true, magicStrength);
+            }
+        }
+        NextTurn(true);
     }
 
     private void SortCharacters()
@@ -161,7 +188,7 @@ public class GameManager : MonoBehaviour
         Enemy attackingEnemy = (Enemy)GetCharacter(currentTurnPlayerID);
         if (attackingEnemy != null)
         {
-            Attack(FindObjectOfType<EnemyAI>().SelectTarget(players));
+            Attack(FindObjectOfType<EnemyAI>().SelectTarget(attackingEnemy, players), false, false, 0);
         } else
         {
             //Enemy does not exist and should be ignored
@@ -271,7 +298,10 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        targetMarker.SetEnemyTargets(enemies);
+        if (AreThereEnemiesRemaining())
+        {
+            targetMarker.SetEnemyTargets(enemies);
+        }
 
         CreateTrack();
     }

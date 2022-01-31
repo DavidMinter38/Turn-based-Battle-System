@@ -47,6 +47,23 @@ public class Player : Character
 
     }
 
+    public void GainMagic(int magicGained)
+    {
+        currentMP += magicGained;
+        if (currentMP > maxMP)
+        {
+            currentMP = maxMP;
+        }
+        FindObjectOfType<BattleUI>().UpdateUI();
+    }
+
+    public void LoseMagic(int magicLost)
+    {
+        currentMP -= magicLost;
+        if (currentMP <= 0) { currentMP = 0; }
+        FindObjectOfType<BattleUI>().UpdateUI();
+    }
+
     public void UseGuard()
     {
         isGuarding = true;

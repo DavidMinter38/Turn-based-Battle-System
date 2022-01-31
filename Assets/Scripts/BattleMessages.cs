@@ -7,11 +7,16 @@ public class BattleMessages : MonoBehaviour
 {
     Text battleText;
 
+    [SerializeField]
+    Text previousBattleText;
+
     // Start is called before the first frame update
     void Start()
     {
         battleText = GetComponent<Text>();
         battleText.text = "";
+
+        previousBattleText.text = "";
     }
 
     // Update is called once per frame
@@ -22,6 +27,7 @@ public class BattleMessages : MonoBehaviour
 
     public void UpdateMessage(string message)
     {
+        previousBattleText.text = battleText.text;
         battleText.text = message;
     }
 }

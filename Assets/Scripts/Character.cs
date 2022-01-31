@@ -39,6 +39,7 @@ public class Character : MonoBehaviour
             currentHP = maxHP;
         }
         FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " gained " + healthToRecover.ToString() + " hit points!");
+        FindObjectOfType<BattleUI>().UpdateUI();
     }
 
     protected void TakeDamage(int damage)
@@ -47,7 +48,6 @@ public class Character : MonoBehaviour
         if (currentHP <= 0) { currentHP = 0; }
 
         FindObjectOfType<BattleUI>().UpdateUI();
-        //TODO Make this so the system does not have to find UI.
 
         if(currentHP <= 0)
         {
@@ -60,7 +60,6 @@ public class Character : MonoBehaviour
     {
         FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has attacked " + target.GetCharacterName() + "!  Dealt " + attackDamage + " damage!");
         target.TakeDamage(attackDamage);
-        FindObjectOfType<GameManager>().NextTurn(true);
         //TODO make the damage more varied, and also have it influenced by correct button input timing
     }
 
@@ -97,6 +96,15 @@ public class Character : MonoBehaviour
     public int GetDefence()
     {
         return defence;
+    }
+    public int GetMagicAttack()
+    {
+        return magicAttack;
+    }
+
+    public int GetMagicDefence()
+    {
+        return magicDefence;
     }
 
     public int GetSpeed()

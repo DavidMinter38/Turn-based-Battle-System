@@ -25,21 +25,25 @@ public class BattleUI : MonoBehaviour
         if (player1HealthUI.gameObject.activeInHierarchy)
         {
             player1HealthUI.UpdateHealth();
+            player1HealthUI.UpdateMagic();
         }
 
         if (player2HealthUI.gameObject.activeInHierarchy)
         {
             player2HealthUI.UpdateHealth();
+            player2HealthUI.UpdateMagic();
         }
 
         if (player3HealthUI.gameObject.activeInHierarchy)
         {
             player3HealthUI.UpdateHealth();
+            player3HealthUI.UpdateMagic();
         }
 
         if (player4HealthUI.gameObject.activeInHierarchy)
         {
             player4HealthUI.UpdateHealth();
+            player4HealthUI.UpdateMagic();
         }
     }
 }

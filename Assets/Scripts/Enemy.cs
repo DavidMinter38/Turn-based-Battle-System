@@ -7,6 +7,8 @@ public class Enemy : Character
     [SerializeField]
     int enemyID; //If we are having multiple types of enemies, this will allow us to figure out what type of enemy it is.  Note that the enemyID is not the same as the character ID
 
+    int attackedPlayerID = -1; //Remembers the last player that attacked it
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,5 +36,20 @@ public class Enemy : Character
         FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has been destroyed!");
         FindObjectOfType<GameManager>().RemoveEnemy(this.GetID());
         Destroy(this.gameObject);
+    }
+
+    public void MarkAttacker(int playerID)
+    {
+        attackedPlayerID = playerID;
+    }
+
+    public void ResetMarker()
+    {
+        attackedPlayerID = -1;
+    }
+
+    public int GetAttackMarker()
+    {
+        return attackedPlayerID;
     }
 }
