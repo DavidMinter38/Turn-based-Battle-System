@@ -16,6 +16,9 @@ public class TargetMarker : MonoBehaviour
     float distanceAboveTarget = 1.5f;
     bool inputPressed = false;
 
+    Magic.MagicStats selectedMagic;
+    bool isUsingMagic;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -106,8 +109,23 @@ public class TargetMarker : MonoBehaviour
     {
         if (Input.GetButtonDown("Submit"))
         {
-            //TODO change to accomodate magic usage
-            FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetID(), false, false, 0);
+            if (isUsingMagic)
+            {
+                FindObjectOfType<GameManager>().GetCurrentTurnPlayer().LoseMagic(selectedMagic.magicCost);
+                FindObjectOfType<BattleMessages>().UpdateMessage(FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCharacterName() + " casts " + (selectedMagic.magicName + "!"));
+                if (selectedMagic.restores)
+                {
+                    FindObjectOfType<GameManager>().Heal(targets[characterToTarget].GetID(), false, selectedMagic.magicStrength);
+                }
+                else
+                {
+                    FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetID(), false, true, selectedMagic.magicStrength);
+                }
+            }
+            else
+            {
+                FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetID(), false, false, 0);
+            }
             HideMarker();
         }
     }
@@ -122,9 +140,10 @@ public class TargetMarker : MonoBehaviour
         }
     }
 
-    public void DisplayMarker()
+    public void DisplayMarker(bool usingMagic)
     {
         this.gameObject.SetActive(true);
+        isUsingMagic = usingMagic;
         if(targets[characterToTarget] == null)
         {
             //Find a new target
@@ -157,5 +176,10 @@ public class TargetMarker : MonoBehaviour
         targets = newTargets;
         characterToTarget = 0;
         SetTarget();
+    }
+
+    public void SetMagicInfomation(Magic.MagicStats magic)
+    {
+        selectedMagic = magic;
     }
 }

@@ -91,26 +91,35 @@ public class GameManager : MonoBehaviour
         int currentTurnPlayerID = GetCurrentTurnPlayerID();
         Character attackingCharacter = GetCharacter(currentTurnPlayerID);
         Character defendingCharacter = GetCharacter(targetID);
-        if (defendingCharacter.IsPlayer())
-        {
-            Player defendingPlayer = (Player)defendingCharacter;
-            if (defendingPlayer.IsGuarding() && !useMagicAttackStat)
-            {
-                attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence() * 2));
-                return;
-            }
-        } else
-        {
-            Enemy defendingEnemy = (Enemy)defendingCharacter;
-            defendingEnemy.MarkAttacker(currentTurnPlayerID);
-        }
 
         if (useMagicAttackStat)
         {
             attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetMagicAttack() + magicStrength, defendingCharacter.GetMagicDefence()));
         } else
         {
-            attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence()));
+            FindObjectOfType<BattleMessages>().UpdateMessage(attackingCharacter.GetCharacterName() + " attacks!");
+            //Check if attacking a guarding player
+            if (defendingCharacter.IsPlayer())
+            {
+                Player defendingPlayer = (Player)defendingCharacter;
+                if (defendingPlayer.IsGuarding())
+                {
+                    attackingCharacter.Attack(defendingCharacter, (CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence()) / 2));
+                } else
+                {
+                    attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence()));
+                }
+            } else
+            {
+                attackingCharacter.Attack(defendingCharacter, CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence()));
+            }
+        }
+
+        if (!defendingCharacter.IsPlayer())
+        {
+            //Mark the player so that the enemy knows who to target
+            Enemy defendingEnemy = (Enemy)defendingCharacter;
+            defendingEnemy.MarkAttacker(currentTurnPlayerID);
         }
 
         if (!attackAll)
@@ -128,6 +137,20 @@ public class GameManager : MonoBehaviour
             }
         }
         NextTurn(true);
+    }
+
+    public void Heal(int targetID, bool healAll, int magicStrength)
+    {
+        int currentTurnPlayerID = GetCurrentTurnPlayerID();
+        Character healingCharacter = GetCharacter(currentTurnPlayerID);
+        Character targettedCharacter = GetCharacter(targetID);
+
+        healingCharacter.Heal(targettedCharacter, magicStrength);
+
+        if (!healAll)
+        {
+            NextTurn(true);
+        }
     }
 
     private void SortCharacters()

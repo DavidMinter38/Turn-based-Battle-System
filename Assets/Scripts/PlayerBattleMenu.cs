@@ -103,7 +103,7 @@ public class PlayerBattleMenu : MonoBehaviour
     private void SelectTarget()
     {
         targetMarker.SetEnemyTargets(FindObjectOfType<GameManager>().GetEnemies());
-        targetMarker.DisplayMarker();
+        targetMarker.DisplayMarker(false);
         FindObjectOfType<GameManager>().SetStatePlayerSelectTarget();
         HideBattleMenu();
     }

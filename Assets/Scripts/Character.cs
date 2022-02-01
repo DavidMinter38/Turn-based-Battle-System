@@ -58,9 +58,15 @@ public class Character : MonoBehaviour
 
     public void Attack(Character target, int attackDamage)
     {
-        FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has attacked " + target.GetCharacterName() + "!  Dealt " + attackDamage + " damage!");
+        FindObjectOfType<BattleMessages>().UpdateMessage("Dealt " + attackDamage + " damage to " + target.GetCharacterName() + "!");
         target.TakeDamage(attackDamage);
         //TODO make the damage more varied, and also have it influenced by correct button input timing
+    }
+
+    public void Heal(Character target, int healthRestored)
+    {
+        FindObjectOfType<BattleMessages>().UpdateMessage(target.GetCharacterName() + " has regained " + healthRestored + " hit points!");
+        target.GainHealth(healthRestored);
     }
 
     protected virtual void KillCharacter()
