@@ -4047,7 +4047,7 @@ MonoBehaviour:
     magicDefence: 7
     speed: 25
     knowsMagic: 1
-    avaliableMagic: 010101
+    avaliableMagic: 0101010001
     isAvaliable: 1
     isConscious: 1
   - playerID: 2
@@ -4162,6 +4162,24 @@ MonoBehaviour:
     affectsPlayers: 1
     restores: 1
     affectsDead: 1
+  - magicID: 3
+    magicName: Lightning Bolt
+    magicDescription: Deals strong lightning damage to one enemy.
+    magicCost: 20
+    magicStrength: 8
+    affectsAll: 0
+    affectsPlayers: 0
+    restores: 0
+    affectsDead: 0
+  - magicID: 4
+    magicName: Healing Wave
+    magicDescription: Restores 20 hit points to all allies.
+    magicCost: 15
+    magicStrength: 20
+    affectsAll: 1
+    affectsPlayers: 1
+    restores: 1
+    affectsDead: 0
 --- !u!114 &1278664939
 MonoBehaviour:
   m_ObjectHideFlags: 0

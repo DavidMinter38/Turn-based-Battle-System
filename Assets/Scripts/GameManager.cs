@@ -153,6 +153,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void HealAll(int magicStrength)
+    {
+        foreach(Player player in players)
+        {
+            if (player.IsConscious())
+            {
+                Heal(player.GetID(), true, magicStrength);
+            }
+        }
+        NextTurn(true);
+    }
+
     private void SortCharacters()
     {
         for (int i = 0; i < characters.Length; i++)
@@ -211,6 +223,7 @@ public class GameManager : MonoBehaviour
         Enemy attackingEnemy = (Enemy)GetCharacter(currentTurnPlayerID);
         if (attackingEnemy != null)
         {
+            attackingEnemy.ObserveStatusOfBattle(players, enemies);
             Attack(FindObjectOfType<EnemyAI>().SelectTarget(attackingEnemy, players), false, false, 0);
         } else
         {

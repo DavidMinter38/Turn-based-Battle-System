@@ -38,7 +38,6 @@ public class Character : MonoBehaviour
         {
             currentHP = maxHP;
         }
-        FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " gained " + healthToRecover.ToString() + " hit points!");
         FindObjectOfType<BattleUI>().UpdateUI();
     }
 
