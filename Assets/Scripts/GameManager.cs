@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
                     //Stop, and let the player choose who to attack
                     int currentTurnPlayerID = GetCurrentTurnPlayerID();
                     Player currentTurnPlayer = (Player)GetCharacter(currentTurnPlayerID);
-                    if (!currentTurnPlayer.IsConscious())
+                    if (!currentTurnPlayer.IsConscious() || !currentTurnPlayer.IsInCombat())
                     {
                         //If the player is unconscious, skip their turn and move on to the next character
                         NextTurn(false);
@@ -224,7 +224,15 @@ public class GameManager : MonoBehaviour
         if (attackingEnemy != null)
         {
             attackingEnemy.ObserveStatusOfBattle(players, enemies);
-            Attack(FindObjectOfType<EnemyAI>().SelectTarget(attackingEnemy, players), false, false, 0);
+            int targetID = FindObjectOfType<EnemyAI>().SelectTarget(attackingEnemy, players, enemies);
+            if(attackingEnemy.enemyState == EnemyState.Defensive)
+            {
+                FindObjectOfType<BattleMessages>().UpdateMessage(attackingEnemy.GetCharacterName() + " uses healing magic!");
+                Heal(targetID, false, attackingEnemy.GetMagicAttack());
+            } else
+            {
+                Attack(targetID, false, false, 0);
+            }
         } else
         {
             //Enemy does not exist and should be ignored
@@ -273,6 +281,15 @@ public class GameManager : MonoBehaviour
 
     public void NewRound()
     {
+        //Allow any players who were revived this round to fight in the next round
+        for(int i=0; i<players.Length; i++)
+        {
+            if(players[i].IsConscious() && !players[i].IsInCombat())
+            {
+                players[i].ReturnToCombat();
+            }
+        }
+
         currentPlayerInTurn = 0;
         //Reset the turn order so that it's not always the same
         turnOrder.Clear();
@@ -358,7 +375,7 @@ public class GameManager : MonoBehaviour
                         if (characters[i].IsPlayer())
                         {
                             Player currentPlayer = (Player)characters[i];
-                            if (currentPlayer.IsConscious())
+                            if (currentPlayer.IsConscious() && currentPlayer.IsInCombat())
                             {
                                 int characterID = characters[i].GetID();
                                 if (currentID == characterID)
@@ -415,6 +432,36 @@ public class GameManager : MonoBehaviour
         return players;
     }
 
+    public Player[] GetAlivePlayers()
+    {
+        Player[] alivePlayers = new Player[players.Length];
+        int counter = 0;
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].IsConscious())
+            {
+                alivePlayers[counter] = players[i];
+                counter++;
+            }
+        }
+        return alivePlayers;
+    }
+
+    public Player[] GetUnconsciousPlayers()
+    {
+        Player[] unconsciousPlayers = new Player[players.Length];
+        int counter = 0;
+        for(int i=0; i<players.Length; i++)
+        {
+            if (!players[i].IsConscious())
+            {
+                unconsciousPlayers[counter] = players[i];
+                counter++;
+            }
+        }
+        return unconsciousPlayers;
+    }
+
     public Enemy[] GetEnemies()
     {
         return enemies;
@@ -425,6 +472,18 @@ public class GameManager : MonoBehaviour
         for(int i=0; i<players.Length; i++)
         {
             if (players[i].IsConscious())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool AnyUnconsciousPlayers()
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (!players[i].IsConscious())
             {
                 return true;
             }

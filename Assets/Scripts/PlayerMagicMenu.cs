@@ -151,6 +151,7 @@ public class PlayerMagicMenu : MonoBehaviour
             //The player needs enough MP in order to use the magic
             if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost <= FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCurrentMagic())
             {
+                if(((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsDead && !FindObjectOfType<GameManager>().AnyUnconsciousPlayers()) { return; }
                 FindObjectOfType<PlayerBattleMenu>().HideMagicMenu();
                 if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsAll)
                 {
@@ -172,7 +173,14 @@ public class PlayerMagicMenu : MonoBehaviour
                 if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsPlayers)
                 {
                     //Set up the target marker so that only players can be selected
-                    targetMarker.SetPlayerTargets(FindObjectOfType<GameManager>().GetPlayers());
+                    if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsDead)
+                    {
+                        targetMarker.SetPlayerTargets(FindObjectOfType<GameManager>().GetUnconsciousPlayers());
+                    }
+                    else
+                    {
+                        targetMarker.SetPlayerTargets(FindObjectOfType<GameManager>().GetAlivePlayers());
+                    }
                     targetMarker.DisplayMarker(true);
                     targetMarker.SetMagicInfomation((Magic.MagicStats)playerMagicInfomation[highlightedButton]);
                     FindObjectOfType<GameManager>().SetStatePlayerSelectTarget();
@@ -185,7 +193,6 @@ public class PlayerMagicMenu : MonoBehaviour
                     targetMarker.SetMagicInfomation((Magic.MagicStats)playerMagicInfomation[highlightedButton]);
                     FindObjectOfType<GameManager>().SetStatePlayerSelectTarget();
                 }
-                //TODO handle setting up the target marker for resurrection spells (Only target unconscious players)
                 FindObjectOfType<PlayerBattleMenu>().HideBattleMenu();
             }
         }

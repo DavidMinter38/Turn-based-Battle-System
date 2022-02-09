@@ -15,6 +15,8 @@ public class Player : Character
     bool isConscious = true;
     bool isGuarding = false;
 
+    bool inCombat = true; //Used to prevent revived players from taking action on the same turn that they are revived
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,11 +36,14 @@ public class Player : Character
         knowsMagic = playerStats.knowsMagic;
         avaliableMagic = playerStats.avaliableMagic;
         isConscious = playerStats.isConscious;
+        characterSprite = playerStats.playerSprite;
 
         if (!playerStats.isAvaliable)
         {
             this.gameObject.SetActive(false);
         }
+
+        this.GetComponent<SpriteRenderer>().sprite = characterSprite;
     }
 
     // Update is called once per frame
@@ -80,7 +85,21 @@ public class Player : Character
     {
         FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has fallen!");
         isConscious = false;
+        inCombat = false;
         FindObjectOfType<GameManager>().CreateTrack();
+        this.gameObject.transform.Rotate(new Vector3(0, 0, 90));
+    }
+
+    public void Revive()
+    {
+        FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has been revived!");
+        isConscious = true;
+        this.gameObject.transform.Rotate(new Vector3(0, 0, -90));
+    }
+
+    public void ReturnToCombat()
+    {
+        inCombat = true;
     }
 
     public int GetPlayerID()
@@ -116,5 +135,10 @@ public class Player : Character
     public bool IsGuarding()
     {
         return isGuarding;
+    }
+
+    public bool IsInCombat()
+    {
+        return inCombat;
     }
 }

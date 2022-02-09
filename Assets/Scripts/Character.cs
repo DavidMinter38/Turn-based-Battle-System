@@ -13,8 +13,7 @@ public class Character : MonoBehaviour
 
     protected int currentHP, maxHP, attack, defence, magicAttack, magicDefence, speed;
 
-    [SerializeField]
-    Sprite characterSprite;
+    protected Sprite characterSprite;
 
     protected bool isPlayer;
 

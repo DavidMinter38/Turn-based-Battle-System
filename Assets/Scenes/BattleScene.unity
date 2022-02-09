@@ -3255,7 +3255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 532060829256262650, guid: 9bb9c06dabb913f47b83ed2b142eeb1e, type: 3}
       propertyPath: enemyID
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 532060829256262651, guid: 9bb9c06dabb913f47b83ed2b142eeb1e, type: 3}
       propertyPath: m_RootOrder
@@ -4035,6 +4035,7 @@ MonoBehaviour:
     avaliableMagic: 
     isAvaliable: 1
     isConscious: 1
+    playerSprite: {fileID: 21300000, guid: f69e3fc9d43f3424aab3dfb4313963f2, type: 3}
   - playerID: 2
     playerName: Heroine
     currentHP: 90
@@ -4050,6 +4051,7 @@ MonoBehaviour:
     avaliableMagic: 0101010001
     isAvaliable: 1
     isConscious: 1
+    playerSprite: {fileID: 21300000, guid: 43950c207fdba3644914384a2ffa78bb, type: 3}
   - playerID: 2
     playerName: Commander
     currentHP: 0
@@ -4065,6 +4067,7 @@ MonoBehaviour:
     avaliableMagic: 
     isAvaliable: 0
     isConscious: 0
+    playerSprite: {fileID: 21300000, guid: e38b7faa036035f47925944d7950c527, type: 3}
   - playerID: 3
     playerName: Squire
     currentHP: 0
@@ -4080,6 +4083,7 @@ MonoBehaviour:
     avaliableMagic: 
     isAvaliable: 0
     isConscious: 0
+    playerSprite: {fileID: 21300000, guid: e38b7faa036035f47925944d7950c527, type: 3}
   enemyTypes:
   - enemyID: 0
     enemyName: Bandit
@@ -4090,6 +4094,8 @@ MonoBehaviour:
     magicAttack: 1
     magicDefence: 1
     speed: 4
+    canHeal: 0
+    enemySprite: {fileID: 21300000, guid: f21b37fe135f6cb4382f1b73a884e3de, type: 3}
   - enemyID: 1
     enemyName: Thief
     currentHP: 10
@@ -4099,6 +4105,8 @@ MonoBehaviour:
     magicAttack: 1
     magicDefence: 1
     speed: 12
+    canHeal: 0
+    enemySprite: {fileID: 21300000, guid: b0b15763cbb270244ad8af1ab179710d, type: 3}
   - enemyID: 2
     enemyName: Guard
     currentHP: 16
@@ -4108,6 +4116,19 @@ MonoBehaviour:
     magicAttack: 1
     magicDefence: 3
     speed: 7
+    canHeal: 0
+    enemySprite: {fileID: 21300000, guid: 876438b3af258af418724015b9989649, type: 3}
+  - enemyID: 3
+    enemyName: Sage
+    currentHP: 12
+    maxHP: 12
+    attack: 3
+    defence: 2
+    magicAttack: 9
+    magicDefence: 8
+    speed: 6
+    canHeal: 1
+    enemySprite: {fileID: 21300000, guid: 6bf8715131564c14fa702888ecd8ee5a, type: 3}
 --- !u!4 &1278664937
 Transform:
   m_ObjectHideFlags: 0

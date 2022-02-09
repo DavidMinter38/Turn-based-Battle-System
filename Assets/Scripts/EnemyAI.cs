@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
 
-    public int SelectTarget(Enemy attackingEnemy, Player[] players)
+    public int SelectTarget(Enemy attackingEnemy, Player[] players, Enemy[] enemies)
     {
         //The AI will behave under the following conditions:
         //If a player's hp is less than the enemy's attack-player's defence, the enemy will try to attack them
@@ -15,8 +15,8 @@ public class EnemyAI : MonoBehaviour
 
         switch (attackingEnemy.enemyState)
         {
-            case EnemyState.Defensive:
-                targetID = DefensiveState(targetID, attackingEnemy, players);
+            case EnemyState.Neutral:
+                targetID = NeutralState(targetID, players);
                 break;
             case EnemyState.Aggressive:
                 targetID = AggressiveState(targetID, attackingEnemy, players);
@@ -24,8 +24,8 @@ public class EnemyAI : MonoBehaviour
             case EnemyState.Finishing:
                 targetID = FinishingState(targetID, attackingEnemy, players);
                 break;
-            case EnemyState.Neutral:
-                targetID = NeutralState(targetID, players);
+            case EnemyState.Defensive:
+                targetID = DefensiveState(targetID, attackingEnemy, enemies);
                 break;
             default:
                 break;
@@ -89,11 +89,20 @@ public class EnemyAI : MonoBehaviour
         return targetID;
     }
 
-    private int DefensiveState(int targetID, Enemy attackingEnemy, Player[] players)
+    private int DefensiveState(int targetID, Enemy attackingEnemy, Enemy[] enemies)
     {
-        //Debug code to prevent errors
-        //TODO implement defensive state code
-        return 1;
+        for( int i=0; i< enemies.Length; i++)
+        {
+            if (enemies[i] != null)
+            {
+                if (enemies[i].GetID() == attackingEnemy.GetAttackMarker()) 
+                {
+
+                    targetID = attackingEnemy.GetAttackMarker();
+                }
+            }
+        }
+        return targetID;
     }
 }
 

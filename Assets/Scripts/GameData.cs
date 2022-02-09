@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 //Contains all the game data, including player and enemy stats.  These values will be assigned to the corresponding character in the game.
 
@@ -31,6 +32,8 @@ public class GameData : MonoBehaviour
         [Tooltip("If unmarked, the player is not currently a member of the party.")]
         public bool isAvaliable;
         public bool isConscious;
+        [Header("Graphics")]
+        public Sprite playerSprite;
     }
 
     [System.Serializable]
@@ -49,6 +52,9 @@ public class GameData : MonoBehaviour
         public int magicAttack;
         public int magicDefence;
         public int speed;
+        public bool canHeal;
+        [Header("Graphics")]
+        public Sprite enemySprite;
     }
 
     [SerializeField]

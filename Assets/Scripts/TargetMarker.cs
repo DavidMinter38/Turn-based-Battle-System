@@ -115,6 +115,11 @@ public class TargetMarker : MonoBehaviour
                 FindObjectOfType<BattleMessages>().UpdateMessage(FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCharacterName() + " casts " + (selectedMagic.magicName + "!"));
                 if (selectedMagic.restores)
                 {
+                    if (selectedMagic.affectsDead && targets[characterToTarget].IsPlayer())
+                    {
+                        Player targetToRevive = (Player)targets[characterToTarget];
+                        targetToRevive.Revive();
+                    }
                     FindObjectOfType<GameManager>().Heal(targets[characterToTarget].GetID(), false, selectedMagic.magicStrength);
                 }
                 else
