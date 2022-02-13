@@ -275,8 +275,6 @@ public class GameManager : MonoBehaviour
         {
             cooldown = 1f;
         }
-        //TODO find a way to use a coroutine instead
-        //The cooldown timer is still used even when the enemy has been defeated
     }
 
     public void NewRound()
@@ -294,6 +292,42 @@ public class GameManager : MonoBehaviour
         //Reset the turn order so that it's not always the same
         turnOrder.Clear();
         SortCharacters();
+    }
+
+    public void AttemptEscape()
+    {
+        //Get the percentage of enemy hp remaining and multiply by 0.25
+        //Then, use a random number between 0 and 1
+        //If higher than the resulting percentage, escape successfull.  If not, escape fails.
+        float totalEnemyCurrentHP = 0;
+        float totalEnemyMaxHP = 0;
+        float numberOfDefeatedEnemies = 0;
+        for(int i=0; i<enemies.Length; i++)
+        {
+            if(enemies[i] != null)
+            {
+                totalEnemyCurrentHP += enemies[i].GetCurrentHealth();
+                totalEnemyMaxHP += enemies[i].GetMaxHealth();
+            }
+            else
+            {
+                numberOfDefeatedEnemies++;
+            }
+        }
+
+        float percentageOfEscape = (totalEnemyCurrentHP / totalEnemyMaxHP) * (0.25f/(numberOfDefeatedEnemies + 1));
+        float randomNumber = Random.Range(0f, 1f);
+        if(randomNumber > percentageOfEscape)
+        {
+            FindObjectOfType<BattleMessages>().UpdateMessage("Escaped successfully!");
+            battleState = BattleState.Victory;
+            EndBattle();
+        }
+        else
+        {
+            FindObjectOfType<BattleMessages>().UpdateMessage("You couldn't escape!");
+            NextTurn(true);
+        }
     }
 
     public void Victory()
@@ -377,21 +411,12 @@ public class GameManager : MonoBehaviour
                             Player currentPlayer = (Player)characters[i];
                             if (currentPlayer.IsConscious() && currentPlayer.IsInCombat())
                             {
-                                int characterID = characters[i].GetID();
-                                if (currentID == characterID)
-                                {
-                                    sprites.Add(characters[i].GetSprite());
-                                }
-                                //TODO refactor to remove duplicate code
+                                GetCharacterSpriteForTrack(sprites, currentID, i);
                             }
                         }
                         else 
                         {
-                            int characterID = characters[i].GetID();
-                            if (currentID == characterID)
-                            {
-                                sprites.Add(characters[i].GetSprite());
-                            }
+                            GetCharacterSpriteForTrack(sprites, currentID, i);
                         }
                     }
                 }
@@ -399,6 +424,15 @@ public class GameManager : MonoBehaviour
             counter++;
         }
         FindObjectOfType<TurnOrderTrack>().UpdateTrack(sprites);
+    }
+
+    private void GetCharacterSpriteForTrack(ArrayList sprites, int currentID, int i)
+    {
+        int characterID = characters[i].GetID();
+        if (currentID == characterID)
+        {
+            sprites.Add(characters[i].GetSprite());
+        }
     }
 
     public void SetStatePlayerSelectMove()

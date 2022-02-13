@@ -101,6 +101,7 @@ public class Character : MonoBehaviour
     {
         return defence;
     }
+
     public int GetMagicAttack()
     {
         return magicAttack;

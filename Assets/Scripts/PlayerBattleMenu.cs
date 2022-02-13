@@ -95,6 +95,7 @@ public class PlayerBattleMenu : MonoBehaviour
                     break;
                 case 3:
                     //Flee
+                    SelectFlee();
                     break;
             }
         }
@@ -127,6 +128,12 @@ public class PlayerBattleMenu : MonoBehaviour
     private void SelectGuard()
     {
         FindObjectOfType<GameManager>().GetCurrentTurnPlayer().UseGuard();
+        HideBattleMenu();
+    }
+
+    private void SelectFlee()
+    {
+        FindObjectOfType<GameManager>().AttemptEscape();
         HideBattleMenu();
     }
 

@@ -21,7 +21,6 @@ public class BattleUI : MonoBehaviour
 
     public void UpdateUI()
     {
-        //TODO perhaps remove this, and only update the health value that needs to be updated
         if (player1HealthUI.gameObject.activeInHierarchy)
         {
             player1HealthUI.UpdateHealth();

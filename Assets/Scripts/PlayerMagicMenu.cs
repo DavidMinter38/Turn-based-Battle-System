@@ -25,6 +25,9 @@ public class PlayerMagicMenu : MonoBehaviour
     int numberOfAvaliableMagic;
     int maxMagicDisplayed = 4;
 
+    int lowestViewableButton = 0;
+    int highestViewableButton = 3;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -46,26 +49,80 @@ public class PlayerMagicMenu : MonoBehaviour
             if (Input.GetAxis("Vertical") > 0)
             {
                 inputPressed = true;
-                do
+                highlightedButton--;
+                if (highlightedButton < lowestViewableButton && highlightedButton >= 0 && playerMagicInfomation.Count > maxMagicDisplayed)
                 {
-                    highlightedButton--;
-                    if (highlightedButton < 0)
+                    magicButtons[highestViewableButton].gameObject.SetActive(false);
+                    magicButtons[highlightedButton].gameObject.SetActive(true);
+                    lowestViewableButton--;
+                    highestViewableButton--;
+                    downArrow.gameObject.SetActive(true);
+                }
+                if (highlightedButton == 0)
+                {
+                    upArrow.gameObject.SetActive(false);
+                }
+                if (highlightedButton < 0)
+                {
+                    highlightedButton = playerMagicInfomation.Count - 1;
+                    downArrow.gameObject.SetActive(false);
+                    if (playerMagicInfomation.Count > maxMagicDisplayed)
                     {
-                        highlightedButton = magicButtons.Length - 1;
+                        lowestViewableButton = playerMagicInfomation.Count - maxMagicDisplayed;
+                        highestViewableButton = playerMagicInfomation.Count - 1;
+                        upArrow.gameObject.SetActive(true);
                     }
-                } while (!magicButtons[highlightedButton].IsActive());
+                    for (int i = 0; i < magicButtons.Length; i++)
+                    {
+                        if (i <= playerMagicInfomation.Count - 1 && i >= lowestViewableButton)
+                        {
+                            magicButtons[i].gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            magicButtons[i].gameObject.SetActive(false);
+                        }
+                    }
+                }
             }
             if (Input.GetAxis("Vertical") < 0)
             {
                 inputPressed = true;
-                do
+                highlightedButton++;
+                if(highlightedButton > highestViewableButton)
                 {
-                    highlightedButton++;
-                    if (highlightedButton > magicButtons.Length - 1)
+                    magicButtons[lowestViewableButton].gameObject.SetActive(false);
+                    magicButtons[highlightedButton].gameObject.SetActive(true);
+                    lowestViewableButton++;
+                    highestViewableButton++;
+                    upArrow.gameObject.SetActive(true);
+                    if (highlightedButton == playerMagicInfomation.Count-1)
                     {
-                        highlightedButton = 0;
+                        downArrow.gameObject.SetActive(false);
                     }
-                } while (!magicButtons[highlightedButton].IsActive());
+                }
+                if (highlightedButton > playerMagicInfomation.Count-1)
+                {
+                    highlightedButton = 0;
+                    lowestViewableButton = 0;
+                    upArrow.gameObject.SetActive(false);
+                    if (playerMagicInfomation.Count > maxMagicDisplayed)
+                    {
+                        highestViewableButton = 3;
+                        downArrow.gameObject.SetActive(true);
+                    }
+                    for (int i = 0; i < magicButtons.Length; i++)
+                    {
+                        if (i < maxMagicDisplayed && i <= playerMagicInfomation.Count - 1)
+                        {
+                            magicButtons[i].gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            magicButtons[i].gameObject.SetActive(false);
+                        }
+                    }
+                }
             }
             SetUI();
         }
@@ -95,7 +152,6 @@ public class PlayerMagicMenu : MonoBehaviour
             }
         }
         UpdateDescription();
-        //TODO change text on buttons when arrows are used
     }
 
     private void GetMagicInfomation()
@@ -107,14 +163,21 @@ public class PlayerMagicMenu : MonoBehaviour
         {
             if (knownMagic[i])
             {
+                //Obtain infomation about the magic and set it to the text
                 Magic.MagicStats magic = FindObjectOfType<Magic>().GetMagicInfomation(i);
                 playerMagicInfomation.Add(magic);
-                magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().text = ((Magic.MagicStats)playerMagicInfomation[numberOfAvaliableMagic]).magicName;
+                if (magicButtons[numberOfAvaliableMagic] != null)
+                {
+                    magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().text = ((Magic.MagicStats)playerMagicInfomation[numberOfAvaliableMagic]).magicName;
+                } else
+                {
+                    Debug.LogError("Not enough magic buttons in the menu.");
+                }
                 if(magic.magicCost > currentPlayer.GetCurrentMagic())
                 {
+                    //Indicate that the player does not have enough mp to use the magic
                     magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().color = new Color(1f, 0.5f, 0.5f);
                 }
-                
                 numberOfAvaliableMagic++;
             }
         }
@@ -132,7 +195,12 @@ public class PlayerMagicMenu : MonoBehaviour
         }
         else
         {
-            //TODO handle code for when the arrows are needed.
+            upArrow.gameObject.SetActive(false);
+            downArrow.gameObject.SetActive(true);
+            for (int i = 0; i < maxMagicDisplayed; i++)
+            {
+                magicButtons[i].gameObject.SetActive(true);
+            }
         }
 
         UpdateDescription();
@@ -140,6 +208,7 @@ public class PlayerMagicMenu : MonoBehaviour
 
     private void UpdateDescription()
     {
+        //Updates the text box that explains what the selected magic does
         magicDescryptionText.text = "Cost: " + ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost.ToString() + "MP\n";
         magicDescryptionText.text += ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicDescription;
     }
