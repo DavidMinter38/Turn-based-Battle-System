@@ -242,7 +242,7 @@ public class GameManager : MonoBehaviour
 
     int CalculateDamage(int attack, int defence)
     {
-        int damage = (attack - defence) + Random.Range(-5, 5);
+        int damage = Mathf.RoundToInt((attack - defence) * Random.Range(0.85f, 1f));
         if (damage < 0) { damage = 0; }
         return damage;
     }
