@@ -34,6 +34,7 @@ public class GameData : MonoBehaviour
         public bool isConscious;
         [Header("Graphics")]
         public Sprite playerSprite;
+        public PlayerHealthUI playerHealthUI;
     }
 
     [System.Serializable]

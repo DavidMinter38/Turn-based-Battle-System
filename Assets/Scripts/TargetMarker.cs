@@ -111,7 +111,7 @@ public class TargetMarker : MonoBehaviour
         {
             if (isUsingMagic)
             {
-                FindObjectOfType<GameManager>().GetCurrentTurnPlayer().LoseMagic(selectedMagic.magicCost);
+                FindObjectOfType<GameManager>().GetCurrentTurnPlayer().StartCoroutine("LoseMagic", selectedMagic.magicCost);
                 FindObjectOfType<BattleMessages>().UpdateMessage(FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCharacterName() + " casts " + (selectedMagic.magicName + "!"));
                 if (selectedMagic.restores)
                 {

@@ -17,6 +17,9 @@ public class Player : Character
 
     bool inCombat = true; //Used to prevent revived players from taking action on the same turn that they are revived
 
+    PlayerHealthUI playerUI;
+    float rateOfUIChange = 0.75f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +40,7 @@ public class Player : Character
         avaliableMagic = playerStats.avaliableMagic;
         isConscious = playerStats.isConscious;
         characterSprite = playerStats.playerSprite;
+        playerUI = playerStats.playerHealthUI;
 
         if (!playerStats.isAvaliable)
         {
@@ -52,21 +56,88 @@ public class Player : Character
 
     }
 
-    public void GainMagic(int magicGained)
+    protected override IEnumerator GainHealth(int healthToRecover)
     {
+        int displayHP = currentHP;
+        float timeDelay = 0;
+        if (healthToRecover != 0) { timeDelay = rateOfUIChange / healthToRecover; }
+        currentHP += healthToRecover;
+        if (currentHP > maxHP)
+        {
+            currentHP = maxHP;
+        }
+
+        while (healthToRecover != 0 && displayHP < maxHP)
+        {
+            displayHP++;
+            healthToRecover--;
+            playerUI.UpdateHealth(displayHP);
+            yield return new WaitForSeconds(timeDelay);
+        }
+        playerUI.UpdateHealth(currentHP);
+    }
+
+    protected override IEnumerator TakeDamage(int damage)
+    {
+        int displayHP = currentHP;
+        float timeDelay = 0;
+        if (damage != 0) { timeDelay = rateOfUIChange / damage; }
+        currentHP -= damage;
+        if (currentHP <= 0) { currentHP = 0; }
+
+        if (currentHP <= 0)
+        {
+            //Character dies
+            KillCharacter();
+        }
+
+        while (damage != 0 && displayHP > 0)
+        {
+            displayHP--;
+            damage--;
+            playerUI.UpdateHealth(displayHP);
+            yield return new WaitForSeconds(timeDelay);
+        }
+        playerUI.UpdateHealth(currentHP);
+    }
+
+    public IEnumerator GainMagic(int magicGained)
+    {
+        int displayMagic = currentMP;
+        float timeDelay = 0;
+        if (magicGained != 0) { timeDelay = rateOfUIChange / magicGained; }
         currentMP += magicGained;
         if (currentMP > maxMP)
         {
             currentMP = maxMP;
         }
-        FindObjectOfType<BattleUI>().UpdateUI();
+
+        while (magicGained != 0 && displayMagic < maxMP)
+        {
+            displayMagic++;
+            magicGained--;
+            playerUI.UpdateMagic(displayMagic);
+            yield return new WaitForSeconds(timeDelay);
+        }
+        playerUI.UpdateMagic(currentMP);
     }
 
-    public void LoseMagic(int magicLost)
+    public IEnumerator LoseMagic(int magicLost)
     {
+        int displayMagic = currentMP;
+        float timeDelay = 0;
+        if (magicLost != 0) { timeDelay = rateOfUIChange / magicLost; }
         currentMP -= magicLost;
         if (currentMP <= 0) { currentMP = 0; }
-        FindObjectOfType<BattleUI>().UpdateUI();
+
+        while (magicLost != 0 && displayMagic > 0)
+        {
+            displayMagic--;
+            magicLost--;
+            playerUI.UpdateMagic(displayMagic);
+            yield return new WaitForSeconds(timeDelay);
+        }
+        playerUI.UpdateMagic(currentMP);
     }
 
     public void UseGuard()

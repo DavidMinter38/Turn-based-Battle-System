@@ -34,6 +34,7 @@ public class PlayerHealthUI : MonoBehaviour
         playerCurrentMagic = thePlayer.GetCurrentMagic();
         playerMaxMagic = thePlayer.GetMaxMagic();
         playerName = thePlayer.GetCharacterName();
+        playerImage.sprite = thePlayer.GetSprite();
 
         //Set up health slider
         playerHealthSlider.maxValue = playerMaxHealth;
@@ -55,17 +56,15 @@ public class PlayerHealthUI : MonoBehaviour
         
     }
 
-    public void UpdateHealth()
+    public void UpdateHealth(int newHealth)
     {
-        playerCurrentHealth = thePlayer.GetCurrentHealth();
-        playerHealthSlider.value = playerCurrentHealth;
-        playerHealthText.text = playerCurrentHealth.ToString() + "/" + playerMaxHealth.ToString();
+        playerHealthSlider.value = newHealth;
+        playerHealthText.text = newHealth + "/" + playerMaxHealth.ToString();
     }
 
-    public void UpdateMagic()
+    public void UpdateMagic(int newMagic)
     {
-        playerCurrentMagic = thePlayer.GetCurrentMagic();
-        playerMagicSlider.value = playerCurrentMagic;
-        playerMagicText.text = playerCurrentMagic.ToString() + "/" + playerMaxMagic.ToString();
+        playerMagicSlider.value = newMagic;
+        playerMagicText.text = newMagic.ToString() + "/" + playerMaxMagic.ToString();
     }
 }

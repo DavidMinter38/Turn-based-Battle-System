@@ -4510,12 +4510,13 @@ MonoBehaviour:
     isAvaliable: 1
     isConscious: 1
     playerSprite: {fileID: 21300000, guid: f69e3fc9d43f3424aab3dfb4313963f2, type: 3}
+    playerHealthUI: {fileID: 930423822}
   - playerID: 2
     playerName: Heroine
     currentHP: 70
     maxHP: 70
-    currentMP: 3
-    maxMP: 3
+    currentMP: 30
+    maxMP: 30
     attack: 9
     defence: 3
     magicAttack: 12
@@ -4526,6 +4527,7 @@ MonoBehaviour:
     isAvaliable: 1
     isConscious: 1
     playerSprite: {fileID: 21300000, guid: 43950c207fdba3644914384a2ffa78bb, type: 3}
+    playerHealthUI: {fileID: 361191700}
   - playerID: 2
     playerName: Commander
     currentHP: 0
@@ -4542,6 +4544,7 @@ MonoBehaviour:
     isAvaliable: 0
     isConscious: 0
     playerSprite: {fileID: 21300000, guid: e38b7faa036035f47925944d7950c527, type: 3}
+    playerHealthUI: {fileID: 1389318771}
   - playerID: 3
     playerName: Squire
     currentHP: 0
@@ -4558,6 +4561,7 @@ MonoBehaviour:
     isAvaliable: 0
     isConscious: 0
     playerSprite: {fileID: 21300000, guid: e38b7faa036035f47925944d7950c527, type: 3}
+    playerHealthUI: {fileID: 985320651}
   enemyTypes:
   - enemyID: 0
     enemyName: Bandit
@@ -7211,7 +7215,6 @@ GameObject:
   - component: {fileID: 1811184881}
   - component: {fileID: 1811184880}
   - component: {fileID: 1811184879}
-  - component: {fileID: 1811184883}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -7303,22 +7306,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1811184883
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1811184878}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a784961123e99874288afb1ffc11f078, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player1HealthUI: {fileID: 930423822}
-  player2HealthUI: {fileID: 361191700}
-  player3HealthUI: {fileID: 1389318771}
-  player4HealthUI: {fileID: 985320651}
 --- !u!1 &1811426692
 GameObject:
   m_ObjectHideFlags: 0

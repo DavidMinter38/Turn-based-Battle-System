@@ -227,7 +227,7 @@ public class PlayerMagicMenu : MonoBehaviour
                     //Automatically apply the effect to either the players or enemies
                     FindObjectOfType<BattleMessages>().UpdateMessage(FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCharacterName() + " casts " + ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicName + "!");
                     FindObjectOfType<PlayerBattleMenu>().HideBattleMenu();
-                    FindObjectOfType<GameManager>().GetCurrentTurnPlayer().LoseMagic(((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost);
+                    FindObjectOfType<GameManager>().GetCurrentTurnPlayer().StartCoroutine("LoseMagic", ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost);
                     if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsPlayers)
                     {
                         FindObjectOfType<GameManager>().HealAll(((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicStrength);

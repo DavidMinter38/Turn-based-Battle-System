@@ -30,41 +30,41 @@ public class Character : MonoBehaviour
 
     }
 
-    protected void GainHealth(int healthToRecover)
+    protected virtual IEnumerator GainHealth(int healthToRecover)
     {
         currentHP += healthToRecover;
-        if(currentHP > maxHP)
+        if (currentHP > maxHP)
         {
             currentHP = maxHP;
         }
-        FindObjectOfType<BattleUI>().UpdateUI();
+        yield return new WaitForSeconds(0.5f);
     }
 
-    protected void TakeDamage(int damage)
+    protected virtual IEnumerator TakeDamage(int damage)
     {
         currentHP -= damage;
         if (currentHP <= 0) { currentHP = 0; }
 
-        FindObjectOfType<BattleUI>().UpdateUI();
-
-        if(currentHP <= 0)
+        if (currentHP <= 0)
         {
             //Character dies
             KillCharacter();
         }
+
+        yield return new WaitForSeconds(0.5f);
     }
 
     public void Attack(Character target, int attackDamage)
     {
         FindObjectOfType<BattleMessages>().UpdateMessage("Dealt " + attackDamage + " damage to " + target.GetCharacterName() + "!");
-        target.TakeDamage(attackDamage);
+        target.StartCoroutine("TakeDamage", attackDamage);
         //TODO make the damage more varied, and also have it influenced by correct button input timing
     }
 
     public void Heal(Character target, int healthRestored)
     {
         FindObjectOfType<BattleMessages>().UpdateMessage(target.GetCharacterName() + " has regained " + healthRestored + " hit points!");
-        target.GainHealth(healthRestored);
+        target.StartCoroutine("GainHealth", healthRestored);
     }
 
     protected virtual void KillCharacter()
