@@ -2,31 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnData
+namespace BattleSystem.Data
 {
-    int ID;
-    float speedValue;
-    bool player;
-
-    public TurnData(int inputID, float inputSpeedValue, bool inputPlayer)
+    public class TurnData
     {
-        ID = inputID;
-        speedValue = inputSpeedValue;
-        player = inputPlayer;
-    }
+        int ID;
+        float speedValue;
+        bool player;
 
-    public int GetID()
-    {
-        return ID;
-    }
+        public TurnData(int inputID, float inputSpeedValue, bool inputPlayer)
+        {
+            ID = inputID;
+            speedValue = inputSpeedValue;
+            player = inputPlayer;
+        }
 
-    public float GetSpeed()
-    {
-        return speedValue;
-    }
+        public int GetID()
+        {
+            return ID;
+        }
 
-    public bool IsPlayer()
-    {
-        return player;
+        public float GetSpeed()
+        {
+            return speedValue;
+        }
+
+        public bool IsPlayer()
+        {
+            return player;
+        }
     }
 }

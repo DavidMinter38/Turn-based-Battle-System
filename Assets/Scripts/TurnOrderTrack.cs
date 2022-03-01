@@ -3,37 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TurnOrderTrack : MonoBehaviour
+namespace BattleSystem.Interface
 {
-    [SerializeField]
-    Image[] trackImages;
-
-    [SerializeField]
-    Sprite emptySprite;
-
-    // Start is called before the first frame update
-    void Start()
+    public class TurnOrderTrack : MonoBehaviour
     {
-        
-    }
+        [SerializeField]
+        Image[] trackImages;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        [SerializeField]
+        Sprite emptySprite;
 
-    public void UpdateTrack(ArrayList sprites)
-    {
-        int trackCounter = 0;
-        foreach (Sprite sprite in sprites)
+        // Start is called before the first frame update
+        void Start()
         {
-            trackImages[trackCounter].sprite = sprite;
-            trackCounter++;
+
         }
-        for(int i = trackCounter; i<trackImages.Length; i++)
+
+        // Update is called once per frame
+        void Update()
         {
-            trackImages[i].sprite = emptySprite;
+
+        }
+
+        public void UpdateTrack(ArrayList sprites)
+        {
+            int trackCounter = 0;
+            foreach (Sprite sprite in sprites)
+            {
+                trackImages[trackCounter].sprite = sprite;
+                trackCounter++;
+            }
+            for (int i = trackCounter; i < trackImages.Length; i++)
+            {
+                trackImages[i].sprite = emptySprite;
+            }
         }
     }
 }

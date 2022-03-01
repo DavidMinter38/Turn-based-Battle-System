@@ -3,31 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BattleMessages : MonoBehaviour
+namespace BattleSystem.Interface
 {
-    Text battleText;
-
-    [SerializeField]
-    Text previousBattleText;
-
-    // Start is called before the first frame update
-    void Start()
+    public class BattleMessages : MonoBehaviour
     {
-        battleText = GetComponent<Text>();
-        battleText.text = "";
+        Text battleText;
 
-        previousBattleText.text = "";
-    }
+        [SerializeField]
+        Text previousBattleText;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            battleText = GetComponent<Text>();
+            battleText.text = "";
 
-    public void UpdateMessage(string message)
-    {
-        previousBattleText.text = battleText.text;
-        battleText.text = message;
+            previousBattleText.text = "";
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+        public void UpdateMessage(string message)
+        {
+            previousBattleText.text = battleText.text;
+            battleText.text = message;
+        }
     }
 }

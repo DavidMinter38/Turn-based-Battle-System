@@ -1,129 +1,132 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using BattleSystem.Interface;
 
-public class Character : MonoBehaviour
+namespace BattleSystem.Characters
 {
-    [SerializeField]
-    int ID;  //This allows us to identify each character in the battle
-
-    [SerializeField]
-    protected string characterName;
-
-    protected int currentHP, maxHP, attack, defence, magicAttack, magicDefence, speed;
-
-    protected Sprite characterSprite;
-
-    protected bool isPlayer;
-
-    // Start is called before the first frame update
-    void Start()
+    public class Character : MonoBehaviour
     {
-        
-    }
+        [SerializeField]
+        int ID;  //This allows us to identify each character in the battle
 
-    // Update is called once per frame
-    void Update()
-    {
+        [SerializeField]
+        protected string characterName;
 
+        protected int currentHP, maxHP, attack, defence, magicAttack, magicDefence, speed;
 
-    }
+        protected Sprite characterSprite;
 
-    protected virtual IEnumerator GainHealth(int healthToRecover)
-    {
-        currentHP += healthToRecover;
-        if (currentHP > maxHP)
+        protected bool isPlayer;
+
+        // Start is called before the first frame update
+        void Start()
         {
-            currentHP = maxHP;
-        }
-        yield return new WaitForSeconds(0.5f);
-    }
 
-    protected virtual IEnumerator TakeDamage(int damage)
-    {
-        currentHP -= damage;
-        if (currentHP <= 0) { currentHP = 0; }
-
-        if (currentHP <= 0)
-        {
-            //Character dies
-            KillCharacter();
         }
 
-        yield return new WaitForSeconds(0.5f);
-    }
+        // Update is called once per frame
+        void Update()
+        {
 
-    public void Attack(Character target, int attackDamage)
-    {
-        FindObjectOfType<BattleMessages>().UpdateMessage("Dealt " + attackDamage + " damage to " + target.GetCharacterName() + "!");
-        target.StartCoroutine("TakeDamage", attackDamage);
-        //TODO make the damage more varied, and also have it influenced by correct button input timing
-    }
 
-    public void Heal(Character target, int healthRestored)
-    {
-        FindObjectOfType<BattleMessages>().UpdateMessage(target.GetCharacterName() + " has regained " + healthRestored + " hit points!");
-        target.StartCoroutine("GainHealth", healthRestored);
-    }
+        }
 
-    protected virtual void KillCharacter()
-    {
-        Debug.Log("This message should not appear!");
-    }
+        protected virtual IEnumerator GainHealth(int healthToRecover)
+        {
+            currentHP += healthToRecover;
+            if (currentHP > maxHP)
+            {
+                currentHP = maxHP;
+            }
+            yield return new WaitForSeconds(0.5f);
+        }
 
-    public int GetID()
-    {
-        return ID;
-    }
+        protected virtual IEnumerator TakeDamage(int damage)
+        {
+            currentHP -= damage;
+            if (currentHP <= 0) { currentHP = 0; }
 
-    public string GetCharacterName()
-    {
-        return characterName;
-    }
+            if (currentHP <= 0)
+            {
+                //Character dies
+                KillCharacter();
+            }
 
-    public int GetCurrentHealth()
-    {
-        return currentHP;
-    }
+            yield return new WaitForSeconds(0.5f);
+        }
 
-    public int GetMaxHealth()
-    {
-        return maxHP;
-    }
+        public void Attack(Character target, int attackDamage)
+        {
+            FindObjectOfType<BattleMessages>().UpdateMessage("Dealt " + attackDamage + " damage to " + target.GetCharacterName() + "!");
+            target.StartCoroutine("TakeDamage", attackDamage);
+            //TODO make the damage more varied, and also have it influenced by correct button input timing
+        }
 
-    public int GetAttack()
-    {
-        return attack;
-    }
+        public void Heal(Character target, int healthRestored)
+        {
+            FindObjectOfType<BattleMessages>().UpdateMessage(target.GetCharacterName() + " has regained " + healthRestored + " hit points!");
+            target.StartCoroutine("GainHealth", healthRestored);
+        }
 
-    public int GetDefence()
-    {
-        return defence;
-    }
+        protected virtual void KillCharacter()
+        {
+            Debug.Log("This message should not appear!");
+        }
 
-    public int GetMagicAttack()
-    {
-        return magicAttack;
-    }
+        public int GetID()
+        {
+            return ID;
+        }
 
-    public int GetMagicDefence()
-    {
-        return magicDefence;
-    }
+        public string GetCharacterName()
+        {
+            return characterName;
+        }
 
-    public int GetSpeed()
-    {
-        return speed;
-    }
+        public int GetCurrentHealth()
+        {
+            return currentHP;
+        }
 
-    public Sprite GetSprite()
-    {
-        return characterSprite;
-    }
+        public int GetMaxHealth()
+        {
+            return maxHP;
+        }
 
-    public bool IsPlayer()
-    {
-        return isPlayer;
+        public int GetAttack()
+        {
+            return attack;
+        }
+
+        public int GetDefence()
+        {
+            return defence;
+        }
+
+        public int GetMagicAttack()
+        {
+            return magicAttack;
+        }
+
+        public int GetMagicDefence()
+        {
+            return magicDefence;
+        }
+
+        public int GetSpeed()
+        {
+            return speed;
+        }
+
+        public Sprite GetSprite()
+        {
+            return characterSprite;
+        }
+
+        public bool IsPlayer()
+        {
+            return isPlayer;
+        }
     }
 }

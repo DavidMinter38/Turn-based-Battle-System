@@ -1,147 +1,156 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BattleSystem.Gameplay;
+using BattleSystem.Data;
+using BattleSystem.Interface;
 
-public enum EnemyState
+namespace BattleSystem.Characters
 {
-    Neutral,
-    Aggressive,
-    Finishing,
-    Defensive
-}
-
-public class Enemy : Character
-{
-    [SerializeField]
-    int enemyID; //If we are having multiple types of enemies, this will allow us to figure out what type of enemy it is.  Note that the enemyID is not the same as the character ID
-
-    bool canHeal;
-
-    int targetID = -1; //Remembers the next target
-
-    public EnemyState enemyState;
-
-    // Start is called before the first frame update
-    void Start()
+    public enum EnemyState
     {
-        isPlayer = false;
-        enemyState = EnemyState.Neutral;
-
-        GameData.EnemyStats enemyStats = FindObjectOfType<GameData>().GetEnemyStats(enemyID);
-        characterName = enemyStats.enemyName;
-        currentHP = enemyStats.currentHP;
-        maxHP = enemyStats.maxHP;
-        attack = enemyStats.attack;
-        defence = enemyStats.defence;
-        magicAttack = enemyStats.magicAttack;
-        magicDefence = enemyStats.magicDefence;
-        speed = enemyStats.speed;
-        canHeal = enemyStats.canHeal;
-        characterSprite = enemyStats.enemySprite;
-
-        this.GetComponent<SpriteRenderer>().sprite = characterSprite;
+        Neutral,
+        Aggressive,
+        Finishing,
+        Defensive
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-    private void ChangeState(EnemyState newState)
+    public class Enemy : Character
     {
-        enemyState = newState;
-    }
+        [SerializeField]
+        int enemyID; //If we are having multiple types of enemies, this will allow us to figure out what type of enemy it is.  Note that the enemyID is not the same as the character ID
 
-    protected override void KillCharacter()
-    {
-        FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has been destroyed!");
-        FindObjectOfType<GameManager>().RemoveEnemy(this.GetID());
-        Destroy(this.gameObject);
-    }
+        bool canHeal;
 
-    public void ObserveStatusOfBattle(Player[] players, Enemy[] enemies)
-    {
-        //Checks the health of the players and enemies in the battle, and updates its state accordingly
+        int targetID = -1; //Remembers the next target
 
-        //Check for defensive state
-        int lowestEnemyHealth = -1;
-        for (int i = 0; i < enemies.Length; i++)
+        public EnemyState enemyState;
+
+        // Start is called before the first frame update
+        void Start()
         {
-            if (enemies[i] != null)
-            {
-                int enemyHealth = enemies[i].GetCurrentHealth();
-                if (enemyHealth <= (enemies[i].GetMaxHealth() * 0.3) && canHeal)
-                {
-                    if (lowestEnemyHealth == -1 || lowestEnemyHealth >= enemyHealth)
-                    {
-                        targetID = enemies[i].GetID();
-                        lowestEnemyHealth = enemyHealth;
-                        ChangeState(EnemyState.Defensive);
-                    }
-                }
-            }
+            isPlayer = false;
+            enemyState = EnemyState.Neutral;
+
+            GameData.EnemyStats enemyStats = FindObjectOfType<GameData>().GetEnemyStats(enemyID);
+            characterName = enemyStats.enemyName;
+            currentHP = enemyStats.currentHP;
+            maxHP = enemyStats.maxHP;
+            attack = enemyStats.attack;
+            defence = enemyStats.defence;
+            magicAttack = enemyStats.magicAttack;
+            magicDefence = enemyStats.magicDefence;
+            speed = enemyStats.speed;
+            canHeal = enemyStats.canHeal;
+            characterSprite = enemyStats.enemySprite;
+
+            this.GetComponent<SpriteRenderer>().sprite = characterSprite;
         }
-        if(lowestEnemyHealth != -1) { return; }
 
-        //If the target that was drawing aggro from the enemy is unconscious, return to netural
-        if (enemyState == EnemyState.Aggressive)
+        // Update is called once per frame
+        void Update()
         {
-            for (int i = 0; i < players.Length; i++)
-            {
-                if(players[i].GetID() == targetID)
-                {
-                    if (!players[i].IsConscious())
-                    {
-                        ChangeState(EnemyState.Neutral);
-                    }
-                }
-            }
+
         }
-        //If in aggressive state, ignore all other conditions
-        //Check for finishing state
-        if (enemyState != EnemyState.Aggressive)
+
+        private void ChangeState(EnemyState newState)
         {
-            int currentPlayerTarget = -1;
-            for (int i = 0; i < players.Length; i++)
+            enemyState = newState;
+        }
+
+        protected override void KillCharacter()
+        {
+            FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has been destroyed!");
+            FindObjectOfType<GameManager>().RemoveEnemy(this.GetID());
+            Destroy(this.gameObject);
+        }
+
+        public void ObserveStatusOfBattle(Player[] players, Enemy[] enemies)
+        {
+            //Checks the health of the players and enemies in the battle, and updates its state accordingly
+
+            //Check for defensive state
+            int lowestEnemyHealth = -1;
+            for (int i = 0; i < enemies.Length; i++)
             {
-                if (players[i].IsConscious())
+                if (enemies[i] != null)
                 {
-                    if (players[i].GetCurrentHealth() <= (players[i].GetMaxHealth() * 0.1))
+                    int enemyHealth = enemies[i].GetCurrentHealth();
+                    if (enemyHealth <= (enemies[i].GetMaxHealth() * 0.3) && canHeal)
                     {
-                        if (currentPlayerTarget == -1){
-                            targetID = players[i].GetID();
-                            currentPlayerTarget = i;
-                        } else if ((players[i].GetCurrentHealth() + players[i].GetDefence()) < (players[currentPlayerTarget].GetCurrentHealth() + players[currentPlayerTarget].GetDefence()))
+                        if (lowestEnemyHealth == -1 || lowestEnemyHealth >= enemyHealth)
                         {
-                            targetID = players[i].GetID();
-                            currentPlayerTarget = i;
+                            targetID = enemies[i].GetID();
+                            lowestEnemyHealth = enemyHealth;
+                            ChangeState(EnemyState.Defensive);
                         }
-                        ChangeState(EnemyState.Finishing);
                     }
                 }
             }
-            if(currentPlayerTarget != -1) { return; }
+            if (lowestEnemyHealth != -1) { return; }
 
-            //Defaults back to neutral if no other criteria is fufilled
+            //If the target that was drawing aggro from the enemy is unconscious, return to netural
+            if (enemyState == EnemyState.Aggressive)
+            {
+                for (int i = 0; i < players.Length; i++)
+                {
+                    if (players[i].GetID() == targetID)
+                    {
+                        if (!players[i].IsConscious())
+                        {
+                            ChangeState(EnemyState.Neutral);
+                        }
+                    }
+                }
+            }
+            //If in aggressive state, ignore all other conditions
+            //Check for finishing state
+            if (enemyState != EnemyState.Aggressive)
+            {
+                int currentPlayerTarget = -1;
+                for (int i = 0; i < players.Length; i++)
+                {
+                    if (players[i].IsConscious())
+                    {
+                        if (players[i].GetCurrentHealth() <= (players[i].GetMaxHealth() * 0.1))
+                        {
+                            if (currentPlayerTarget == -1)
+                            {
+                                targetID = players[i].GetID();
+                                currentPlayerTarget = i;
+                            }
+                            else if ((players[i].GetCurrentHealth() + players[i].GetDefence()) < (players[currentPlayerTarget].GetCurrentHealth() + players[currentPlayerTarget].GetDefence()))
+                            {
+                                targetID = players[i].GetID();
+                                currentPlayerTarget = i;
+                            }
+                            ChangeState(EnemyState.Finishing);
+                        }
+                    }
+                }
+                if (currentPlayerTarget != -1) { return; }
+
+                //Defaults back to neutral if no other criteria is fufilled
+                ChangeState(EnemyState.Neutral);
+            }
+        }
+
+        public void MarkAttacker(int playerID)
+        {
+            targetID = playerID;
+            ChangeState(EnemyState.Aggressive);
+        }
+
+        public void ResetMarker()
+        {
+            targetID = -1;
             ChangeState(EnemyState.Neutral);
         }
-    }
 
-    public void MarkAttacker(int playerID)
-    {
-        targetID = playerID;
-        ChangeState(EnemyState.Aggressive);
-    }
-
-    public void ResetMarker()
-    {
-        targetID = -1;
-        ChangeState(EnemyState.Neutral);
-    }
-
-    public int GetAttackMarker()
-    {
-        return targetID;
+        public int GetAttackMarker()
+        {
+            return targetID;
+        }
     }
 }

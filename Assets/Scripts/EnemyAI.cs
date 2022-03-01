@@ -2,107 +2,110 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAI : MonoBehaviour
+namespace BattleSystem.Characters
 {
-
-    public int SelectTarget(Enemy attackingEnemy, Player[] players, Enemy[] enemies)
+    public class EnemyAI : MonoBehaviour
     {
-        //The AI will behave under the following conditions:
-        //If a player's hp is less than the enemy's attack-player's defence, the enemy will try to attack them
-        //Otherwise, if a player attacked them, attack the player in return (agro)
-        //Otherwise, attack the strongest player
-        int targetID = -1;
 
-        switch (attackingEnemy.enemyState)
+        public int SelectTarget(Enemy attackingEnemy, Player[] players, Enemy[] enemies)
         {
-            case EnemyState.Neutral:
-                targetID = NeutralState(targetID, players);
-                break;
-            case EnemyState.Aggressive:
-                targetID = AggressiveState(targetID, attackingEnemy, players);
-                break;
-            case EnemyState.Finishing:
-                targetID = FinishingState(targetID, attackingEnemy, players);
-                break;
-            case EnemyState.Defensive:
-                targetID = DefensiveState(targetID, attackingEnemy, enemies);
-                break;
-            default:
-                break;
-        }
+            //The AI will behave under the following conditions:
+            //If a player's hp is less than the enemy's attack-player's defence, the enemy will try to attack them
+            //Otherwise, if a player attacked them, attack the player in return (agro)
+            //Otherwise, attack the strongest player
+            int targetID = -1;
 
-        if (targetID == -1)
-        {
-            Debug.LogError("Enemy could not find a target.");
-        }
-
-        return targetID;
-    }
-
-    private int NeutralState(int targetID, Player[] players)
-    {
-        int highestHealthAndAttack = 0;
-        for (int i = 0; i < players.Length; i++)
-        {
-            if (players[i].IsConscious())
+            switch (attackingEnemy.enemyState)
             {
-                int playerHealthAndAttack = players[i].GetCurrentHealth() + players[i].GetAttack();
-                if (playerHealthAndAttack > highestHealthAndAttack)
-                {
-                    highestHealthAndAttack = playerHealthAndAttack;
-                    targetID = players[i].GetID();
-                }
+                case EnemyState.Neutral:
+                    targetID = NeutralState(targetID, players);
+                    break;
+                case EnemyState.Aggressive:
+                    targetID = AggressiveState(targetID, attackingEnemy, players);
+                    break;
+                case EnemyState.Finishing:
+                    targetID = FinishingState(targetID, attackingEnemy, players);
+                    break;
+                case EnemyState.Defensive:
+                    targetID = DefensiveState(targetID, attackingEnemy, enemies);
+                    break;
+                default:
+                    break;
             }
-        }
-        return targetID;
-    }
 
-    private int AggressiveState(int targetID, Enemy attackingEnemy, Player[] players)
-    {
-        for (int i = 0; i < players.Length; i++)
+            if (targetID == -1)
+            {
+                Debug.LogError("Enemy could not find a target.");
+            }
+
+            return targetID;
+        }
+
+        private int NeutralState(int targetID, Player[] players)
         {
-            if (players[i].GetID() == attackingEnemy.GetAttackMarker())
+            int highestHealthAndAttack = 0;
+            for (int i = 0; i < players.Length; i++)
             {
                 if (players[i].IsConscious())
                 {
-                    targetID = attackingEnemy.GetAttackMarker();
+                    int playerHealthAndAttack = players[i].GetCurrentHealth() + players[i].GetAttack();
+                    if (playerHealthAndAttack > highestHealthAndAttack)
+                    {
+                        highestHealthAndAttack = playerHealthAndAttack;
+                        targetID = players[i].GetID();
+                    }
                 }
             }
+            return targetID;
         }
-        attackingEnemy.ResetMarker();
-        return targetID;
-    }
 
-    private int FinishingState(int targetID, Enemy attackingEnemy, Player[] players)
-    {
-        //Similar to the Aggressive state, except the enemy does not revert back to a neutral state after attacking the player
-        for (int i = 0; i < players.Length; i++)
+        private int AggressiveState(int targetID, Enemy attackingEnemy, Player[] players)
         {
-            if (players[i].GetID() == attackingEnemy.GetAttackMarker())
+            for (int i = 0; i < players.Length; i++)
             {
-                if (players[i].IsConscious())
+                if (players[i].GetID() == attackingEnemy.GetAttackMarker())
                 {
-                    targetID = attackingEnemy.GetAttackMarker();
+                    if (players[i].IsConscious())
+                    {
+                        targetID = attackingEnemy.GetAttackMarker();
+                    }
                 }
             }
+            attackingEnemy.ResetMarker();
+            return targetID;
         }
-        return targetID;
-    }
 
-    private int DefensiveState(int targetID, Enemy attackingEnemy, Enemy[] enemies)
-    {
-        for( int i=0; i< enemies.Length; i++)
+        private int FinishingState(int targetID, Enemy attackingEnemy, Player[] players)
         {
-            if (enemies[i] != null)
+            //Similar to the Aggressive state, except the enemy does not revert back to a neutral state after attacking the player
+            for (int i = 0; i < players.Length; i++)
             {
-                if (enemies[i].GetID() == attackingEnemy.GetAttackMarker()) 
+                if (players[i].GetID() == attackingEnemy.GetAttackMarker())
                 {
-
-                    targetID = attackingEnemy.GetAttackMarker();
+                    if (players[i].IsConscious())
+                    {
+                        targetID = attackingEnemy.GetAttackMarker();
+                    }
                 }
             }
+            return targetID;
         }
-        return targetID;
+
+        private int DefensiveState(int targetID, Enemy attackingEnemy, Enemy[] enemies)
+        {
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                if (enemies[i] != null)
+                {
+                    if (enemies[i].GetID() == attackingEnemy.GetAttackMarker())
+                    {
+
+                        targetID = attackingEnemy.GetAttackMarker();
+                    }
+                }
+            }
+            return targetID;
+        }
     }
 }
 

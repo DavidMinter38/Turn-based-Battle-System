@@ -2,27 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Magic : MonoBehaviour
+namespace BattleSystem.Data
 {
-    [System.Serializable]
-    public struct MagicStats
+    public class Magic : MonoBehaviour
     {
-        public int magicID;
-        public string magicName;
-        public string magicDescription;
-        public int magicCost;
-        public int magicStrength;
-        public bool affectsAll;
-        public bool affectsPlayers;
-        public bool restores;
-        public bool affectsDead;
-    }
+        [System.Serializable]
+        public struct MagicStats
+        {
+            public int magicID;
+            public string magicName;
+            public string magicDescription;
+            public int magicCost;
+            public int magicStrength;
+            public bool affectsAll;
+            public bool affectsPlayers;
+            public bool restores;
+            public bool affectsDead;
+        }
 
-    [SerializeField]
-    MagicStats[] magicList;
+        [SerializeField]
+        MagicStats[] magicList;
 
-    public MagicStats GetMagicInfomation(int magicID)
-    {
-        return magicList[magicID];
+        public MagicStats GetMagicInfomation(int magicID)
+        {
+            return magicList[magicID];
+        }
     }
 }
