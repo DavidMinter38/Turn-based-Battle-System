@@ -66,6 +66,11 @@ namespace BattleSystem.Data
         [SerializeField]
         EnemyStats[] enemyTypes;
 
+        public EnemyStats[] GetEnemyTypes()
+        {
+            return enemyTypes;
+        }
+
         public PlayerStats GetPlayerStats(int playerID)
         {
             return playerList[playerID];

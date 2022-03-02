@@ -9,9 +9,17 @@ namespace BattleSystem.Gameplay
 {
     public class GameManager : MonoBehaviour
     {
+        [SerializeField]
         private Player[] players;
+
+        [SerializeField]
+        private GameObject[] playerSpawnPoints;
+
         private Enemy[] enemies;
+
         private Character[] characters;
+
+        GameData gameData;
 
         BattleState battleState = BattleState.Start;
 
@@ -26,16 +34,25 @@ namespace BattleSystem.Gameplay
         // Start is called before the first frame update
         void Start()
         {
-            //Find all players an enemies in the game.  If there are no players or enemies, send an error message.
-            players = FindObjectsOfType<Player>();
+            gameData = FindObjectOfType<GameData>();
+
+            //If there are no players, send an error message.
+            if (players.Length <= 0) { Debug.LogError("Could not find player characters."); }
+
+            for(int i=0; i < players.Length; i++)
+            {
+                GameData.PlayerStats currentPlayerStats = gameData.GetPlayerStats(players[i].GetPlayerID());
+                if (currentPlayerStats.isAvaliable)
+                {
+                    Player thePlayer = Instantiate(players[i], playerSpawnPoints[i].transform.position, Quaternion.identity);
+                    players[i] = thePlayer;
+                }
+            }
+
             enemies = FindObjectsOfType<Enemy>();
-            if (players.Length <= 0) { Debug.LogError("No player characters are active in the scene."); }
             if (enemies.Length <= 0) { Debug.LogError("No enemies are active in the scene."); }
 
             characters = FindObjectsOfType<Character>();
-
-            //Sort the players and enemies to form a turn track
-            SortCharacters();
 
             playerMenu = FindObjectOfType<PlayerBattleMenu>();
             if (playerMenu == null) { Debug.LogError("Player menu is not in the scene."); }
@@ -43,6 +60,9 @@ namespace BattleSystem.Gameplay
 
             targetMarker = FindObjectOfType<TargetMarker>();
             if (targetMarker == null) { Debug.LogError("Target marker is not in the scene."); }
+
+            //Sort the players and enemies to form a turn track
+            SortCharacters();
 
             CreateTrack();
         }
@@ -234,7 +254,7 @@ namespace BattleSystem.Gameplay
             {
                 attackingEnemy.ObserveStatusOfBattle(players, enemies);
                 int targetID = FindObjectOfType<EnemyAI>().SelectTarget(attackingEnemy, players, enemies);
-                if (attackingEnemy.enemyState == EnemyState.Defensive)
+                if (attackingEnemy.GetState() == EnemyState.Defensive)
                 {
                     FindObjectOfType<BattleMessages>().UpdateMessage(attackingEnemy.GetCharacterName() + " uses healing magic!");
                     Heal(targetID, false, attackingEnemy.GetMagicAttack());
@@ -489,6 +509,8 @@ namespace BattleSystem.Gameplay
                     counter++;
                 }
             }
+            //There should be at least one player alive, otherwise the game is over, so log an error if no players could be found
+            if(alivePlayers.Length <= 0) { Debug.LogError("Could not find any alive players."); }
             return alivePlayers;
         }
 

@@ -20,14 +20,11 @@ namespace BattleSystem.Interface
         [SerializeField]
         int playerHealthID;
 
-        [SerializeField]
-        Player thePlayer;
-
         int playerCurrentHealth, playerMaxHealth, playerCurrentMagic, playerMaxMagic;
         string playerName;
 
-        // Start is called before the first frame update
-        void Start()
+
+        public void LoadAttributes(Player thePlayer)
         {
             playerMagicSlider.gameObject.SetActive(thePlayer.CanUseMagic());
 
@@ -51,12 +48,6 @@ namespace BattleSystem.Interface
 
 
             playerNameText.text = playerName;
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         public void UpdateHealth(int newHealth)

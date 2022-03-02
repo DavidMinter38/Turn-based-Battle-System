@@ -25,7 +25,7 @@ namespace BattleSystem.Characters
 
         int targetID = -1; //Remembers the next target
 
-        public EnemyState enemyState;
+        EnemyState enemyState;
 
         // Start is called before the first frame update
         void Start()
@@ -151,6 +151,11 @@ namespace BattleSystem.Characters
         public int GetAttackMarker()
         {
             return targetID;
+        }
+
+        public EnemyState GetState()
+        {
+            return enemyState;
         }
     }
 }

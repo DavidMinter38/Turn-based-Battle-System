@@ -17,6 +17,7 @@ namespace BattleSystem.Characters
         bool knowsMagic;
         bool[] avaliableMagic;
 
+        bool isAvaliable = false;
         bool isConscious = true;
         bool isGuarding = false;
 
@@ -25,8 +26,11 @@ namespace BattleSystem.Characters
         PlayerHealthUI playerUI;
         float rateOfUIChange = 0.75f;
 
+        [SerializeField]
+        SpriteRenderer guardIcon;
+
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             isPlayer = true;
 
@@ -43,6 +47,7 @@ namespace BattleSystem.Characters
             speed = playerStats.speed;
             knowsMagic = playerStats.knowsMagic;
             avaliableMagic = playerStats.avaliableMagic;
+            isAvaliable = playerStats.isAvaliable;
             isConscious = playerStats.isConscious;
             characterSprite = playerStats.playerSprite;
             playerUI = playerStats.playerHealthUI;
@@ -53,6 +58,7 @@ namespace BattleSystem.Characters
             }
 
             this.GetComponent<SpriteRenderer>().sprite = characterSprite;
+            playerUI.LoadAttributes(this);
         }
 
         // Update is called once per frame
@@ -149,17 +155,21 @@ namespace BattleSystem.Characters
         {
             isGuarding = true;
             FindObjectOfType<GameManager>().NextTurn(true);
+            guardIcon.gameObject.SetActive(true);
             FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has got their guard up!");
         }
 
         public void FinishGuard()
         {
             isGuarding = false;
+            guardIcon.gameObject.SetActive(false);
         }
 
         protected override void KillCharacter()
         {
             FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has fallen!");
+            isGuarding = false;
+            guardIcon.gameObject.SetActive(false);
             isConscious = false;
             inCombat = false;
             FindObjectOfType<GameManager>().CreateTrack();
@@ -201,6 +211,11 @@ namespace BattleSystem.Characters
         public bool[] GetKnownMagic()
         {
             return avaliableMagic;
+        }
+
+        public bool IsAvaliable()
+        {
+            return isAvaliable;
         }
 
         public bool IsConscious()

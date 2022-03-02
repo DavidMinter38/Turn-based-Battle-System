@@ -15,7 +15,9 @@ namespace BattleSystem.Characters
             //Otherwise, attack the strongest player
             int targetID = -1;
 
-            switch (attackingEnemy.enemyState)
+            EnemyState state = attackingEnemy.GetState();
+
+            switch (state)
             {
                 case EnemyState.Neutral:
                     targetID = NeutralState(targetID, players);
