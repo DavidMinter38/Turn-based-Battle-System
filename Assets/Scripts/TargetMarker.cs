@@ -78,7 +78,7 @@ namespace BattleSystem.Interface
         {
             if (!inputPressed)
             {
-                if (Input.GetAxis("Horizontal") > 0)
+                if (Input.GetAxis("Horizontal") < 0)
                 {
                     inputPressed = true;
                     do
@@ -91,7 +91,7 @@ namespace BattleSystem.Interface
                     } while (targets[characterToTarget] == null);
 
                 }
-                if (Input.GetAxis("Horizontal") < 0)
+                if (Input.GetAxis("Horizontal") > 0)
                 {
                     inputPressed = true;
                     do

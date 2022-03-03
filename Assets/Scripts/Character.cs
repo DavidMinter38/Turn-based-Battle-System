@@ -79,6 +79,11 @@ namespace BattleSystem.Characters
             return ID;
         }
 
+        public void SetID (int newID)
+        {
+            ID = newID;
+        }
+
         public string GetCharacterName()
         {
             return characterName;

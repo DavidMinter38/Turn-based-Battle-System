@@ -13,9 +13,14 @@ namespace BattleSystem.Gameplay
         private Player[] players;
 
         [SerializeField]
-        private GameObject[] playerSpawnPoints;
+        private Enemy[] avaliableEnemies;
+
+        [SerializeField]
+        private GameObject[] playerSpawnPoints, enemySpawnPoints;
 
         private Enemy[] enemies;
+        int minEnemies = 2;
+        int maxEnemies = 6;
 
         private Character[] characters;
 
@@ -35,6 +40,7 @@ namespace BattleSystem.Gameplay
         void Start()
         {
             gameData = FindObjectOfType<GameData>();
+            int characterID = 0;
 
             //If there are no players, send an error message.
             if (players.Length <= 0) { Debug.LogError("Could not find player characters."); }
@@ -45,12 +51,23 @@ namespace BattleSystem.Gameplay
                 if (currentPlayerStats.isAvaliable)
                 {
                     Player thePlayer = Instantiate(players[i], playerSpawnPoints[i].transform.position, Quaternion.identity);
+                    thePlayer.SetID(characterID);
+                    characterID++;
                     players[i] = thePlayer;
                 }
             }
 
-            enemies = FindObjectsOfType<Enemy>();
-            if (enemies.Length <= 0) { Debug.LogError("No enemies are active in the scene."); }
+            //Create a random selection of enemies from a pool and spawn them into the scene
+            if (avaliableEnemies.Length <= 0) { Debug.LogError("No enemies are avaliable."); }
+
+            enemies = new Enemy[Random.Range(minEnemies, maxEnemies)];
+            for(int i=0; i<enemies.Length; i++)
+            {
+                Enemy theEnemy = Instantiate(avaliableEnemies[Random.Range(0, avaliableEnemies.Length)], enemySpawnPoints[i].transform.position, Quaternion.identity);
+                theEnemy.SetID(characterID);
+                characterID++;
+                enemies[i] = theEnemy;
+            }
 
             characters = FindObjectsOfType<Character>();
 
@@ -194,6 +211,7 @@ namespace BattleSystem.Gameplay
             NextTurn(true);
         }
 
+        //Sorts each character accoriding to their speed values.  This is done so that the turn order is not always the same.
         private void SortCharacters()
         {
             for (int i = 0; i < characters.Length; i++)
@@ -427,7 +445,7 @@ namespace BattleSystem.Gameplay
         public void CreateTrack()
         {
             ArrayList sprites = new ArrayList();
-            int counter = 0;
+            int counter = 0;  //Used so that only the characters that have not taken a turn this round are added to the track.
             foreach (TurnData listEntry in turnOrder)
             {
                 if (counter >= currentPlayerInTurn)

@@ -46,8 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 5
   characterName: 0
-  characterSprite: {fileID: 21300000, guid: 240e7b915e7c604438b43217585bf6b4, type: 3}
-  enemyID: 1
+  enemyID: 0
 --- !u!212 &532060829256262648
 SpriteRenderer:
   m_ObjectHideFlags: 0

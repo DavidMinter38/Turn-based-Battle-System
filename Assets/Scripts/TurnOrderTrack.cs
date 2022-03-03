@@ -32,7 +32,9 @@ namespace BattleSystem.Interface
             {
                 trackImages[trackCounter].sprite = sprite;
                 trackCounter++;
+                if(trackCounter >= trackImages.Length) { return; }
             }
+            //Any leftoverspaces in the track are left empty
             for (int i = trackCounter; i < trackImages.Length; i++)
             {
                 trackImages[i].sprite = emptySprite;

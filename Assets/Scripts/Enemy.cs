@@ -28,7 +28,7 @@ namespace BattleSystem.Characters
         EnemyState enemyState;
 
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             isPlayer = false;
             enemyState = EnemyState.Neutral;
