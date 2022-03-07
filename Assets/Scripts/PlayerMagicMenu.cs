@@ -258,7 +258,6 @@ namespace BattleSystem.Interface
                         }
                         targetMarker.DisplayMarker(true);
                         targetMarker.SetMagicInfomation((Magic.MagicStats)playerMagicInfomation[highlightedButton]);
-                        FindObjectOfType<GameManager>().SetStatePlayerSelectTarget();
                     }
                     else
                     {
@@ -266,7 +265,6 @@ namespace BattleSystem.Interface
                         targetMarker.SetEnemyTargets(FindObjectOfType<GameManager>().GetEnemies());
                         targetMarker.DisplayMarker(true);
                         targetMarker.SetMagicInfomation((Magic.MagicStats)playerMagicInfomation[highlightedButton]);
-                        FindObjectOfType<GameManager>().SetStatePlayerSelectTarget();
                     }
                     FindObjectOfType<PlayerBattleMenu>().HideBattleMenu();
                 }

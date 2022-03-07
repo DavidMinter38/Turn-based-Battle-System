@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using BattleSystem.Characters;
 
 namespace BattleSystem.Interface
 {
@@ -24,17 +23,17 @@ namespace BattleSystem.Interface
         string playerName;
 
 
-        public void LoadAttributes(Player thePlayer)
+        public void LoadAttributes(int iCurrentHP, int iMaxHP, int iCurrentMP, int iMaxMP, bool iUseMagic, string iName, Sprite iSprite)
         {
-            playerMagicSlider.gameObject.SetActive(thePlayer.CanUseMagic());
+            playerMagicSlider.gameObject.SetActive(iUseMagic);
 
             //Get values from player
-            playerCurrentHealth = thePlayer.GetCurrentHealth();
-            playerMaxHealth = thePlayer.GetMaxHealth();
-            playerCurrentMagic = thePlayer.GetCurrentMagic();
-            playerMaxMagic = thePlayer.GetMaxMagic();
-            playerName = thePlayer.GetCharacterName();
-            playerImage.sprite = thePlayer.GetSprite();
+            playerCurrentHealth = iCurrentHP;
+            playerMaxHealth = iMaxHP;
+            playerCurrentMagic = iCurrentMP;
+            playerMaxMagic = iMaxMP;
+            playerName = iName;
+            playerImage.sprite = iSprite;
 
             //Set up health slider
             playerHealthSlider.maxValue = playerMaxHealth;

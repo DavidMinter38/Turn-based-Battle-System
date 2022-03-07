@@ -58,7 +58,7 @@ namespace BattleSystem.Characters
             }
 
             this.GetComponent<SpriteRenderer>().sprite = characterSprite;
-            playerUI.LoadAttributes(this);
+            playerUI.LoadAttributes(currentHP, maxHP, currentMP, maxMP, knowsMagic, characterName, characterSprite);
         }
 
         // Update is called once per frame

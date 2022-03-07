@@ -40,6 +40,7 @@ namespace BattleSystem.Gameplay
         void Start()
         {
             gameData = FindObjectOfType<GameData>();
+            if(gameData == null) { Debug.LogError("Could not find game data."); }
             int characterID = 0;
 
             //If there are no players, send an error message.
@@ -71,6 +72,7 @@ namespace BattleSystem.Gameplay
 
             characters = FindObjectsOfType<Character>();
 
+            //Find the UI used in the battle
             playerMenu = FindObjectOfType<PlayerBattleMenu>();
             if (playerMenu == null) { Debug.LogError("Player menu is not in the scene."); }
             playerMenu.HideBattleMenu();
@@ -103,7 +105,7 @@ namespace BattleSystem.Gameplay
                             NextTurn(false);
                             return;
                         }
-                        if (!playerMenu.gameObject.activeInHierarchy && battleState != BattleState.PlayerTurnSelectTarget && battleState != BattleState.PlayerTurnAttack)
+                        if (!playerMenu.gameObject.activeInHierarchy && !targetMarker.gameObject.activeInHierarchy && battleState != BattleState.PlayerTurnAttack)
                         {
                             if (currentTurnPlayer.IsGuarding())
                             {
@@ -487,11 +489,6 @@ namespace BattleSystem.Gameplay
         public void SetStatePlayerSelectMove()
         {
             battleState = BattleState.PlayerTurnSelectMove;
-        }
-
-        public void SetStatePlayerSelectTarget()
-        {
-            battleState = BattleState.PlayerTurnSelectTarget;
         }
 
         public Player GetCurrentTurnPlayer()

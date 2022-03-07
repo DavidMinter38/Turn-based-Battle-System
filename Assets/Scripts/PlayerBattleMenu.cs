@@ -109,7 +109,6 @@ namespace BattleSystem.Interface
         {
             targetMarker.SetEnemyTargets(FindObjectOfType<GameManager>().GetEnemies());
             targetMarker.DisplayMarker(false);
-            FindObjectOfType<GameManager>().SetStatePlayerSelectTarget();
             HideBattleMenu();
         }
 
