@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BattleSystem.Gameplay;
 using BattleSystem.Data;
 using BattleSystem.Interface;
 
@@ -29,7 +28,6 @@ namespace BattleSystem.Characters
         [SerializeField]
         SpriteRenderer guardIcon;
 
-        // Start is called before the first frame update
         void Awake()
         {
             isPlayer = true;
@@ -59,12 +57,6 @@ namespace BattleSystem.Characters
 
             this.GetComponent<SpriteRenderer>().sprite = characterSprite;
             playerUI.LoadAttributes(currentHP, maxHP, currentMP, maxMP, knowsMagic, characterName, characterSprite);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         protected override IEnumerator GainHealth(int healthToRecover)
@@ -154,7 +146,6 @@ namespace BattleSystem.Characters
         public void UseGuard()
         {
             isGuarding = true;
-            FindObjectOfType<GameManager>().NextTurn(true);
             guardIcon.gameObject.SetActive(true);
             FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has got their guard up!");
         }
@@ -172,7 +163,6 @@ namespace BattleSystem.Characters
             guardIcon.gameObject.SetActive(false);
             isConscious = false;
             inCombat = false;
-            FindObjectOfType<GameManager>().CreateTrack();
             this.gameObject.transform.Rotate(new Vector3(0, 0, 90));
         }
 

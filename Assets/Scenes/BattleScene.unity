@@ -4494,7 +4494,6 @@ GameObject:
   - component: {fileID: 1278664937}
   - component: {fileID: 1278664936}
   - component: {fileID: 1278664938}
-  - component: {fileID: 1278664939}
   m_Layer: 0
   m_Name: Game Data
   m_TagString: Untagged
@@ -4700,18 +4699,6 @@ MonoBehaviour:
     affectsPlayers: 1
     restores: 1
     affectsDead: 0
---- !u!114 &1278664939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1278664935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2136003072293eb4983e782a61cdc647, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1294006157
 GameObject:
   m_ObjectHideFlags: 0

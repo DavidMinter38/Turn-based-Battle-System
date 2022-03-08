@@ -131,6 +131,7 @@ namespace BattleSystem.Interface
         private void SelectGuard()
         {
             FindObjectOfType<GameManager>().GetCurrentTurnPlayer().UseGuard();
+            FindObjectOfType<GameManager>().NextTurn(true);
             HideBattleMenu();
         }
 

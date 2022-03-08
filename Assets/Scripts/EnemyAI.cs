@@ -4,8 +4,93 @@ using UnityEngine;
 
 namespace BattleSystem.Characters
 {
+    public enum EnemyState
+    {
+        Neutral,
+        Aggressive,
+        Finishing,
+        Defensive
+    }
+
     public class EnemyAI : MonoBehaviour
     {
+        private EnemyState enemyState;
+        int targetID = -1; //Remembers the next target
+
+        void Start()
+        {
+            enemyState = EnemyState.Neutral;
+        }
+
+        public void ObserveStatusOfBattle(Enemy attackingEnemy, Player[] players, Enemy[] enemies)
+        {
+            //Checks the health of the players and enemies in the battle, and updates its state accordingly
+
+            //Check for defensive state
+            int lowestEnemyHealth = -1;
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                if (enemies[i] != null)
+                {
+                    int enemyHealth = enemies[i].GetCurrentHealth();
+                    if (enemyHealth <= (enemies[i].GetMaxHealth() * 0.3) && attackingEnemy.IsAbleToHeal())
+                    {
+                        if (lowestEnemyHealth == -1 || lowestEnemyHealth >= enemyHealth)
+                        {
+                            SetMarker(enemies[i].GetID());
+                            lowestEnemyHealth = enemyHealth;
+                            ChangeState(EnemyState.Defensive);
+                        }
+                    }
+                }
+            }
+            if (lowestEnemyHealth != -1) { return; }
+
+            //If the target that was drawing aggro from the enemy is unconscious, return to netural
+            if (GetState() == EnemyState.Aggressive)
+            {
+                for (int i = 0; i < players.Length; i++)
+                {
+                    if (players[i].GetID() == GetAttackMarker())
+                    {
+                        if (!players[i].IsConscious())
+                        {
+                            ChangeState(EnemyState.Neutral);
+                        }
+                    }
+                }
+            }
+            //If in aggressive state, ignore all other conditions
+            //Check for finishing state
+            if (GetState() != EnemyState.Aggressive)
+            {
+                int currentPlayerTarget = -1;
+                for (int i = 0; i < players.Length; i++)
+                {
+                    if (players[i].IsConscious())
+                    {
+                        if (players[i].GetCurrentHealth() <= (players[i].GetMaxHealth() * 0.1))
+                        {
+                            if (currentPlayerTarget == -1)
+                            {
+                                SetMarker(players[i].GetID());
+                                currentPlayerTarget = i;
+                            }
+                            else if ((players[i].GetCurrentHealth() + players[i].GetDefence()) < (players[currentPlayerTarget].GetCurrentHealth() + players[currentPlayerTarget].GetDefence()))
+                            {
+                                SetMarker(players[i].GetID());
+                                currentPlayerTarget = i;
+                            }
+                            ChangeState(EnemyState.Finishing);
+                        }
+                    }
+                }
+                if (currentPlayerTarget != -1) { return; }
+
+                //Defaults back to neutral if no other criteria is fufilled
+                ChangeState(EnemyState.Neutral);
+            }
+        }
 
         public int SelectTarget(Enemy attackingEnemy, Player[] players, Enemy[] enemies)
         {
@@ -15,7 +100,7 @@ namespace BattleSystem.Characters
             //Otherwise, attack the strongest player
             int targetID = -1;
 
-            EnemyState state = attackingEnemy.GetState();
+            EnemyState state = GetState();
 
             switch (state)
             {
@@ -65,15 +150,15 @@ namespace BattleSystem.Characters
         {
             for (int i = 0; i < players.Length; i++)
             {
-                if (players[i].GetID() == attackingEnemy.GetAttackMarker())
+                if (players[i].GetID() == GetAttackMarker())
                 {
                     if (players[i].IsConscious())
                     {
-                        targetID = attackingEnemy.GetAttackMarker();
+                        targetID = GetAttackMarker();
                     }
                 }
             }
-            attackingEnemy.ResetMarker();
+            ResetMarker();
             return targetID;
         }
 
@@ -82,11 +167,11 @@ namespace BattleSystem.Characters
             //Similar to the Aggressive state, except the enemy does not revert back to a neutral state after attacking the player
             for (int i = 0; i < players.Length; i++)
             {
-                if (players[i].GetID() == attackingEnemy.GetAttackMarker())
+                if (players[i].GetID() == GetAttackMarker())
                 {
                     if (players[i].IsConscious())
                     {
-                        targetID = attackingEnemy.GetAttackMarker();
+                        targetID = GetAttackMarker();
                     }
                 }
             }
@@ -99,14 +184,46 @@ namespace BattleSystem.Characters
             {
                 if (enemies[i] != null)
                 {
-                    if (enemies[i].GetID() == attackingEnemy.GetAttackMarker())
+                    if (enemies[i].GetID() == GetAttackMarker())
                     {
 
-                        targetID = attackingEnemy.GetAttackMarker();
+                        targetID = GetAttackMarker();
                     }
                 }
             }
             return targetID;
+        }
+
+        public void MarkAttacker(int playerID)
+        {
+            SetMarker(playerID);
+            ChangeState(EnemyState.Aggressive);
+        }
+
+        public void SetMarker(int newID)
+        {
+            targetID = newID;
+        }
+
+        public void ResetMarker()
+        {
+            targetID = -1;
+            ChangeState(EnemyState.Neutral);
+        }
+
+        public int GetAttackMarker()
+        {
+            return targetID;
+        }
+
+        public EnemyState GetState()
+        {
+            return enemyState;
+        }
+
+        public void ChangeState(EnemyState newState)
+        {
+            enemyState = newState;
         }
     }
 }

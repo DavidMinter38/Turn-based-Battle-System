@@ -166,7 +166,7 @@ namespace BattleSystem.Gameplay
             {
                 //Mark the player so that the enemy knows who to target
                 Enemy defendingEnemy = (Enemy)defendingCharacter;
-                defendingEnemy.MarkAttacker(currentTurnPlayerID);
+                defendingEnemy.GetAIComponent().MarkAttacker(currentTurnPlayerID);
             }
 
             if (!attackAll)
@@ -272,9 +272,8 @@ namespace BattleSystem.Gameplay
             Enemy attackingEnemy = (Enemy)GetCharacter(currentTurnPlayerID);
             if (attackingEnemy != null)
             {
-                attackingEnemy.ObserveStatusOfBattle(players, enemies);
-                int targetID = FindObjectOfType<EnemyAI>().SelectTarget(attackingEnemy, players, enemies);
-                if (attackingEnemy.GetState() == EnemyState.Defensive)
+                int targetID = attackingEnemy.DecideTarget(players, enemies);
+                if (attackingEnemy.GetAIComponent().GetState() == EnemyState.Defensive)
                 {
                     FindObjectOfType<BattleMessages>().UpdateMessage(attackingEnemy.GetCharacterName() + " uses healing magic!");
                     Heal(targetID, false, attackingEnemy.GetMagicAttack());
@@ -300,6 +299,18 @@ namespace BattleSystem.Gameplay
 
         public void NextTurn(bool startCooldown)
         {
+            //Remove any enemies from the scene that have 0 hit points
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                if (enemies[i] != null)
+                {
+                    if (!enemies[i].IsAlive())
+                    {
+                        RemoveEnemy(enemies[i].GetID());
+                    }
+                }
+            }
+
             //If no players are alive, game ends.
             if (!AnyAlivePlayers())
             {
@@ -322,6 +333,8 @@ namespace BattleSystem.Gameplay
                 //Round of combat has ended
                 NewRound();
             }
+
+            //The cooldown timer allows for a delay between each turn.  The timer is not used if a character is being skipped.
             if (startCooldown)
             {
                 cooldown = 1f;
@@ -411,6 +424,7 @@ namespace BattleSystem.Gameplay
                     int characterID = characters[i].GetID();
                     if (enemyID == characterID)
                     {
+                        Destroy(characters[i].gameObject);
                         characters[i] = null;
                     }
                 }
