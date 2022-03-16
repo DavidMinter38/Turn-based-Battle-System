@@ -213,6 +213,12 @@ namespace BattleSystem.Gameplay
             NextTurn(true);
         }
 
+        public void RevivePlayer(int playerID)
+        {
+            Player revivingPlayer = (Player)GetCharacter(playerID);
+            revivingPlayer.Revive();
+        }
+
         //Sorts each character accoriding to their speed values.  This is done so that the turn order is not always the same.
         private void SortCharacters()
         {
@@ -452,7 +458,7 @@ namespace BattleSystem.Gameplay
 
             if (AreThereEnemiesRemaining())
             {
-                targetMarker.SetEnemyTargets(enemies);
+                targetMarker.SetTargets(GetEnemyData());
             }
 
             CreateTrack();
@@ -500,11 +506,6 @@ namespace BattleSystem.Gameplay
             }
         }
 
-        public void SetStatePlayerSelectMove()
-        {
-            battleState = BattleState.PlayerTurnSelectMove;
-        }
-
         public Player GetCurrentTurnPlayer()
         {
             if ((turnOrder[currentPlayerInTurn] as TurnData).IsPlayer())
@@ -526,15 +527,15 @@ namespace BattleSystem.Gameplay
             return players;
         }
 
-        public Player[] GetAlivePlayers()
+        public TargetData[] GetAlivePlayers()
         {
-            Player[] alivePlayers = new Player[players.Length];
+            TargetData[] alivePlayers = new TargetData[players.Length];
             int counter = 0;
             for (int i = 0; i < players.Length; i++)
             {
                 if (players[i].IsConscious())
                 {
-                    alivePlayers[counter] = players[i];
+                    alivePlayers[counter] = new TargetData(new Vector3(players[i].transform.position.x, players[i].transform.position.y, players[i].transform.position.z), players[i].GetID(), players[i].GetCharacterName(), players[i].IsPlayer());
                     counter++;
                 }
             }
@@ -543,24 +544,32 @@ namespace BattleSystem.Gameplay
             return alivePlayers;
         }
 
-        public Player[] GetUnconsciousPlayers()
+        public TargetData[] GetUnconsciousPlayers()
         {
-            Player[] unconsciousPlayers = new Player[players.Length];
+            TargetData[] unconsciousPlayers = new TargetData[players.Length];
             int counter = 0;
             for (int i = 0; i < players.Length; i++)
             {
                 if (!players[i].IsConscious())
                 {
-                    unconsciousPlayers[counter] = players[i];
+                    unconsciousPlayers[counter] = new TargetData(new Vector3(players[i].transform.position.x, players[i].transform.position.y, players[i].transform.position.z), players[i].GetID(), players[i].GetCharacterName(), players[i].IsPlayer()); ;
                     counter++;
                 }
             }
             return unconsciousPlayers;
         }
 
-        public Enemy[] GetEnemies()
+        public TargetData[] GetEnemyData()
         {
-            return enemies;
+            TargetData[] enemyData = new TargetData[enemies.Length];
+            for(int i=0; i<enemies.Length; i++)
+            {
+                if(enemies[i] != null)
+                {
+                    enemyData[i] = new TargetData(new Vector3(enemies[i].transform.position.x, enemies[i].transform.position.y, enemies[i].transform.position.z), enemies[i].GetID(), enemies[i].GetCharacterName(), enemies[i].IsPlayer());
+                }
+            }
+            return enemyData;
         }
 
         private bool AnyAlivePlayers()

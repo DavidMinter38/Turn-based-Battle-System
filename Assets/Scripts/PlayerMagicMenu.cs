@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using BattleSystem.Gameplay;
-using BattleSystem.Characters;
 using BattleSystem.Data;
 
 namespace BattleSystem.Interface
@@ -161,8 +160,8 @@ namespace BattleSystem.Interface
 
         private void GetMagicInfomation()
         {
-            Player currentPlayer = FindObjectOfType<GameManager>().GetCurrentTurnPlayer();
-            knownMagic = currentPlayer.GetKnownMagic();
+            knownMagic = FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetKnownMagic();
+            int playerMagicAmount = FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCurrentMagic();
             numberOfAvaliableMagic = 0;
             for (int i = 0; i < knownMagic.Length; i++)
             {
@@ -179,7 +178,7 @@ namespace BattleSystem.Interface
                     {
                         Debug.LogError("Not enough magic buttons in the menu.");
                     }
-                    if (magic.magicCost > currentPlayer.GetCurrentMagic())
+                    if (magic.magicCost > playerMagicAmount)
                     {
                         //Indicate that the player does not have enough mp to use the magic
                         magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().color = new Color(1f, 0.5f, 0.5f);
@@ -250,11 +249,11 @@ namespace BattleSystem.Interface
                         //Set up the target marker so that only players can be selected
                         if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsDead)
                         {
-                            targetMarker.SetPlayerTargets(FindObjectOfType<GameManager>().GetUnconsciousPlayers());
+                            targetMarker.SetTargets(FindObjectOfType<GameManager>().GetUnconsciousPlayers());
                         }
                         else
                         {
-                            targetMarker.SetPlayerTargets(FindObjectOfType<GameManager>().GetAlivePlayers());
+                            targetMarker.SetTargets(FindObjectOfType<GameManager>().GetAlivePlayers());
                         }
                         targetMarker.DisplayMarker(true);
                         targetMarker.SetMagicInfomation((Magic.MagicStats)playerMagicInfomation[highlightedButton]);
@@ -262,7 +261,7 @@ namespace BattleSystem.Interface
                     else
                     {
                         //Set up the target marker to target enemies as usual
-                        targetMarker.SetEnemyTargets(FindObjectOfType<GameManager>().GetEnemies());
+                        targetMarker.SetTargets(FindObjectOfType<GameManager>().GetEnemyData());
                         targetMarker.DisplayMarker(true);
                         targetMarker.SetMagicInfomation((Magic.MagicStats)playerMagicInfomation[highlightedButton]);
                     }

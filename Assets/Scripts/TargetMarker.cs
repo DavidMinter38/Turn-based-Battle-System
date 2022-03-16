@@ -3,11 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using BattleSystem.Gameplay;
-using BattleSystem.Characters;
 using BattleSystem.Data;
 
 namespace BattleSystem.Interface
 {
+    //Contains data on the targets
+    public class TargetData
+    {
+        protected Vector3 targetLocation;
+        protected int targetID;
+        protected string targetName;
+        protected bool isPlayer;
+
+        public TargetData(Vector3 iTargetLocation, int iTargetID, string iTargetName, bool iIsPlayer)
+        {
+            targetLocation = iTargetLocation;
+            targetID = iTargetID;
+            targetName = iTargetName;
+            isPlayer = iIsPlayer;
+        }
+
+        public Vector3 GetLocation()
+        {
+            return targetLocation;
+        }
+
+        public int GetTargetID()
+        {
+            return targetID;
+        }
+
+        public string GetTargetName()
+        {
+            return targetName;
+        }
+
+        public bool IsTargetPlayer()
+        {
+            return isPlayer;
+        }
+    }
+
     public class TargetMarker : MonoBehaviour
     {
         [SerializeField]
@@ -16,7 +52,7 @@ namespace BattleSystem.Interface
         [SerializeField]
         Text targetName;
 
-        Character[] targets;
+        TargetData[] targets;
         int characterToTarget = 0;
         float distanceAboveTarget = 1.5f;
         bool inputPressed = false;
@@ -27,7 +63,7 @@ namespace BattleSystem.Interface
         // Start is called before the first frame update
         void Start()
         {
-            targets = FindObjectOfType<GameManager>().GetEnemies();
+            targets = FindObjectOfType<GameManager>().GetEnemyData();
             if (targets == null) { Debug.LogError("No enemies are active in the scene."); }
 
             SetTarget();
@@ -42,25 +78,16 @@ namespace BattleSystem.Interface
             Cancel();
         }
 
-        private void OnEnable()
-        {
-
-        }
-
-        private void OnDisable()
-        {
-
-        }
-
         private void SetTarget()
         {
             if (targets[characterToTarget] == null)
             {
                 FindNewTarget();
             }
-            Vector3 targetMarkerPosition = new Vector3(targets[characterToTarget].transform.position.x, targets[characterToTarget].transform.position.y + distanceAboveTarget, 0);
+            Vector3 targetMarkerPosition = targets[characterToTarget].GetLocation();
+            targetMarkerPosition.y += distanceAboveTarget;
             transform.position = targetMarkerPosition;
-            targetName.text = targets[characterToTarget].GetCharacterName();
+            targetName.text = targets[characterToTarget].GetTargetName();
         }
 
         private void FindNewTarget()
@@ -121,21 +148,20 @@ namespace BattleSystem.Interface
                     FindObjectOfType<BattleMessages>().UpdateMessage(FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCharacterName() + " casts " + (selectedMagic.magicName + "!"));
                     if (selectedMagic.restores)
                     {
-                        if (selectedMagic.affectsDead && targets[characterToTarget].IsPlayer())
+                        if (selectedMagic.affectsDead && targets[characterToTarget].IsTargetPlayer())
                         {
-                            Player targetToRevive = (Player)targets[characterToTarget];
-                            targetToRevive.Revive();
+                            FindObjectOfType<GameManager>().RevivePlayer(targets[characterToTarget].GetTargetID());
                         }
-                        FindObjectOfType<GameManager>().Heal(targets[characterToTarget].GetID(), false, selectedMagic.magicStrength);
+                        FindObjectOfType<GameManager>().Heal(targets[characterToTarget].GetTargetID(), false, selectedMagic.magicStrength);
                     }
                     else
                     {
-                        FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetID(), false, true, selectedMagic.magicStrength);
+                        FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetTargetID(), false, true, selectedMagic.magicStrength);
                     }
                 }
                 else
                 {
-                    FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetID(), false, false, 0);
+                    FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetTargetID(), false, false, 0);
                 }
                 HideMarker();
             }
@@ -146,7 +172,6 @@ namespace BattleSystem.Interface
             if (Input.GetButtonDown("Cancel"))
             {
                 playerMenu.DisplayBattleMenu();
-                FindObjectOfType<GameManager>().SetStatePlayerSelectMove();
                 HideMarker();
             }
         }
@@ -174,14 +199,7 @@ namespace BattleSystem.Interface
             this.gameObject.SetActive(false);
         }
 
-        public void SetPlayerTargets(Player[] newTargets)
-        {
-            targets = newTargets;
-            characterToTarget = 0;
-            SetTarget();
-        }
-
-        public void SetEnemyTargets(Enemy[] newTargets)
+        public void SetTargets(TargetData[] newTargets)
         {
             //Updates the avalaible targets
             targets = newTargets;
