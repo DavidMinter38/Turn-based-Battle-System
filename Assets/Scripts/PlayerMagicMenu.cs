@@ -23,6 +23,7 @@ namespace BattleSystem.Interface
 
         int highlightedButton = 0;
         bool inputPressed = false;
+        bool buttonSelected = false;  //Used so that the UI manager can tell if a button has been pressed.
 
         bool[] knownMagic;
         ArrayList playerMagicInfomation = new ArrayList();
@@ -35,7 +36,6 @@ namespace BattleSystem.Interface
         // Start is called before the first frame update
         void Start()
         {
-
         }
 
         // Update is called once per frame
@@ -68,25 +68,7 @@ namespace BattleSystem.Interface
                     }
                     if (highlightedButton < 0)
                     {
-                        highlightedButton = playerMagicInfomation.Count - 1;
-                        downArrow.gameObject.SetActive(false);
-                        if (playerMagicInfomation.Count > maxMagicDisplayed)
-                        {
-                            lowestViewableButton = playerMagicInfomation.Count - maxMagicDisplayed;
-                            highestViewableButton = playerMagicInfomation.Count - 1;
-                            upArrow.gameObject.SetActive(true);
-                        }
-                        for (int i = 0; i < magicButtons.Length; i++)
-                        {
-                            if (i <= playerMagicInfomation.Count - 1 && i >= lowestViewableButton)
-                            {
-                                magicButtons[i].gameObject.SetActive(true);
-                            }
-                            else
-                            {
-                                magicButtons[i].gameObject.SetActive(false);
-                            }
-                        }
+                        GoToBottom();
                     }
                 }
                 if (Input.GetAxis("Vertical") < 0)
@@ -107,25 +89,7 @@ namespace BattleSystem.Interface
                     }
                     if (highlightedButton > playerMagicInfomation.Count - 1)
                     {
-                        highlightedButton = 0;
-                        lowestViewableButton = 0;
-                        upArrow.gameObject.SetActive(false);
-                        if (playerMagicInfomation.Count > maxMagicDisplayed)
-                        {
-                            highestViewableButton = 3;
-                            downArrow.gameObject.SetActive(true);
-                        }
-                        for (int i = 0; i < magicButtons.Length; i++)
-                        {
-                            if (i < maxMagicDisplayed && i <= playerMagicInfomation.Count - 1)
-                            {
-                                magicButtons[i].gameObject.SetActive(true);
-                            }
-                            else
-                            {
-                                magicButtons[i].gameObject.SetActive(false);
-                            }
-                        }
+                        GoToTop();
                     }
                 }
                 SetUI();
@@ -136,10 +100,59 @@ namespace BattleSystem.Interface
             }
         }
 
+        //Scroll to the top of the magic list
+        private void GoToTop()
+        {
+            highlightedButton = 0;
+            lowestViewableButton = 0;
+            upArrow.gameObject.SetActive(false);
+            if (playerMagicInfomation.Count > maxMagicDisplayed)
+            {
+                highestViewableButton = 3;
+                downArrow.gameObject.SetActive(true);
+            }
+            for (int i = 0; i < magicButtons.Length; i++)
+            {
+                if (i < maxMagicDisplayed && i <= playerMagicInfomation.Count - 1)
+                {
+                    magicButtons[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    magicButtons[i].gameObject.SetActive(false);
+                }
+            }
+        }
+
+        //Scroll to the bottom of the magic list
+        private void GoToBottom()
+        {
+            highlightedButton = playerMagicInfomation.Count - 1;
+            downArrow.gameObject.SetActive(false);
+            if (playerMagicInfomation.Count > maxMagicDisplayed)
+            {
+                lowestViewableButton = playerMagicInfomation.Count - maxMagicDisplayed;
+                highestViewableButton = playerMagicInfomation.Count - 1;
+                upArrow.gameObject.SetActive(true);
+            }
+            for (int i = 0; i < magicButtons.Length; i++)
+            {
+                if (i <= playerMagicInfomation.Count - 1 && i >= lowestViewableButton)
+                {
+                    magicButtons[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    magicButtons[i].gameObject.SetActive(false);
+                }
+            }
+        }
+
         private void OnEnable()
         {
             playerMagicInfomation.Clear();
             GetMagicInfomation();
+            GoToTop();
         }
 
         private void SetUI()
@@ -182,6 +195,9 @@ namespace BattleSystem.Interface
                     {
                         //Indicate that the player does not have enough mp to use the magic
                         magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().color = new Color(1f, 0.5f, 0.5f);
+                    } else
+                    {
+                        magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().color = new Color(0f, 0f, 0f);
                     }
                     numberOfAvaliableMagic++;
                 }
@@ -222,6 +238,7 @@ namespace BattleSystem.Interface
         {
             if (Input.GetButtonDown("Submit"))
             {
+                buttonSelected = true;
                 //The player needs enough MP in order to use the magic
                 if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost <= FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCurrentMagic())
                 {
@@ -276,6 +293,16 @@ namespace BattleSystem.Interface
             {
                 FindObjectOfType<PlayerBattleMenu>().HideMagicMenu();
             }
+        }
+
+        public bool IsButtonSelected()
+        {
+            return buttonSelected;
+        }
+
+        public void ButtonConfirmed()
+        {
+            buttonSelected = false;
         }
     }
 }

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using BattleSystem.Gameplay;
 
 namespace BattleSystem.Interface
 {
@@ -19,15 +18,14 @@ namespace BattleSystem.Interface
 
         int highlightedButton = 0;
         bool inputPressed = false;
-        bool menuDisabled = false;
+        bool menuDisabled = false; //Used to prevent the player from navigating through both the battle menu and the magic menu at the same time
+        bool buttonSelected = false;  //Used so that the UI manager can tell if a button has been pressed.
 
-        // Start is called before the first frame update
         void Start()
         {
             SetUI();
         }
 
-        // Update is called once per frame
         void Update()
         {
             UpdateSelection();
@@ -83,42 +81,7 @@ namespace BattleSystem.Interface
         {
             if (Input.GetButtonDown("Submit"))
             {
-                switch (highlightedButton)
-                {
-                    case 0:
-                        //Attack
-                        SelectTarget();
-                        break;
-                    case 1:
-                        //Magic
-                        OpenMagicMenu();
-                        break;
-                    case 2:
-                        //Guard
-                        SelectGuard();
-                        break;
-                    case 3:
-                        //Flee
-                        SelectFlee();
-                        break;
-                }
-            }
-        }
-
-        private void SelectTarget()
-        {
-            targetMarker.SetTargets(FindObjectOfType<GameManager>().GetEnemyData());
-            targetMarker.DisplayMarker(false);
-            HideBattleMenu();
-        }
-
-        private void OpenMagicMenu()
-        {
-            //Can only use if the character knows magic
-            if (FindObjectOfType<GameManager>().GetCurrentTurnPlayer().CanUseMagic())
-            {
-                magicMenu.gameObject.SetActive(true);
-                menuDisabled = true;
+                buttonSelected = true;
             }
         }
 
@@ -128,29 +91,54 @@ namespace BattleSystem.Interface
             menuDisabled = false;
         }
 
-        private void SelectGuard()
-        {
-            FindObjectOfType<GameManager>().GetCurrentTurnPlayer().UseGuard();
-            FindObjectOfType<GameManager>().NextTurn(true);
-            HideBattleMenu();
-        }
-
-        private void SelectFlee()
-        {
-            FindObjectOfType<GameManager>().AttemptEscape();
-            HideBattleMenu();
-        }
-
         public void DisplayBattleMenu()
         {
             this.gameObject.SetActive(true);
             magicMenu.gameObject.SetActive(false);
             highlightedButton = 0;
+            menuDisabled = false;
         }
 
         public void HideBattleMenu()
         {
             this.gameObject.SetActive(false);
+        }
+
+        public void SetMagicButtonText(bool canUseMagic)
+        {
+            if (canUseMagic)
+            {
+                buttons[1].GetComponentInChildren<Text>().color = new Color(0f, 0f, 0f);
+            }
+            else
+            {
+                buttons[1].GetComponentInChildren<Text>().color = new Color(1f, 0.5f, 0.5f);
+            }
+        }
+
+        public int GetHighlightedButton()
+        {
+            return highlightedButton;
+        }
+
+        public void ResetHighlightedButton()
+        {
+            highlightedButton = 0;
+        }
+
+        public void DisableMenu()
+        {
+            menuDisabled = true;
+        }
+
+        public bool IsButtonSelected()
+        {
+            return buttonSelected;
+        }
+
+        public void ButtonConfirmed()
+        {
+            buttonSelected = false;
         }
 
     }

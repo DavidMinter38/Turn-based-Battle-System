@@ -60,17 +60,11 @@ namespace BattleSystem.Interface
         Magic.MagicStats selectedMagic;
         bool isUsingMagic;
 
-        // Start is called before the first frame update
         void Start()
         {
-            targets = FindObjectOfType<GameManager>().GetEnemyData();
-            if (targets == null) { Debug.LogError("No enemies are active in the scene."); }
-
-            SetTarget();
-            this.gameObject.SetActive(false);
+            HideMarker();
         }
 
-        // Update is called once per frame
         void Update()
         {
             UpdateSelection();

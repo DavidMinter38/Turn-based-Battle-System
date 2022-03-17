@@ -31,8 +31,8 @@ namespace BattleSystem.Gameplay
         ArrayList turnOrder = new ArrayList();
         int currentPlayerInTurn = 0;
 
-        PlayerBattleMenu playerMenu;
-        TargetMarker targetMarker;
+        PlayerUIManager playerUI;
+        BattleMessages battleMessegner;
 
         float cooldown = 0f;
 
@@ -73,12 +73,11 @@ namespace BattleSystem.Gameplay
             characters = FindObjectsOfType<Character>();
 
             //Find the UI used in the battle
-            playerMenu = FindObjectOfType<PlayerBattleMenu>();
-            if (playerMenu == null) { Debug.LogError("Player menu is not in the scene."); }
-            playerMenu.HideBattleMenu();
-
-            targetMarker = FindObjectOfType<TargetMarker>();
-            if (targetMarker == null) { Debug.LogError("Target marker is not in the scene."); }
+            playerUI = FindObjectOfType<PlayerUIManager>();
+            if (playerUI == null) { Debug.LogError("Could not find Player UI Manager."); }
+            playerUI.HideBattleMenu();
+            battleMessegner = FindObjectOfType<BattleMessages>();
+            if (battleMessegner == null) { Debug.LogError("Could not find Battle Messenger."); }
 
             //Sort the players and enemies to form a turn track
             SortCharacters();
@@ -105,15 +104,15 @@ namespace BattleSystem.Gameplay
                             NextTurn(false);
                             return;
                         }
-                        if (!playerMenu.gameObject.activeInHierarchy && !targetMarker.gameObject.activeInHierarchy && battleState != BattleState.PlayerTurnAttack)
+                        if (!playerUI.BattleMenuActive() && !playerUI.TargetMarkerActive() && battleState != BattleState.PlayerTurnAttack)
                         {
                             if (currentTurnPlayer.IsGuarding())
                             {
                                 currentTurnPlayer.FinishGuard();
                             }
-                            playerMenu.DisplayBattleMenu();
+                            playerUI.DisplayBattleMenu(currentTurnPlayer);
                             battleState = BattleState.PlayerTurnSelectMove;
-                            FindObjectOfType<BattleMessages>().UpdateMessage("It's " + GetCurrentTurnPlayer().GetCharacterName() + "'s turn!");
+                            battleMessegner.UpdateMessage("It's " + GetCurrentTurnPlayer().GetCharacterName() + "'s turn!");
                         }
                     }
                     else
@@ -142,7 +141,7 @@ namespace BattleSystem.Gameplay
             }
             else
             {
-                FindObjectOfType<BattleMessages>().UpdateMessage(attackingCharacter.GetCharacterName() + " attacks!");
+                battleMessegner.UpdateMessage(attackingCharacter.GetCharacterName() + " attacks!");
                 //Check if attacking a guarding player
                 if (defendingCharacter.IsPlayer())
                 {
@@ -281,7 +280,7 @@ namespace BattleSystem.Gameplay
                 int targetID = attackingEnemy.DecideTarget(players, enemies);
                 if (attackingEnemy.GetAIComponent().GetState() == EnemyState.Defensive)
                 {
-                    FindObjectOfType<BattleMessages>().UpdateMessage(attackingEnemy.GetCharacterName() + " uses healing magic!");
+                    battleMessegner.UpdateMessage(attackingEnemy.GetCharacterName() + " uses healing magic!");
                     Heal(targetID, false, attackingEnemy.GetMagicAttack());
                 }
                 else
@@ -389,13 +388,13 @@ namespace BattleSystem.Gameplay
             float randomNumber = Random.Range(0f, 1f);
             if (randomNumber > percentageOfEscape)
             {
-                FindObjectOfType<BattleMessages>().UpdateMessage("Escaped successfully!");
+                battleMessegner.UpdateMessage("Escaped successfully!");
                 battleState = BattleState.Victory;
                 EndBattle();
             }
             else
             {
-                FindObjectOfType<BattleMessages>().UpdateMessage("You couldn't escape!");
+                battleMessegner.UpdateMessage("You couldn't escape!");
                 NextTurn(true);
             }
         }
@@ -403,21 +402,21 @@ namespace BattleSystem.Gameplay
         public void Victory()
         {
             battleState = BattleState.Victory;
-            FindObjectOfType<BattleMessages>().UpdateMessage("You win!");
+            battleMessegner.UpdateMessage("You win!");
             EndBattle();
         }
 
         public void GameOver()
         {
             battleState = BattleState.Defeat;
-            FindObjectOfType<BattleMessages>().UpdateMessage("Game over.");
+            battleMessegner.UpdateMessage("Game over.");
             EndBattle();
         }
 
         private void EndBattle()
         {
-            playerMenu.gameObject.SetActive(false);
-            targetMarker.gameObject.SetActive(false);
+            playerUI.HideBattleMenu();
+            playerUI.HideTargetMarker();
         }
 
         public void RemoveEnemy(int enemyID)
@@ -458,7 +457,7 @@ namespace BattleSystem.Gameplay
 
             if (AreThereEnemiesRemaining())
             {
-                targetMarker.SetTargets(GetEnemyData());
+                playerUI.GetTargetMarker().SetTargets(GetEnemyData());
             }
 
             CreateTrack();
