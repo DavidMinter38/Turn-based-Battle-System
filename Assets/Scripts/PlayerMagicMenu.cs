@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using BattleSystem.Gameplay;
-using BattleSystem.Data;
 
 namespace BattleSystem.Interface
 {
@@ -25,10 +23,10 @@ namespace BattleSystem.Interface
         bool inputPressed = false;
         bool buttonSelected = false;  //Used so that the UI manager can tell if a button has been pressed.
 
-        bool[] knownMagic;
-        ArrayList playerMagicInfomation = new ArrayList();
         int numberOfAvaliableMagic;
         int maxMagicDisplayed = 4;
+        string[] magicCosts;
+        string[] magicDescryptions;
 
         int lowestViewableButton = 0;
         int highestViewableButton = 3;
@@ -54,7 +52,7 @@ namespace BattleSystem.Interface
                 {
                     inputPressed = true;
                     highlightedButton--;
-                    if (highlightedButton < lowestViewableButton && highlightedButton >= 0 && playerMagicInfomation.Count > maxMagicDisplayed)
+                    if (highlightedButton < lowestViewableButton && highlightedButton >= 0 && numberOfAvaliableMagic > maxMagicDisplayed)
                     {
                         magicButtons[highestViewableButton].gameObject.SetActive(false);
                         magicButtons[highlightedButton].gameObject.SetActive(true);
@@ -82,12 +80,12 @@ namespace BattleSystem.Interface
                         lowestViewableButton++;
                         highestViewableButton++;
                         upArrow.gameObject.SetActive(true);
-                        if (highlightedButton == playerMagicInfomation.Count - 1)
+                        if (highlightedButton == numberOfAvaliableMagic - 1)
                         {
                             downArrow.gameObject.SetActive(false);
                         }
                     }
-                    if (highlightedButton > playerMagicInfomation.Count - 1)
+                    if (highlightedButton > numberOfAvaliableMagic - 1)
                     {
                         GoToTop();
                     }
@@ -100,20 +98,26 @@ namespace BattleSystem.Interface
             }
         }
 
+        public void UpdateMagicInfomation(string[] costs, string[] descryptions)
+        {
+            magicCosts = costs;
+            magicDescryptions = descryptions;
+        }
+
         //Scroll to the top of the magic list
         private void GoToTop()
         {
             highlightedButton = 0;
             lowestViewableButton = 0;
             upArrow.gameObject.SetActive(false);
-            if (playerMagicInfomation.Count > maxMagicDisplayed)
+            if (numberOfAvaliableMagic > maxMagicDisplayed)
             {
                 highestViewableButton = 3;
                 downArrow.gameObject.SetActive(true);
             }
             for (int i = 0; i < magicButtons.Length; i++)
             {
-                if (i < maxMagicDisplayed && i <= playerMagicInfomation.Count - 1)
+                if (i < maxMagicDisplayed && i <= numberOfAvaliableMagic - 1)
                 {
                     magicButtons[i].gameObject.SetActive(true);
                 }
@@ -127,17 +131,17 @@ namespace BattleSystem.Interface
         //Scroll to the bottom of the magic list
         private void GoToBottom()
         {
-            highlightedButton = playerMagicInfomation.Count - 1;
+            highlightedButton = numberOfAvaliableMagic - 1;
             downArrow.gameObject.SetActive(false);
-            if (playerMagicInfomation.Count > maxMagicDisplayed)
+            if (numberOfAvaliableMagic > maxMagicDisplayed)
             {
-                lowestViewableButton = playerMagicInfomation.Count - maxMagicDisplayed;
-                highestViewableButton = playerMagicInfomation.Count - 1;
+                lowestViewableButton = numberOfAvaliableMagic - maxMagicDisplayed;
+                highestViewableButton = numberOfAvaliableMagic - 1;
                 upArrow.gameObject.SetActive(true);
             }
             for (int i = 0; i < magicButtons.Length; i++)
             {
-                if (i <= playerMagicInfomation.Count - 1 && i >= lowestViewableButton)
+                if (i <= numberOfAvaliableMagic - 1 && i >= lowestViewableButton)
                 {
                     magicButtons[i].gameObject.SetActive(true);
                 }
@@ -150,8 +154,6 @@ namespace BattleSystem.Interface
 
         private void OnEnable()
         {
-            playerMagicInfomation.Clear();
-            GetMagicInfomation();
             GoToTop();
         }
 
@@ -168,70 +170,19 @@ namespace BattleSystem.Interface
                     magicButtons[i].GetComponent<Image>().color = new Color(1, 1, 1);
                 }
             }
-            UpdateDescription();
+            UpdateDescription(magicCosts[highlightedButton], magicDescryptions[highlightedButton]);
         }
 
-        private void GetMagicInfomation()
+        public void UpdateMagicInfomation(int magicSize)
         {
-            knownMagic = FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetKnownMagic();
-            int playerMagicAmount = FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCurrentMagic();
-            numberOfAvaliableMagic = 0;
-            for (int i = 0; i < knownMagic.Length; i++)
-            {
-                if (knownMagic[i])
-                {
-                    //Obtain infomation about the magic and set it to the text
-                    Magic.MagicStats magic = FindObjectOfType<Magic>().GetMagicInfomation(i);
-                    playerMagicInfomation.Add(magic);
-                    if (magicButtons[numberOfAvaliableMagic] != null)
-                    {
-                        magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().text = ((Magic.MagicStats)playerMagicInfomation[numberOfAvaliableMagic]).magicName;
-                    }
-                    else
-                    {
-                        Debug.LogError("Not enough magic buttons in the menu.");
-                    }
-                    if (magic.magicCost > playerMagicAmount)
-                    {
-                        //Indicate that the player does not have enough mp to use the magic
-                        magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().color = new Color(1f, 0.5f, 0.5f);
-                    } else
-                    {
-                        magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().color = new Color(0f, 0f, 0f);
-                    }
-                    numberOfAvaliableMagic++;
-                }
-            }
-            if (numberOfAvaliableMagic <= maxMagicDisplayed)
-            {
-                upArrow.gameObject.SetActive(false);
-                downArrow.gameObject.SetActive(false);
-                for (int i = 0; i < maxMagicDisplayed; i++)
-                {
-                    if (i >= numberOfAvaliableMagic)
-                    {
-                        magicButtons[i].gameObject.SetActive(false);
-                    }
-                }
-            }
-            else
-            {
-                upArrow.gameObject.SetActive(false);
-                downArrow.gameObject.SetActive(true);
-                for (int i = 0; i < maxMagicDisplayed; i++)
-                {
-                    magicButtons[i].gameObject.SetActive(true);
-                }
-            }
-
-            UpdateDescription();
+            numberOfAvaliableMagic = magicSize;
         }
 
-        private void UpdateDescription()
+        public void UpdateDescription(string cost, string descryption)
         {
             //Updates the text box that explains what the selected magic does
-            magicDescryptionText.text = "Cost: " + ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost.ToString() + "MP\n";
-            magicDescryptionText.text += ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicDescription;
+            magicDescryptionText.text = "Cost: " + cost + "MP\n";
+            magicDescryptionText.text += descryption;
         }
 
         private void SelectMagicButton()
@@ -239,51 +190,6 @@ namespace BattleSystem.Interface
             if (Input.GetButtonDown("Submit"))
             {
                 buttonSelected = true;
-                //The player needs enough MP in order to use the magic
-                if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost <= FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCurrentMagic())
-                {
-                    if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsDead && !FindObjectOfType<GameManager>().AnyUnconsciousPlayers()) { return; }
-                    FindObjectOfType<PlayerBattleMenu>().HideMagicMenu();
-                    if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsAll)
-                    {
-                        //Automatically apply the effect to either the players or enemies
-                        FindObjectOfType<BattleMessages>().UpdateMessage(FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCharacterName() + " casts " + ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicName + "!");
-                        FindObjectOfType<PlayerBattleMenu>().HideBattleMenu();
-                        FindObjectOfType<GameManager>().GetCurrentTurnPlayer().StartCoroutine("LoseMagic", ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost);
-                        if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsPlayers)
-                        {
-                            FindObjectOfType<GameManager>().HealAll(((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicStrength);
-                        }
-                        else
-                        {
-                            FindObjectOfType<GameManager>().AttackAll(((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicStrength);
-                        }
-                        return;
-                    }
-
-                    if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsPlayers)
-                    {
-                        //Set up the target marker so that only players can be selected
-                        if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsDead)
-                        {
-                            targetMarker.SetTargets(FindObjectOfType<GameManager>().GetUnconsciousPlayers());
-                        }
-                        else
-                        {
-                            targetMarker.SetTargets(FindObjectOfType<GameManager>().GetAlivePlayers());
-                        }
-                        targetMarker.DisplayMarker(true);
-                        targetMarker.SetMagicInfomation((Magic.MagicStats)playerMagicInfomation[highlightedButton]);
-                    }
-                    else
-                    {
-                        //Set up the target marker to target enemies as usual
-                        targetMarker.SetTargets(FindObjectOfType<GameManager>().GetEnemyData());
-                        targetMarker.DisplayMarker(true);
-                        targetMarker.SetMagicInfomation((Magic.MagicStats)playerMagicInfomation[highlightedButton]);
-                    }
-                    FindObjectOfType<PlayerBattleMenu>().HideBattleMenu();
-                }
             }
         }
 
@@ -293,6 +199,22 @@ namespace BattleSystem.Interface
             {
                 FindObjectOfType<PlayerBattleMenu>().HideMagicMenu();
             }
+        }
+
+        public void ActiveArrows(bool upArrowActive, bool downArrowActive)
+        {
+            upArrow.gameObject.SetActive(upArrowActive);
+            downArrow.gameObject.SetActive(downArrowActive);
+        }
+
+        public Image[] GetMagicButtons()
+        {
+            return magicButtons;
+        }
+
+        public int GetHighlightedButton()
+        {
+            return highlightedButton;
         }
 
         public bool IsButtonSelected()

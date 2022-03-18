@@ -64,6 +64,7 @@ namespace BattleSystem.Interface
 
         private void SetUI()
         {
+            //Indicate which button is highlighted
             for (int i = 0; i < buttons.Length; i++)
             {
                 if (i == highlightedButton)

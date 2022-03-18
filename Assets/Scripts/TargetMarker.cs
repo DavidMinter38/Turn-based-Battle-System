@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using BattleSystem.Gameplay;
-using BattleSystem.Data;
 
 namespace BattleSystem.Interface
 {
@@ -56,9 +54,7 @@ namespace BattleSystem.Interface
         int characterToTarget = 0;
         float distanceAboveTarget = 1.5f;
         bool inputPressed = false;
-
-        Magic.MagicStats selectedMagic;
-        bool isUsingMagic;
+        bool targetSelected = false;
 
         void Start()
         {
@@ -136,28 +132,8 @@ namespace BattleSystem.Interface
         {
             if (Input.GetButtonDown("Submit"))
             {
-                if (isUsingMagic)
-                {
-                    FindObjectOfType<GameManager>().GetCurrentTurnPlayer().StartCoroutine("LoseMagic", selectedMagic.magicCost);
-                    FindObjectOfType<BattleMessages>().UpdateMessage(FindObjectOfType<GameManager>().GetCurrentTurnPlayer().GetCharacterName() + " casts " + (selectedMagic.magicName + "!"));
-                    if (selectedMagic.restores)
-                    {
-                        if (selectedMagic.affectsDead && targets[characterToTarget].IsTargetPlayer())
-                        {
-                            FindObjectOfType<GameManager>().RevivePlayer(targets[characterToTarget].GetTargetID());
-                        }
-                        FindObjectOfType<GameManager>().Heal(targets[characterToTarget].GetTargetID(), false, selectedMagic.magicStrength);
-                    }
-                    else
-                    {
-                        FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetTargetID(), false, true, selectedMagic.magicStrength);
-                    }
-                }
-                else
-                {
-                    FindObjectOfType<GameManager>().Attack(targets[characterToTarget].GetTargetID(), false, false, 0);
-                }
-                HideMarker();
+                targetSelected = true;
+                
             }
         }
 
@@ -170,10 +146,9 @@ namespace BattleSystem.Interface
             }
         }
 
-        public void DisplayMarker(bool usingMagic)
+        public void DisplayMarker()
         {
             this.gameObject.SetActive(true);
-            isUsingMagic = usingMagic;
             if (targets[characterToTarget] == null)
             {
                 //Find a new target
@@ -201,9 +176,20 @@ namespace BattleSystem.Interface
             SetTarget();
         }
 
-        public void SetMagicInfomation(Magic.MagicStats magic)
+        public TargetData GetChosenTarget()
         {
-            selectedMagic = magic;
+            return targets[characterToTarget];
         }
+
+        public bool IsTargetSelected()
+        {
+            return targetSelected;
+        }
+
+        public void TargetConfirmed()
+        {
+            targetSelected = false;
+        }
+
     }
 }
