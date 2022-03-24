@@ -6,6 +6,10 @@ using BattleSystem.Interface;
 
 namespace BattleSystem.Characters
 {
+    /// <summary>
+    /// The Player class inherits from the Character class, and contains additonal values used exclusively by players.
+    /// </summary>
+    /// <remarks>This class stored values related to the player's magic, and also handles player death and revival.</remarks>
     public class Player : Character
     {
         [SerializeField]
@@ -28,6 +32,9 @@ namespace BattleSystem.Characters
         [SerializeField]
         SpriteRenderer guardIcon;
 
+        /// <summary>
+        /// On startup, the Awake function finds the infomation in GameData for the player that matches the player's ID, and then assigns the data to the respective values.
+        /// </summary>
         void Awake()
         {
             isPlayer = true;
@@ -59,6 +66,13 @@ namespace BattleSystem.Characters
             playerUI.LoadAttributes(currentHP, maxHP, currentMP, maxMP, knowsMagic, characterName, characterSprite);
         }
 
+        /// <summary>
+        /// Restores the player's health by a certain amount.  
+        /// </summary>
+        /// <remarks>The player's health cannot go higher than the player's max HP.
+        /// This version of the function updates the player's health in the UI gradually over time.</remarks>
+        /// <param name="healthToRecover">The amount of health to be recovered.</param>
+        /// <returns>A delay that represents the rate that the player UI updates, which varies depending on how much health has been gained.</returns>
         protected override IEnumerator GainHealth(int healthToRecover)
         {
             int displayHP = currentHP;
@@ -80,6 +94,13 @@ namespace BattleSystem.Characters
             playerUI.UpdateHealth(currentHP);
         }
 
+        /// <summary>
+        /// Reduces the player's health by a certain amount.
+        /// </summary>
+        /// <remarks>If the player's health reaches 0, then the player falls unconscious.
+        /// This version of the function updates the player's health in the UI gradually over time.</remarks>
+        /// <param name="damage">The amount of health to be lost.</param>
+        /// <returns>A delay that represents the rate that the player UI updates, which varies depending on how much health has been lost.</returns>
         protected override IEnumerator TakeDamage(int damage)
         {
             int displayHP = currentHP;
@@ -104,6 +125,12 @@ namespace BattleSystem.Characters
             playerUI.UpdateHealth(currentHP);
         }
 
+        /// <summary>
+        /// Restores the player's magic by a certain amount.  
+        /// </summary>
+        /// <remarks>The player's magic cannot go higher than the player's max MP.</remarks>
+        /// <param name="magicGained">The amount of magic to be recovered.</param>
+        /// <returns>A delay that represents the rate that the player UI updates, which varies depending on how much magic has been gained.</returns>
         public IEnumerator GainMagic(int magicGained)
         {
             int displayMagic = currentMP;
@@ -125,6 +152,11 @@ namespace BattleSystem.Characters
             playerUI.UpdateMagic(currentMP);
         }
 
+        /// <summary>
+        /// Reduces the player's magic by a certain amount.
+        /// </summary>
+        /// <param name="magicLost">The amount of health to be lost.</param>
+        /// <returns>A delay that represents the rate that the player UI updates, which varies depending on how much magic has been lost.</returns>
         public IEnumerator LoseMagic(int magicLost)
         {
             int displayMagic = currentMP;
@@ -143,6 +175,9 @@ namespace BattleSystem.Characters
             playerUI.UpdateMagic(currentMP);
         }
 
+        /// <summary>
+        /// Sets up the player's guard.
+        /// </summary>
         public void UseGuard()
         {
             isGuarding = true;
@@ -150,12 +185,20 @@ namespace BattleSystem.Characters
             FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has got their guard up!");
         }
 
+        /// <summary>
+        /// Resolves the player's guard.
+        /// </summary>
+        /// <remarks>The player's guard ends at the start of their turn.</remarks>
         public void FinishGuard()
         {
             isGuarding = false;
             guardIcon.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Makes the player character unconscious.
+        /// </summary>
+        /// <remarks>An unconsious character cannot be atttacked or healed.  Their turn is also skipped.</remarks>
         protected override void KillCharacter()
         {
             FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has fallen!");
@@ -166,6 +209,10 @@ namespace BattleSystem.Characters
             this.gameObject.transform.Rotate(new Vector3(0, 0, 90));
         }
 
+        /// <summary>
+        /// Makes the player conscious.
+        /// </summary>
+        /// <remarks>This is called when magic is used on the player that revives them.</remarks>
         public void Revive()
         {
             FindObjectOfType<BattleMessages>().UpdateMessage(this.GetCharacterName() + " has been revived!");
@@ -173,51 +220,94 @@ namespace BattleSystem.Characters
             this.gameObject.transform.Rotate(new Vector3(0, 0, -90));
         }
 
+        /// <summary>
+        /// Allows the player to take actions in combat.
+        /// </summary>
+        /// <remarks>This function is used to prevent a revived character from acting until the start of a new round.</remarks>
         public void ReturnToCombat()
         {
             inCombat = true;
         }
 
+        /// <summary>
+        /// Retrieves the player ID.
+        /// </summary>
+        /// <remarks>This is different from the ID used in the Character class, as this ID is used to differentiate each player.</remarks>
+        /// <returns>The player ID</returns>
         public int GetPlayerID()
         {
             return playerID;
         }
 
+        /// <summary>
+        /// Retrieves the character's current magic value.
+        /// </summary>
+        /// <returns>The character's current magic.</returns>
         public int GetCurrentMagic()
         {
             return currentMP;
         }
 
+        /// <summary>
+        /// Retrieves the character's maximum magic value.
+        /// </summary>
+        /// <returns>The character's maximum magic.</returns>
         public int GetMaxMagic()
         {
             return maxMP;
         }
 
+        /// <summary>
+        /// Checks if the player is able to use magic.
+        /// </summary>
+        /// <returns>A boolean used to indicate if the player can use magic.</returns>
         public bool CanUseMagic()
         {
             return knowsMagic;
         }
 
+        /// <summary>
+        /// Retrieves data on what magic the player character can use.
+        /// </summary>
+        /// <remarks>The infomation recieved can be compared with the magic list.  
+        /// For example, if the first boolean in the array is true, it means the first magic stored in the list can be used.</remarks>
+        /// <returns>An array of boolean values that correlates to the stored magic list.</returns>
         public bool[] GetKnownMagic()
         {
             return avaliableMagic;
         }
 
+        /// <summary>
+        /// Checks if the player is avaliable to be used in battle.
+        /// </summary>
+        /// <returns>A boolean value used to indicate if the player is avaliable.</returns>
         public bool IsAvaliable()
         {
             return isAvaliable;
         }
 
+        /// <summary>
+        /// Checks if the player is conscious.
+        /// </summary>
+        /// <returns>A boolean value used to indicate if the player is conscious.</returns>
         public bool IsConscious()
         {
             return isConscious;
         }
 
+        /// <summary>
+        /// Checks if the player is guarding.
+        /// </summary>
+        /// <returns>A boolean value used to indicate if the player is guarding.</returns>
         public bool IsGuarding()
         {
             return isGuarding;
         }
 
+        /// <summary>
+        /// Checks if the player is in combat.
+        /// </summary>
+        /// <returns>A boolean value used to indicate if the player is in combat.</returns>
         public bool IsInCombat()
         {
             return inCombat;

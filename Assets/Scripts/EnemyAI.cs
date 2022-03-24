@@ -4,6 +4,33 @@ using UnityEngine;
 
 namespace BattleSystem.Characters
 {
+    /// <summary>
+    /// The EnemyState enum contains the four states that an enemy can be in.
+    /// </summary>
+    /// <remarks>The enemy can be in one of four states.</remarks>
+    /// <list type="bullet">
+    /// <listheader>
+    /// <term>Enemy states</term>
+    /// </listheader>
+    /// <item>
+    /// <term>Neutral</term>
+    /// <description>Simply atttacks the player with the highest combined health and attack values.
+    /// Changes to this state if the conditions for the other states are not fufilled.</description>
+    /// </item>
+    /// <item>
+    /// <term>Aggresive</term>
+    /// <description>If attacked, the enemy changes to this state, and then attacks the player that attacked them on their next turn.
+    /// This state takes priority over all other states.</description>
+    /// </item>
+    /// <item>
+    /// <term>Finishing</term>
+    /// <description>Attempts to finish a player off.  Changes to this state if a player has 10% of their health remaining.</description>
+    /// </item>
+    /// <item>
+    /// <term>Defensive</term>
+    /// <description>Heals one of the enemy's allies.  Changes to this state if the enemy is able to heal and an enemy has 30% of their health remaining.</description>
+    /// </item>
+    /// </list>
     public enum EnemyState
     {
         Neutral,
@@ -12,16 +39,28 @@ namespace BattleSystem.Characters
         Defensive
     }
 
+    /// <summary>
+    /// The EnemyAI class handles enemy behaviour.
+    /// </summary>
     public class EnemyAI : MonoBehaviour
     {
         private EnemyState enemyState;
         int targetID = -1; //Remembers the next target
 
+        /// <summary>
+        /// At the start of the battle, the enemy's state is set to neutral.
+        /// </summary>
         void Start()
         {
             enemyState = EnemyState.Neutral;
         }
 
+        /// <summary>
+        /// Checks the state of the battle, and then changes the enemy's state accordingly.
+        /// </summary>
+        /// <param name="attackingEnemy">The enemy that is attacking.</param>
+        /// <param name="players">The players in the battle.</param>
+        /// <param name="enemies">The enemies in the battle.</param>
         public void ObserveStatusOfBattle(Enemy attackingEnemy, Player[] players, Enemy[] enemies)
         {
             //Checks the health of the players and enemies in the battle, and updates its state accordingly
@@ -60,6 +99,7 @@ namespace BattleSystem.Characters
                     }
                 }
             }
+
             //If in aggressive state, ignore all other conditions
             //Check for finishing state
             if (GetState() != EnemyState.Aggressive)
@@ -92,12 +132,15 @@ namespace BattleSystem.Characters
             }
         }
 
+        /// <summary>
+        /// Decides which character in the battle the enemy is going to use an action on.
+        /// </summary>
+        /// <param name="attackingEnemy">The enemy that is attacking.</param>
+        /// <param name="players">The players in the battle.</param>
+        /// <param name="enemies">The enemies in the battle.</param>
+        /// <returns></returns>
         public int SelectTarget(Enemy attackingEnemy, Player[] players, Enemy[] enemies)
         {
-            //The AI will behave under the following conditions:
-            //If a player's hp is less than the enemy's attack-player's defence, the enemy will try to attack them
-            //Otherwise, if a player attacked them, attack the player in return (agro)
-            //Otherwise, attack the strongest player
             int targetID = -1;
 
             EnemyState state = GetState();
@@ -108,13 +151,13 @@ namespace BattleSystem.Characters
                     targetID = NeutralState(targetID, players);
                     break;
                 case EnemyState.Aggressive:
-                    targetID = AggressiveState(targetID, attackingEnemy, players);
+                    targetID = AggressiveState(targetID, players);
                     break;
                 case EnemyState.Finishing:
-                    targetID = FinishingState(targetID, attackingEnemy, players);
+                    targetID = FinishingState(targetID, players);
                     break;
                 case EnemyState.Defensive:
-                    targetID = DefensiveState(targetID, attackingEnemy, enemies);
+                    targetID = DefensiveState(targetID, enemies);
                     break;
                 default:
                     break;
@@ -128,6 +171,12 @@ namespace BattleSystem.Characters
             return targetID;
         }
 
+        /// <summary>
+        /// Finds the player with the highest combined health and attack values.
+        /// </summary>
+        /// <param name="targetID">The value that the player's ID will be assigned to.</param>
+        /// <param name="players">The players in the battle.</param>
+        /// <returns>The player's ID.</returns>
         private int NeutralState(int targetID, Player[] players)
         {
             int highestHealthAndAttack = 0;
@@ -146,7 +195,13 @@ namespace BattleSystem.Characters
             return targetID;
         }
 
-        private int AggressiveState(int targetID, Enemy attackingEnemy, Player[] players)
+        /// <summary>
+        /// Finds the player that had attacked the enemy previously.
+        /// </summary>
+        /// <param name="targetID">The value that the player's ID will be assigned to.</param>
+        /// <param name="players">The players in the battle.</param>
+        /// <returns>The player's ID.</returns>
+        private int AggressiveState(int targetID, Player[] players)
         {
             for (int i = 0; i < players.Length; i++)
             {
@@ -162,7 +217,13 @@ namespace BattleSystem.Characters
             return targetID;
         }
 
-        private int FinishingState(int targetID, Enemy attackingEnemy, Player[] players)
+        /// <summary>
+        /// Finds the ID of the player that the enemy intends to finish off.
+        /// </summary>
+        /// <param name="targetID">The value that the player's ID will be assigned to.</param>
+        /// <param name="players">The players in the battle.</param>
+        /// <returns>The player's ID.</returns>
+        private int FinishingState(int targetID, Player[] players)
         {
             //Similar to the Aggressive state, except the enemy does not revert back to a neutral state after attacking the player
             for (int i = 0; i < players.Length; i++)
@@ -178,7 +239,13 @@ namespace BattleSystem.Characters
             return targetID;
         }
 
-        private int DefensiveState(int targetID, Enemy attackingEnemy, Enemy[] enemies)
+        /// <summary>
+        /// Finds the ID of the enemy that is intended to be healed.
+        /// </summary>
+        /// <param name="targetID">The value that the enemy's ID will be assigned to.</param>
+        /// <param name="enemies">The enemies in the battle.</param>
+        /// <returns>The enemy's ID.</returns>
+        private int DefensiveState(int targetID, Enemy[] enemies)
         {
             for (int i = 0; i < enemies.Length; i++)
             {
@@ -194,33 +261,57 @@ namespace BattleSystem.Characters
             return targetID;
         }
 
+        /// <summary>
+        /// Stores the ID of the player that attacked the enemy, and then changes the enemy's state to aggressive.
+        /// </summary>
+        /// <remarks>This is stored so that, when the enemy next chooses an attack target, it will know which player to attack.</remarks>
+        /// <param name="playerID">The ID of the player that attacked the enemy.</param>
         public void MarkAttacker(int playerID)
         {
             SetMarker(playerID);
             ChangeState(EnemyState.Aggressive);
         }
 
+        /// <summary>
+        /// Stores the ID of the character the enemy intends to use an action on.
+        /// </summary>
+        /// <param name="newID">The ID of the character.</param>
         public void SetMarker(int newID)
         {
             targetID = newID;
         }
 
+        /// <summary>
+        /// Resets the enemy's state back to neutral.
+        /// </summary>
         public void ResetMarker()
         {
             targetID = -1;
             ChangeState(EnemyState.Neutral);
         }
 
+        /// <summary>
+        /// Gets the ID of the enemy's target.
+        /// </summary>
+        /// <returns>The ID of the character the enemy intends to use an action on.</returns>
         public int GetAttackMarker()
         {
             return targetID;
         }
 
+        /// <summary>
+        /// Retrieves the enemy's current state.
+        /// </summary>
+        /// <returns>The enemy's state.</returns>
         public EnemyState GetState()
         {
             return enemyState;
         }
 
+        /// <summary>
+        /// Changes the enemy's state.
+        /// </summary>
+        /// <param name="newState">The new state.</param>
         public void ChangeState(EnemyState newState)
         {
             enemyState = newState;
