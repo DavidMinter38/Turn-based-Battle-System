@@ -4,8 +4,14 @@ using UnityEngine;
 
 namespace BattleSystem.Data
 {
+    /// <summary>
+    /// Contains data on magic, such as its cost and wether it affects players or enemies.
+    /// </summary>
     public class Magic : MonoBehaviour
     {
+        /// <summary>
+        /// Infomation about magic.
+        /// </summary>
         [System.Serializable]
         public struct MagicStats
         {
@@ -23,6 +29,11 @@ namespace BattleSystem.Data
         [SerializeField]
         MagicStats[] magicList;
 
+        /// <summary>
+        /// Retrieves stored data on a particular piece of magic.
+        /// </summary>
+        /// <param name="magicID">The ID of the magic that is needed.</param>
+        /// <returns>The magic data.</returns>
         public MagicStats GetMagicInfomation(int magicID)
         {
             return magicList[magicID];

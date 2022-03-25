@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace BattleSystem.Interface
 {
+    /// <summary>
+    /// The TurnOrderTrack script stores data on the turn order.
+    /// </summary>
     public class TurnOrderTrack : MonoBehaviour
     {
         [SerializeField]
@@ -13,6 +16,10 @@ namespace BattleSystem.Interface
         [SerializeField]
         Sprite emptySprite;
 
+        /// <summary>
+        /// Updates the track with new sprites, showing the new turn order.
+        /// </summary>
+        /// <param name="sprites">The array of sprites to be used.</param>
         public void UpdateTrack(ArrayList sprites)
         {
             int trackCounter = 0;

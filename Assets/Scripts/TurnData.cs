@@ -4,12 +4,21 @@ using UnityEngine;
 
 namespace BattleSystem.Data
 {
+    /// <summary>
+    /// The TurnData class is used to contain character data when setting up turns in combat.
+    /// </summary>
     public class TurnData
     {
         int ID;
         float speedValue;
         bool player;
 
+        /// <summary>
+        /// The constructor stores the player's values.
+        /// </summary>
+        /// <param name="inputID">The ID of the character.</param>
+        /// <param name="inputSpeedValue">The character's speed value.</param>
+        /// <param name="inputPlayer">True if the character is a player, false if it's an enemy.</param>
         public TurnData(int inputID, float inputSpeedValue, bool inputPlayer)
         {
             ID = inputID;
@@ -17,16 +26,28 @@ namespace BattleSystem.Data
             player = inputPlayer;
         }
 
+        /// <summary>
+        /// Retrieves the ID to the character.
+        /// </summary>
+        /// <returns>The character's ID.</returns>
         public int GetID()
         {
             return ID;
         }
 
+        /// <summary>
+        /// Retrieves the speed value of the character.
+        /// </summary>
+        /// <returns>The character's speed value.</returns>
         public float GetSpeed()
         {
             return speedValue;
         }
 
+        /// <summary>
+        /// Checks if the character stored is a player.
+        /// </summary>
+        /// <returns>True if the character is a player, false if it's an enemy.</returns>
         public bool IsPlayer()
         {
             return player;
