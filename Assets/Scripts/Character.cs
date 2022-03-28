@@ -193,7 +193,7 @@ namespace BattleSystem.Characters
         /// <summary>
         /// Checks if the character is a player.
         /// </summary>
-        /// <remarks>All player classes will set this value to true, whereas all enemies will set this value to false.</remarks>
+        /// <remarks>All player classes will set this value to true, whereas all enemy classes will set this value to false.</remarks>
         /// <returns>True if the character is a player, and false if the character is an enemy.</returns>
         public bool IsPlayer()
         {

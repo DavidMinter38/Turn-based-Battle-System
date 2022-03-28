@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 namespace BattleSystem.Interface
 {
+    /// <summary>
+    /// The magic menu is used when the player chooses to use magic from the battle menu.
+    /// </summary>
+    /// <remarks>The magic menu displays a list of magic that the player is able to use.</remarks>
     public class PlayerMagicMenu : MonoBehaviour
     {
         [SerializeField]
@@ -22,21 +26,19 @@ namespace BattleSystem.Interface
         int highlightedButton = 0;
         bool inputPressed = false;
         bool buttonSelected = false;  //Used so that the UI manager can tell if a button has been pressed.
+        bool cancelled = false;
 
         int numberOfAvaliableMagic;
-        int maxMagicDisplayed = 4;
+        int maxMagicDisplayed = 4;  //The max number of buttons displayed on screen at a time
         string[] magicCosts;
         string[] magicDescryptions;
 
         int lowestViewableButton = 0;
         int highestViewableButton = 3;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-        }
-
-        // Update is called once per frame
+        /// <summary>
+        /// Update checks for any input from the player.
+        /// </summary>
         void Update()
         {
             UpdateSelection();
@@ -44,6 +46,10 @@ namespace BattleSystem.Interface
             Cancel();
         }
 
+        /// <summary>
+        /// If up or down is pressed, change the selected button to the next or previous one respectively.
+        /// </summary>
+        /// <remarks>Only a certain number of buttons are shown on screen at a time, with arrows being used to indicate if the player can scroll further up or down.</remarks>
         private void UpdateSelection()
         {
             if (!inputPressed)
@@ -98,13 +104,21 @@ namespace BattleSystem.Interface
             }
         }
 
+        /// <summary>
+        /// Stores infomation on each avaliable magic that the player has.
+        /// </summary>
+        /// <remarks>This is used to show the user what each magic does, as well as how much MP is required to use them.</remarks>
+        /// <param name="costs">The amount of MP that is needed to use each magic.</param>
+        /// <param name="descryptions">The infomation on each magic.</param>
         public void UpdateMagicInfomation(string[] costs, string[] descryptions)
         {
             magicCosts = costs;
             magicDescryptions = descryptions;
         }
 
-        //Scroll to the top of the magic list
+        /// <summary>
+        /// Go to the topmost button in the list.
+        /// </summary>
         private void GoToTop()
         {
             highlightedButton = 0;
@@ -128,7 +142,9 @@ namespace BattleSystem.Interface
             }
         }
 
-        //Scroll to the bottom of the magic list
+        /// <summary>
+        /// Go to the bottommost button in the list.
+        /// </summary>
         private void GoToBottom()
         {
             highlightedButton = numberOfAvaliableMagic - 1;
@@ -152,11 +168,17 @@ namespace BattleSystem.Interface
             }
         }
 
+        /// <summary>
+        /// When the menu is displayed, go to the top of the list.
+        /// </summary>
         private void OnEnable()
         {
             GoToTop();
         }
 
+        /// <summary>
+        /// Indicate which button is highlighted.
+        /// </summary>
         private void SetUI()
         {
             for (int i = 0; i < magicButtons.Length; i++)
@@ -173,11 +195,20 @@ namespace BattleSystem.Interface
             UpdateDescription(magicCosts[highlightedButton], magicDescryptions[highlightedButton]);
         }
 
-        public void UpdateMagicInfomation(int magicSize)
+        /// <summary>
+        /// Update how much magic the player has.
+        /// </summary>
+        /// <param name="magicSize">The amount of magic the player has.</param>
+        public void UpdateNumberOfAvaliableMagic(int magicSize)
         {
             numberOfAvaliableMagic = magicSize;
         }
 
+        /// <summary>
+        /// Update the text box which shows the user infomation about the magic they have selected.
+        /// </summary>
+        /// <param name="cost">The amount of MP required to use the selected magic.</param>
+        /// <param name="descryption">The infomation about the selected magic.</param>
         public void UpdateDescription(string cost, string descryption)
         {
             //Updates the text box that explains what the selected magic does
@@ -185,6 +216,9 @@ namespace BattleSystem.Interface
             magicDescryptionText.text += descryption;
         }
 
+        /// <summary>
+        /// Confirm that a button has been selected, so that the UI Manager can perform the appropriate action.
+        /// </summary>
         private void SelectMagicButton()
         {
             if (Input.GetButtonDown("Submit"))
@@ -193,38 +227,78 @@ namespace BattleSystem.Interface
             }
         }
 
+        /// <summary>
+        /// Confirm that the cancellation button has been pressed, so that the UI Manager can exit out of the magic menu.
+        /// </summary>
         private void Cancel()
         {
             if (Input.GetButtonDown("Cancel"))
             {
-                FindObjectOfType<PlayerBattleMenu>().HideMagicMenu();
+                cancelled = true;
             }
         }
 
+        /// <summary>
+        /// Set if the up and down arrows should be active or not.
+        /// </summary>
+        /// <param name="upArrowActive">True if the up arrow should be active, false if it should not.</param>
+        /// <param name="downArrowActive">True if the down arrow should be active, false if it should not.</param>
         public void ActiveArrows(bool upArrowActive, bool downArrowActive)
         {
             upArrow.gameObject.SetActive(upArrowActive);
             downArrow.gameObject.SetActive(downArrowActive);
         }
 
+        /// <summary>
+        /// Retrieve the array of buttons used in the magic menu.
+        /// </summary>
+        /// <returns>An array of buttons.</returns>
         public Image[] GetMagicButtons()
         {
             return magicButtons;
         }
 
+        /// <summary>
+        /// Retrieve the ID of the button that has been hgihlighted.
+        /// </summary>
+        /// <returns>The highlighted button's ID.</returns>
         public int GetHighlightedButton()
         {
             return highlightedButton;
         }
 
+        /// <summary>
+        /// Check if a button has been selected by the user.
+        /// </summary>
+        /// <returns>True if a button has been selected, false if a button has not been selected.</returns>
         public bool IsButtonSelected()
         {
             return buttonSelected;
         }
 
+        /// <summary>
+        /// Checks if the user has chosen to cancel out of the magic menu.
+        /// </summary>
+        /// <returns>True if the cancel button had been pressed, false if it had not.</returns>
+        public bool HasCancelled()
+        {
+            return cancelled;
+        }
+
+        /// <summary>
+        /// Confirms button selection and allows for another button to be selected in the future.
+        /// </summary>
         public void ButtonConfirmed()
         {
             buttonSelected = false;
+        }
+
+        /// <summary>
+        /// Confirms cancellation and allows the menu to be cancelled out of in the future.
+        /// </summary>
+        public void CancelConfirmed()
+        {
+            cancelled = false;
         }
     }
 }

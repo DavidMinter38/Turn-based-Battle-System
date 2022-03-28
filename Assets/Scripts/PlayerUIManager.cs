@@ -8,7 +8,9 @@ using BattleSystem.Data;
 
 namespace BattleSystem.Gameplay
 {
-    //Handles navigation through the player menus, and stores data based on what the player has selected.
+    /// <summary>
+    /// The PlayerUIManager handles navigation through the player menus, and stores data based on what the player has selected.
+    /// </summary>
     public class PlayerUIManager : MonoBehaviour
     {
         GameManager gameManager;
@@ -29,6 +31,9 @@ namespace BattleSystem.Gameplay
         int maxMagicButtonsDisplayed = 4;
         bool isUsingMagic = false;
 
+        /// <summary>
+        /// On Start, set up the separate menus.
+        /// </summary>
         void Start()
         {
             gameManager = FindObjectOfType<GameManager>();
@@ -37,10 +42,16 @@ namespace BattleSystem.Gameplay
             if (magicMenu == null) { Debug.LogError("Could not find the Magic Menu"); }
             targetMarker = FindObjectOfType<TargetMarker>();
             if (targetMarker == null) { Debug.LogError("Could not find the Target Marker"); }
+
+            HideTargetMarker();
         }
 
+        /// <summary>
+        /// Update checks for player input from any of the menus.
+        /// </summary>
         void Update()
         {
+            ///Check if a selection has been made in one of the menus.
             if (battleMenu.IsButtonSelected())
             {
                 battleMenu.ButtonConfirmed();
@@ -54,9 +65,24 @@ namespace BattleSystem.Gameplay
                 targetMarker.TargetConfirmed();
                 ConfirmTarget();
             }
+
+            //Check if a menu has cancelled selection
+            if (magicMenu.HasCancelled())
+            {
+                magicMenu.CancelConfirmed();
+                HideMagicMenu();
+            } else if (targetMarker.HasCancelled())
+            {
+                targetMarker.CancelConfirmed();
+                DisplayBattleMenu();
+                HideTargetMarker();
+            }
         }
 
         #region BattleMenu
+        /// <summary>
+        /// Performs an action depending on which button from the battle menu was selected.
+        /// </summary>
         private void HandleBattleMenuSelection()
         {
             int highlightedButton = battleMenu.GetHighlightedButton();
@@ -64,11 +90,11 @@ namespace BattleSystem.Gameplay
             {
                 case 0:
                     //Attack
-                    SelectTarget();
+                    SelectAttack();
                     break;
                 case 1:
                     //Magic
-                    OpenMagicMenu();
+                    SelectMagic();
                     break;
                 case 2:
                     //Guard
@@ -82,26 +108,38 @@ namespace BattleSystem.Gameplay
         
         }
 
-        private void SelectTarget()
+        /// <summary>
+        /// Sets up the target marker for selecting an enemy to attack.
+        /// </summary>
+        /// <remarks>This is called if the attack button is selected in the battle menu.</remarks>
+        private void SelectAttack()
         {
             targetMarker.SetTargets(gameManager.GetEnemyData());
             isUsingMagic = false;
-            targetMarker.DisplayMarker();
+            DisplayMarker();
             HideBattleMenu();
         }
 
-        private void OpenMagicMenu()
+        /// <summary>
+        /// Sets up the magic menu for selecting which magic to use.
+        /// </summary>
+        /// <remarks>This is called if the magic button is selected in the battle menu.</remarks>
+        private void SelectMagic()
         {
             //Can only use if the character knows magic
             if (gameManager.GetCurrentTurnPlayer().CanUseMagic())
             {
                 DisplayMagicMenu();
-                battleMenu.DisableMenu();
+                battleMenu.DisableMenu(true);
                 playerMagicInfomation.Clear();
                 GetMagicInfomation();
             }
         }
 
+        /// <summary>
+        /// Makes the player perform a guard action.
+        /// </summary>
+        /// <remarks>This is called if the guard button is selected in the battle menu.</remarks>
         private void SelectGuard()
         {
             gameManager.GetCurrentTurnPlayer().UseGuard();
@@ -109,6 +147,10 @@ namespace BattleSystem.Gameplay
             HideBattleMenu();
         }
 
+        /// <summary>
+        /// Makes an attempt to escape from the battle.
+        /// </summary>
+        /// <remarks>This is called if the flee button is selected in the battle menu.</remarks>
         private void SelectFlee()
         {
             gameManager.AttemptEscape();
@@ -117,7 +159,10 @@ namespace BattleSystem.Gameplay
         #endregion
 
         #region MagicMenu
-        //Either use magic if it affects everyone, or store magic data and allow the player to select a target.
+        /// <summary>
+        /// Resolves selection of magic.
+        /// </summary>
+        /// <remarks>If the magic affects everyone, use it immediately on all targets.  If it targets one character, store the data and allow the player to select a target.</remarks>
         private void HandleMagicMenuSelection()
         {
             int highlightedButton = magicMenu.GetHighlightedButton();
@@ -125,12 +170,12 @@ namespace BattleSystem.Gameplay
             if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost <= currentPlayer.GetCurrentMagic())
             {
                 if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsDead && !gameManager.AnyUnconsciousPlayers()) { return; }
-                battleMenu.HideMagicMenu();
+                HideMagicMenu();
                 if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsAll)
                 {
                     //Automatically apply the effect to either the players or enemies
                     FindObjectOfType<BattleMessages>().UpdateMessage(currentPlayer.GetCharacterName() + " casts " + ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicName + "!");
-                    battleMenu.HideBattleMenu();
+                    HideBattleMenu();
                     currentPlayer.StartCoroutine("LoseMagic", ((Magic.MagicStats)playerMagicInfomation[highlightedButton]).magicCost);
                     if (((Magic.MagicStats)playerMagicInfomation[highlightedButton]).affectsPlayers)
                     {
@@ -155,7 +200,7 @@ namespace BattleSystem.Gameplay
                         targetMarker.SetTargets(gameManager.GetAlivePlayers());
                     }
                     isUsingMagic = true;
-                    targetMarker.DisplayMarker();
+                    DisplayMarker();
                     selectedMagic = (Magic.MagicStats)playerMagicInfomation[highlightedButton];
                 }
                 else
@@ -163,13 +208,16 @@ namespace BattleSystem.Gameplay
                     //Set up the target marker to target enemies as usual
                     targetMarker.SetTargets(gameManager.GetEnemyData());
                     isUsingMagic = true;
-                    targetMarker.DisplayMarker();
+                    DisplayMarker();
                     selectedMagic = (Magic.MagicStats)playerMagicInfomation[highlightedButton];
                 }
-                battleMenu.HideBattleMenu();
+                HideBattleMenu();
             }
         }
 
+        /// <summary>
+        /// Gets infomation on what magic the player can use, and stores the infomation.
+        /// </summary>
         private void GetMagicInfomation()
         {
             Image[] magicButtons = magicMenu.GetMagicButtons();
@@ -203,6 +251,7 @@ namespace BattleSystem.Gameplay
                     numberOfAvaliableMagic++;
                 }
             }
+            //If there is less avaliable magic than the max amount of buttons that can be displayed, disable the arrows.
             if (numberOfAvaliableMagic <= maxMagicButtonsDisplayed)
             {
                 magicMenu.ActiveArrows(false, false);
@@ -225,9 +274,12 @@ namespace BattleSystem.Gameplay
 
             magicMenu.UpdateDescription(((Magic.MagicStats)playerMagicInfomation[magicMenu.GetHighlightedButton()]).magicCost.ToString(), ((Magic.MagicStats)playerMagicInfomation[magicMenu.GetHighlightedButton()]).magicDescription);
             UpdateMagicInfomation();
-            magicMenu.UpdateMagicInfomation(playerMagicInfomation.Count);
+            magicMenu.UpdateNumberOfAvaliableMagic(playerMagicInfomation.Count);
         }
 
+        /// <summary>
+        /// Compiles infomation on each magic the player has and sends it to the magic menu.
+        /// </summary>
         private void UpdateMagicInfomation()
         {
             string[] magicCostString = new string[playerMagicInfomation.Count];
@@ -243,7 +295,10 @@ namespace BattleSystem.Gameplay
         #endregion
 
         #region TargetMarker
-        //When an attack target has been selected, handle the result based on the action selected.
+        /// <summary>
+        /// Resolves chosen player action on the selected target.
+        /// </summary>
+        /// <remarks>Depending on the action chosen, the target will either be attacked, healed, or revived.</remarks>
         private void ConfirmTarget()
         {
             TargetData chosenTarget = targetMarker.GetChosenTarget();
@@ -272,45 +327,96 @@ namespace BattleSystem.Gameplay
         }
         #endregion
 
+        /// <summary>
+        /// Display the battle menu.
+        /// </summary>
+        public void DisplayBattleMenu()
+        {
+            battleMenu.gameObject.SetActive(true);
+            battleMenu.ResetHighlightedButton();
+            battleMenu.ResetHighlightedButton();
+            battleMenu.DisableMenu(false);
+            HideMagicMenu();
+        }
+
+        /// <summary>
+        /// Display the battle menu.
+        /// </summary>
+        /// <param name="player">The current turn player.</param>
         public void DisplayBattleMenu(Player player)
         {
             battleMenu.gameObject.SetActive(true);
             battleMenu.ResetHighlightedButton();
             battleMenu.SetMagicButtonText(player.CanUseMagic());
+            battleMenu.ResetHighlightedButton();
+            battleMenu.DisableMenu(false);
             HideMagicMenu();
             currentPlayer = player;
         }
 
+        /// <summary>
+        /// Hide the battle menu.
+        /// </summary>
         public void HideBattleMenu()
         {
             battleMenu.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Display the magic menu.
+        /// </summary>
         public void DisplayMagicMenu()
         {
             magicMenu.gameObject.SetActive(true);
         }
 
+        /// <summary>
+        /// Hide the magic menu.
+        /// </summary>
         public void HideMagicMenu()
         {
             magicMenu.gameObject.SetActive(false);
+            battleMenu.DisableMenu(false);
         }
 
+        /// <summary>
+        /// Display the target marker.
+        /// </summary>
+        public void DisplayMarker()
+        {
+            targetMarker.gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// Hide the target marker.
+        /// </summary>
         public void HideTargetMarker()
         {
             targetMarker.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Retrieve the target marker from the UI Manager.
+        /// </summary>
+        /// <returns>The target marker.</returns>
         public TargetMarker GetTargetMarker()
         {
             return targetMarker;
         }
 
+        /// <summary>
+        /// Checks to see if the battle menu is currently active.
+        /// </summary>
+        /// <returns>True if the battle menu is active, false if it is not.</returns>
         public bool BattleMenuActive()
         {
             return battleMenu.gameObject.activeInHierarchy;
         }
 
+        /// <summary>
+        /// Checks to see if the target marker is currently active.
+        /// </summary>
+        /// <returns>True if the target marker is active, false if it is not.</returns>
         public bool TargetMarkerActive()
         {
             return targetMarker.gameObject.activeInHierarchy;
