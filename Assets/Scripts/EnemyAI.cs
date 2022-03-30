@@ -44,8 +44,15 @@ namespace BattleSystem.Characters
     /// </summary>
     public class EnemyAI : MonoBehaviour
     {
+        /// <summary>
+        /// Contains the enemy's current state.
+        /// </summary>
         private EnemyState enemyState;
-        int targetID = -1; //Remembers the next target
+
+        /// <summary>
+        /// The ID of the character that the enemy intends to use an action on next.
+        /// </summary>
+        int targetID = -1;
 
         /// <summary>
         /// At the start of the battle, the enemy's state is set to neutral.

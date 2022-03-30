@@ -11,16 +11,26 @@ namespace BattleSystem.Characters
     /// <remarks>The main features stored in this class are related to basic attributes such as HP, attack, and defence.</remarks>
     public class Character : MonoBehaviour
     {
+        /// <summary>
+        /// Used to uniquely identify each character in a battle.
+        /// </summary>
         [SerializeField]
-        int ID;  //This allows us to identify each character in the battle
+        int ID;
 
         [SerializeField]
         protected string characterName;
 
         protected int currentHP, maxHP, attack, defence, magicAttack, magicDefence, speed;
 
+        /// <summary>
+        /// The sprite that will be used to identify the character in the scene.
+        /// </summary>
         protected Sprite characterSprite;
 
+        /// <summary>
+        /// The player class will set this to true, wheras the enemy class will set this to false.
+        /// </summary>
+        /// <remarks>This variable is used in order for the GameManager to tell if a character is a player or an enemy.</remarks>
         protected bool isPlayer;
 
         /// <summary>
@@ -193,7 +203,6 @@ namespace BattleSystem.Characters
         /// <summary>
         /// Checks if the character is a player.
         /// </summary>
-        /// <remarks>All player classes will set this value to true, whereas all enemy classes will set this value to false.</remarks>
         /// <returns>True if the character is a player, and false if the character is an enemy.</returns>
         public bool IsPlayer()
         {

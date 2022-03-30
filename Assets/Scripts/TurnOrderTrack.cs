@@ -10,9 +10,15 @@ namespace BattleSystem.Interface
     /// </summary>
     public class TurnOrderTrack : MonoBehaviour
     {
+        /// <summary>
+        /// The array of images used in the track.
+        /// </summary>
         [SerializeField]
         Image[] trackImages;
 
+        /// <summary>
+        /// The sprite used for empty spaces in the track.
+        /// </summary>
         [SerializeField]
         Sprite emptySprite;
 
@@ -27,6 +33,7 @@ namespace BattleSystem.Interface
             {
                 trackImages[trackCounter].sprite = sprite;
                 trackCounter++;
+                //If all images in the track have been filled in, stop adding images to the track.
                 if(trackCounter >= trackImages.Length) { return; }
             }
             //Any leftoverspaces in the track are left empty

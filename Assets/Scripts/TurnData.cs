@@ -9,8 +9,17 @@ namespace BattleSystem.Data
     /// </summary>
     public class TurnData
     {
+        /// <summary>
+        /// The character's ID.
+        /// </summary>
         int ID;
+        /// <summary>
+        /// The character's speed value.
+        /// </summary>
         float speedValue;
+        /// <summary>
+        /// If the character is a player, this will be set to true.
+        /// </summary>
         bool player;
 
         /// <summary>

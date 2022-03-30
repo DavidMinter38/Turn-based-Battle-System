@@ -20,6 +20,9 @@ namespace BattleSystem.Interface
         [SerializeField]
         TargetMarker targetMarker;
 
+        /// <summary>
+        /// The ID of the button that is currently being highlighted.
+        /// </summary>
         int highlightedButton = 0;
         bool inputPressed = false;
         bool menuDisabled = false; //Used to prevent the player from navigating through both the battle menu and the magic menu at the same time

@@ -17,18 +17,40 @@ namespace BattleSystem.Characters
 
         protected int currentMP, maxMP;
 
+        /// <summary>
+        /// If set to false, the player cannot use any magic.
+        /// </summary>
         bool knowsMagic;
+        /// <summary>
+        /// A list of magic that the player can use.
+        /// </summary>
+        /// <remarks>Each boolean value can be compared with the magic list to see if the player can use that magic.
+        /// For example, if the first boolean in the array is true, the first magic in the stored list can be used by the player.</remarks>
         bool[] avaliableMagic;
 
+        /// <summary>
+        /// Used to see if the player can be used.
+        /// </summary>
+        /// <remarks>If set to false, the player will not be instantiated into the scene.</remarks>
         bool isAvaliable = false;
         bool isConscious = true;
         bool isGuarding = false;
 
-        bool inCombat = true; //Used to prevent revived players from taking action on the same turn that they are revived
+        /// <summary>
+        /// Used to see if the player is able to take an action on their turn.
+        /// </summary>
+        /// <remarks>This is used to prevent revived players from taking action on the same turn that they are revived</remarks>
+        bool inCombat = true;
+
+
+        //UI elements
 
         PlayerHealthUI playerUI;
-        float rateOfUIChange = 0.75f;
+        readonly float rateOfUIChange = 0.75f;
 
+        /// <summary>
+        /// A sprite that is displayed to indicate that the player is currently guarding.
+        /// </summary>
         [SerializeField]
         SpriteRenderer guardIcon;
 
@@ -269,8 +291,6 @@ namespace BattleSystem.Characters
         /// <summary>
         /// Retrieves data on what magic the player character can use.
         /// </summary>
-        /// <remarks>The infomation recieved can be compared with the magic list.  
-        /// For example, if the first boolean in the array is true, it means the first magic stored in the list can be used.</remarks>
         /// <returns>An array of boolean values that correlates to the stored magic list.</returns>
         public bool[] GetKnownMagic()
         {

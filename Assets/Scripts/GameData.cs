@@ -68,9 +68,15 @@ namespace BattleSystem.Data
             public Sprite enemySprite;
         }
 
+        /// <summary>
+        /// A list of all the player characters that are avaliable.
+        /// </summary>
         [SerializeField]
         PlayerStats[] playerList;
 
+        /// <summary>
+        /// A list of all the various types of enemies that could be encountered.
+        /// </summary>
         [SerializeField]
         EnemyStats[] enemyTypes;
 

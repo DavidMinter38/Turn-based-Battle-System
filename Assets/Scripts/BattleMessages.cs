@@ -10,8 +10,14 @@ namespace BattleSystem.Interface
     /// </summary>
     public class BattleMessages : MonoBehaviour
     {
+        /// <summary>
+        /// Contains the newest message.
+        /// </summary>
         Text battleText;
 
+        /// <summary>
+        /// When a new message is displayed, the previous message is stored here.
+        /// </summary>
         [SerializeField]
         Text previousBattleText;
 

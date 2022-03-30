@@ -22,8 +22,8 @@ namespace BattleSystem.Gameplay
         private GameObject[] playerSpawnPoints, enemySpawnPoints;
 
         private Enemy[] enemies;
-        int minEnemies = 2;
-        int maxEnemies = 6;
+        readonly int minEnemies = 2;
+        readonly int maxEnemies = 6;
 
         private Character[] characters;
 

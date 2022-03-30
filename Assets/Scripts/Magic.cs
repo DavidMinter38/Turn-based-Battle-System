@@ -26,6 +26,9 @@ namespace BattleSystem.Data
             public bool affectsDead;
         }
 
+        /// <summary>
+        /// A list of all the magic that is avaliable to be used.
+        /// </summary>
         [SerializeField]
         MagicStats[] magicList;
 

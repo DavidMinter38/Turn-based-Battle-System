@@ -23,17 +23,32 @@ namespace BattleSystem.Interface
         [SerializeField]
         TargetMarker targetMarker;
 
+        /// <summary>
+        /// The ID of the button that is currently being highlighted.
+        /// </summary>
         int highlightedButton = 0;
         bool inputPressed = false;
         bool buttonSelected = false;  //Used so that the UI manager can tell if a button has been pressed.
         bool cancelled = false;
 
         int numberOfAvaliableMagic;
-        int maxMagicDisplayed = 4;  //The max number of buttons displayed on screen at a time
+
+        /// <summary>
+        /// The maximum number of buttons that are displayed on screen at a time.
+        /// </summary>
+        readonly int maxMagicDisplayed = 4;
+
         string[] magicCosts;
         string[] magicDescryptions;
 
+        /// <summary>
+        /// The id of the firstmost button in the array that can currently be seen.
+        /// </summary>
         int lowestViewableButton = 0;
+
+        /// <summary>
+        /// The id of the last button in the array that can currently be seen.
+        /// </summary>
         int highestViewableButton = 3;
 
         /// <summary>
