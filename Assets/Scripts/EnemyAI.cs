@@ -7,30 +7,13 @@ namespace BattleSystem.Characters
     /// <summary>
     /// The EnemyState enum contains the four states that an enemy can be in.
     /// </summary>
-    /// <remarks>The enemy can be in one of four states.</remarks>
-    /// <list type="bullet">
-    /// <listheader>
-    /// <term>Enemy states</term>
-    /// </listheader>
-    /// <item>
-    /// <term>Neutral</term>
-    /// <description>Simply atttacks the player with the highest combined health and attack values.
-    /// Changes to this state if the conditions for the other states are not fufilled.</description>
-    /// </item>
-    /// <item>
-    /// <term>Aggresive</term>
-    /// <description>If attacked, the enemy changes to this state, and then attacks the player that attacked them on their next turn.
-    /// This state takes priority over all other states.</description>
-    /// </item>
-    /// <item>
-    /// <term>Finishing</term>
-    /// <description>Attempts to finish a player off.  Changes to this state if a player has 10% of their health remaining.</description>
-    /// </item>
-    /// <item>
-    /// <term>Defensive</term>
-    /// <description>Heals one of the enemy's allies.  Changes to this state if the enemy is able to heal and an enemy has 30% of their health remaining.</description>
-    /// </item>
-    /// </list>
+    /// <remarks>The enemy can be in one of four states:</remarks>
+    /// <para>Neutral: Simply atttacks the player with the highest combined health and attack values.
+    /// Changes to this state if the conditions for the other states are not fufilled.</para>
+    /// <para>Aggresive: If attacked, the enemy changes to this state, and then attacks the player that attacked them on their next turn.
+    /// This state takes priority over all other states.</para>
+    /// <para>Finishing: Attempts to finish a player off.  Changes to this state if a player has 10% of their health remaining.</para>
+    /// <para>Defensive: Heals one of the enemy's allies.  Changes to this state if the enemy is able to heal and an enemy has 30% of their health remaining.</para>
     public enum EnemyState
     {
         Neutral,

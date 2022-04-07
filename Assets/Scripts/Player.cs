@@ -12,8 +12,11 @@ namespace BattleSystem.Characters
     /// <remarks>This class stored values related to the player's magic, and also handles player death and revival.</remarks>
     public class Player : Character
     {
+        /// <summary>
+        /// A unique ID used to differentiate each player character.
+        /// </summary>
         [SerializeField]
-        int playerID;  //This will be different for each player prefab, so that we know which player is which
+        int playerID;
 
         protected int currentMP, maxMP;
 
@@ -33,7 +36,15 @@ namespace BattleSystem.Characters
         /// </summary>
         /// <remarks>If set to false, the player will not be instantiated into the scene.</remarks>
         bool isAvaliable = false;
+        /// <summary>
+        /// Indicates if the player is currently conscious.
+        /// </summary>
+        /// <remarks>This will be set to false if the player's health drops to 0.</remarks>
         bool isConscious = true;
+        /// <summary>
+        /// Indicates if the player is currently guarding.
+        /// </summary>
+        /// <remarks>This will be set to true if the player chooses the guard action.</remarks>
         bool isGuarding = false;
 
         /// <summary>
@@ -45,7 +56,14 @@ namespace BattleSystem.Characters
 
         //UI elements
 
+        /// <summary>
+        /// A reference to the player's PlayerHealthUI.
+        /// </summary>
         PlayerHealthUI playerUI;
+        /// <summary>
+        /// The rate that the player's health and magic meters will increase or decrease.
+        /// </summary>
+        /// <remarks>This is used so that the player's health and magic meters in the the UI can be seen gradually increasing or decreasing over a period of time.</remarks>
         readonly float rateOfUIChange = 0.75f;
 
         /// <summary>

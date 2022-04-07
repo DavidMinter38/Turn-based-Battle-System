@@ -12,31 +12,71 @@ namespace BattleSystem.Gameplay
     /// </summary>
     public class GameManager : MonoBehaviour
     {
+        /// <summary>
+        /// The player characters that will be used for the battle.
+        /// </summary>
         [SerializeField]
         private Player[] players;
 
+        /// <summary>
+        /// The types of enemies that can be used for the battle.
+        /// </summary>
         [SerializeField]
         private Enemy[] avaliableEnemies;
 
         [SerializeField]
         private GameObject[] playerSpawnPoints, enemySpawnPoints;
 
+        /// <summary>
+        /// The enemies that will be used in the battle.
+        /// </summary>
         private Enemy[] enemies;
+        /// <summary>
+        /// The minimum number of enemies that can appear in a battle.
+        /// </summary>
         readonly int minEnemies = 2;
-        readonly int maxEnemies = 6;
+        /// <summary>
+        /// The maximum number of enemies that can appear in a battle.
+        /// </summary>
+        readonly int maxEnemies = 5;
 
+        /// <summary>
+        /// A list of every character present in the battle.
+        /// </summary>
         private Character[] characters;
 
+        /// <summary>
+        /// A reference to the game data.
+        /// </summary>
         GameData gameData;
 
+        /// <summary>
+        /// The current state of the battle.
+        /// </summary>
         BattleState battleState = BattleState.Start;
 
+        /// <summary>
+        /// A list of the order in which the characters will act.
+        /// </summary>
         ArrayList turnOrder = new ArrayList();
+        /// <summary>
+        /// The index of the current player's turn.
+        /// </summary>
+        /// <remarks>This is used with the turnOrder ArrayList to find the current turn player.</remarks>
         int currentPlayerInTurn = 0;
 
+        /// <summary>
+        /// A reference to the PlayerUIManager.
+        /// </summary>
         PlayerUIManager playerUI;
+        /// <summary>
+        /// A reference to the BattleMessages.
+        /// </summary>
         BattleMessages battleMessenger;
 
+        /// <summary>
+        /// The delay between turns.
+        /// </summary>
         float cooldown = 0f;
 
         /// <summary>
@@ -66,7 +106,7 @@ namespace BattleSystem.Gameplay
             //Create a random selection of enemies from a pool and spawn them into the scene
             if (avaliableEnemies.Length <= 0) { Debug.LogError("No enemies are avaliable."); }
 
-            enemies = new Enemy[Random.Range(minEnemies, maxEnemies)];
+            enemies = new Enemy[Random.Range(minEnemies, maxEnemies+1)];
             for(int i=0; i<enemies.Length; i++)
             {
                 Enemy theEnemy = Instantiate(avaliableEnemies[Random.Range(0, avaliableEnemies.Length)], enemySpawnPoints[i].transform.position, Quaternion.identity);

@@ -13,22 +13,49 @@ namespace BattleSystem.Gameplay
     /// </summary>
     public class PlayerUIManager : MonoBehaviour
     {
+        /// <summary>
+        /// A reference to the GameManager.
+        /// </summary>
         GameManager gameManager;
 
+        /// <summary>
+        /// A reference to the PlayerBattleMenu.
+        /// </summary>
         [SerializeField]
         PlayerBattleMenu battleMenu;
 
+        /// <summary>
+        /// A reference to the PlayerMagicMenu.
+        /// </summary>
         [SerializeField]
         PlayerMagicMenu magicMenu;
 
+        /// <summary>
+        /// A reference to the TargetMarker.
+        /// </summary>
         TargetMarker targetMarker;
 
+        /// <summary>
+        /// The current turn player.
+        /// </summary>
         Player currentPlayer;
 
         //Magic
+        /// <summary>
+        /// The magic that the current turn player has access to.
+        /// </summary>
         ArrayList playerMagicInfomation = new ArrayList();
+        /// <summary>
+        /// The magic that has been selected by the player.
+        /// </summary>
         Magic.MagicStats selectedMagic;
-        int maxMagicButtonsDisplayed = 4;
+        /// <summary>
+        /// The maximum amount of magic buttons that will be displayed in the PlayerMagicMenu at one time.
+        /// </summary>
+        readonly int maxMagicButtonsDisplayed = 4;
+        /// <summary>
+        /// Indicates if the player is using magic or not.
+        /// </summary>
         bool isUsingMagic = false;
 
         /// <summary>

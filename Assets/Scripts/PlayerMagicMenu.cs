@@ -11,15 +11,24 @@ namespace BattleSystem.Interface
     /// <remarks>The magic menu displays a list of magic that the player is able to use.</remarks>
     public class PlayerMagicMenu : MonoBehaviour
     {
+        /// <summary>
+        /// A list of buttons used for the magic menu.
+        /// </summary>
         [SerializeField]
         Image[] magicButtons;
 
+        /// <summary>
+        /// The text field that contains infomation on what the selected magic does.
+        /// </summary>
         [SerializeField]
         Text magicDescryptionText;
 
         [SerializeField]
         Image upArrow, downArrow;
 
+        /// <summary>
+        /// A reference to the TargetMarker.
+        /// </summary>
         [SerializeField]
         TargetMarker targetMarker;
 
@@ -27,10 +36,23 @@ namespace BattleSystem.Interface
         /// The ID of the button that is currently being highlighted.
         /// </summary>
         int highlightedButton = 0;
+        /// <summary>
+        /// Indicates if an input has been pressed.
+        /// </summary>
+        /// <remarks>This is used for menu navigation.</remarks>
         bool inputPressed = false;
-        bool buttonSelected = false;  //Used so that the UI manager can tell if a button has been pressed.
+        /// <summary>
+        /// Used to tell the PlayerUIManager that a button has been selected.
+        /// </summary>
+        bool buttonSelected = false;
+        /// <summary>
+        /// Used to tell the PlayerUIManager that the player wishes to exit out of the menu.
+        /// </summary>
         bool cancelled = false;
 
+        /// <summary>
+        /// The amount of magic that the current turn player has.
+        /// </summary>
         int numberOfAvaliableMagic;
 
         /// <summary>
@@ -38,7 +60,13 @@ namespace BattleSystem.Interface
         /// </summary>
         readonly int maxMagicDisplayed = 4;
 
+        /// <summary>
+        /// The cost of each magic that the current turn player has.
+        /// </summary>
         string[] magicCosts;
+        /// <summary>
+        /// The descryptions of each magic that the current turn player has.
+        /// </summary>
         string[] magicDescryptions;
 
         /// <summary>

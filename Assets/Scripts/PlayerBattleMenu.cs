@@ -11,12 +11,21 @@ namespace BattleSystem.Interface
     /// <remarks>The player uses the menu to select an action, such as 'attack' or 'guard'.</remarks>
     public class PlayerBattleMenu : MonoBehaviour
     {
+        /// <summary>
+        /// A list of buttons used for the battle menu.
+        /// </summary>
         [SerializeField]
         Image[] buttons;
 
+        /// <summary>
+        /// A reference to the PlayerMagicMenu.
+        /// </summary>
         [SerializeField]
         PlayerMagicMenu magicMenu;
 
+        /// <summary>
+        /// A reference to the TargetMarker.
+        /// </summary>
         [SerializeField]
         TargetMarker targetMarker;
 
@@ -24,9 +33,20 @@ namespace BattleSystem.Interface
         /// The ID of the button that is currently being highlighted.
         /// </summary>
         int highlightedButton = 0;
+        /// <summary>
+        /// Indicates if an input has been pressed.
+        /// </summary>
+        /// <remarks>This is used for menu navigation.</remarks>
         bool inputPressed = false;
-        bool menuDisabled = false; //Used to prevent the player from navigating through both the battle menu and the magic menu at the same time
-        bool buttonSelected = false;  //Used so that the UI manager can tell if a button has been pressed.
+        /// <summary>
+        /// Indicates if the battle menu is currently disabled.
+        /// </summary>
+        /// <remarks>This is used to prevent the player from navigating through both the battle menu and the magic menu at the same time</remarks>
+        bool menuDisabled = false;
+        /// <summary>
+        /// Used to tell the PlayerUIManager that a button has been selected.
+        /// </summary>
+        bool buttonSelected = false;
 
         /// <summary>
         /// When the menu is opened, set up the UI.

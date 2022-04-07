@@ -11,13 +11,25 @@ namespace BattleSystem.Characters
     /// </summary>
     public class Enemy : Character
     {
+        /// <summary>
+        /// An ID used to uniquely identify each type of enemy that can be fought.
+        /// </summary>
         [SerializeField]
-        int enemyID; //If we are having multiple types of enemies, this will allow us to figure out what type of enemy it is.  Note that the enemyID is not the same as the character ID
+        int enemyID;
 
+        /// <summary>
+        /// Indicates if the enemy is able to heal its allies.
+        /// </summary>
         bool canHeal;
+        /// <summary>
+        /// Indicates if the enemy is currently alive.
+        /// </summary>
         bool alive = true;
 
-        EnemyAI enemyAI;  //Contains code that decides how the enemy should attack
+        /// <summary>
+        /// A reference to the EnemyAI.
+        /// </summary>
+        EnemyAI enemyAI;
 
         /// <summary>
         /// On startup, the Awake function finds the infomation in GameData for the enemy that matches the enemy's ID, and then assigns the data to the respective values.

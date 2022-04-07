@@ -1,0 +1,218 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3398015290628344710
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3398015290628344712}
+  - component: {fileID: 3398015290628344713}
+  - component: {fileID: 3398015290628344715}
+  m_Layer: 0
+  m_Name: Game Data
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3398015290628344712
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3398015290628344710}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3398015290628344713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3398015290628344710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 185ae51a06ee0ed468221575e22e023c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerList:
+  - playerID: 1
+    playerName: Hero
+    currentHP: 80
+    maxHP: 80
+    currentMP: 0
+    maxMP: 0
+    attack: 12
+    defence: 5
+    magicAttack: 2
+    magicDefence: 4
+    speed: 15
+    knowsMagic: 0
+    avaliableMagic: 
+    isAvaliable: 1
+    isConscious: 1
+    playerSprite: {fileID: 21300000, guid: f69e3fc9d43f3424aab3dfb4313963f2, type: 3}
+    playerHealthUI: {fileID: 0}
+  - playerID: 2
+    playerName: Heroine
+    currentHP: 70
+    maxHP: 70
+    currentMP: 30
+    maxMP: 30
+    attack: 9
+    defence: 3
+    magicAttack: 12
+    magicDefence: 7
+    speed: 25
+    knowsMagic: 1
+    avaliableMagic: 0101010101
+    isAvaliable: 1
+    isConscious: 1
+    playerSprite: {fileID: 21300000, guid: 43950c207fdba3644914384a2ffa78bb, type: 3}
+    playerHealthUI: {fileID: 0}
+  - playerID: 2
+    playerName: Commander
+    currentHP: 0
+    maxHP: 0
+    currentMP: 0
+    maxMP: 0
+    attack: 0
+    defence: 0
+    magicAttack: 0
+    magicDefence: 0
+    speed: 0
+    knowsMagic: 0
+    avaliableMagic: 
+    isAvaliable: 0
+    isConscious: 0
+    playerSprite: {fileID: 21300000, guid: e38b7faa036035f47925944d7950c527, type: 3}
+    playerHealthUI: {fileID: 0}
+  - playerID: 3
+    playerName: Squire
+    currentHP: 0
+    maxHP: 0
+    currentMP: 0
+    maxMP: 0
+    attack: 0
+    defence: 0
+    magicAttack: 0
+    magicDefence: 0
+    speed: 0
+    knowsMagic: 0
+    avaliableMagic: 
+    isAvaliable: 0
+    isConscious: 0
+    playerSprite: {fileID: 21300000, guid: e38b7faa036035f47925944d7950c527, type: 3}
+    playerHealthUI: {fileID: 0}
+  enemyTypes:
+  - enemyID: 0
+    enemyName: Bandit
+    currentHP: 24
+    maxHP: 24
+    attack: 11
+    defence: 4
+    magicAttack: 1
+    magicDefence: 1
+    speed: 4
+    canHeal: 0
+    enemySprite: {fileID: 21300000, guid: f21b37fe135f6cb4382f1b73a884e3de, type: 3}
+  - enemyID: 1
+    enemyName: Thief
+    currentHP: 18
+    maxHP: 18
+    attack: 7
+    defence: 2
+    magicAttack: 1
+    magicDefence: 1
+    speed: 12
+    canHeal: 0
+    enemySprite: {fileID: 21300000, guid: b0b15763cbb270244ad8af1ab179710d, type: 3}
+  - enemyID: 2
+    enemyName: Guard
+    currentHP: 22
+    maxHP: 22
+    attack: 6
+    defence: 5
+    magicAttack: 1
+    magicDefence: 3
+    speed: 7
+    canHeal: 0
+    enemySprite: {fileID: 21300000, guid: 876438b3af258af418724015b9989649, type: 3}
+  - enemyID: 3
+    enemyName: Sage
+    currentHP: 20
+    maxHP: 20
+    attack: 5
+    defence: 2
+    magicAttack: 10
+    magicDefence: 8
+    speed: 6
+    canHeal: 1
+    enemySprite: {fileID: 21300000, guid: 6bf8715131564c14fa702888ecd8ee5a, type: 3}
+--- !u!114 &3398015290628344715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3398015290628344710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26a3c736552316746bd53980552944be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  magicList:
+  - magicID: 0
+    magicName: Heal
+    magicDescription: Restores 30 hit points to one ally.
+    magicCost: 10
+    magicStrength: 30
+    affectsAll: 0
+    affectsPlayers: 1
+    restores: 1
+    affectsDead: 0
+  - magicID: 1
+    magicName: Fire
+    magicDescription: Deals fire damage to all enemies.
+    magicCost: 15
+    magicStrength: 3
+    affectsAll: 1
+    affectsPlayers: 0
+    restores: 0
+    affectsDead: 0
+  - magicID: 2
+    magicName: Resurrection
+    magicDescription: Revives a dead ally and restores 30 hit points.
+    magicCost: 30
+    magicStrength: 30
+    affectsAll: 0
+    affectsPlayers: 1
+    restores: 1
+    affectsDead: 1
+  - magicID: 3
+    magicName: Lightning Bolt
+    magicDescription: Deals strong lightning damage to one enemy.
+    magicCost: 20
+    magicStrength: 8
+    affectsAll: 0
+    affectsPlayers: 0
+    restores: 0
+    affectsDead: 0
+  - magicID: 4
+    magicName: Healing Wave
+    magicDescription: Restores 20 hit points to all allies.
+    magicCost: 15
+    magicStrength: 20
+    affectsAll: 1
+    affectsPlayers: 1
+    restores: 1
+    affectsDead: 0

@@ -16,11 +16,11 @@ namespace BattleSystem.Interface
         [SerializeField]
         Text playerHealthText, playerMagicText, playerNameText;
 
+        /// <summary>
+        /// Used to indicate which player the health UI belongs to.
+        /// </summary>
         [SerializeField]
         Image playerImage;
-
-        [SerializeField]
-        int playerHealthID;
 
         int playerCurrentHealth, playerMaxHealth, playerCurrentMagic, playerMaxMagic;
         string playerName;

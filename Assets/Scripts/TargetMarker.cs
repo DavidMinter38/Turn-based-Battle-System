@@ -10,17 +10,43 @@ namespace BattleSystem.Interface
     /// </summary>
     public class TargetMarker : MonoBehaviour
     {
+        /// <summary>
+        /// A reference to the PlayerBattleMenu.
+        /// </summary>
         [SerializeField]
         PlayerBattleMenu playerMenu;
 
+        /// <summary>
+        /// The text field used to show the player the name of the target.
+        /// </summary>
         [SerializeField]
         Text targetName;
+        /// <summary>
+        /// The distance the targetName text field is placed above the target.
+        /// </summary>
+        readonly float distanceAboveTarget = 1.5f;
 
+        /// <summary>
+        /// Infomation of the avaliable targets.
+        /// </summary>
         TargetData[] targets;
+        /// <summary>
+        /// The index of the current target.
+        /// </summary>
+        /// <remarks>This is used with the targets array to find the current target.</remarks>
         int characterToTarget = 0;
-        float distanceAboveTarget = 1.5f;
+        /// <summary>
+        /// Indicates if an input has been pressed.
+        /// </summary>
+        /// <remarks>This is used to navigate through the targets.</remarks>
         bool inputPressed = false;
+        /// <summary>
+        /// Used to tell the PlayerUIManager that a target has been selected.
+        /// </summary>
         bool targetSelected = false;
+        /// <summary>
+        /// Used to tell the PlayerUIManager that the player wishes to exit out of the target marker.
+        /// </summary>
         bool cancelled = false;
 
         /// <summary>
@@ -188,9 +214,21 @@ namespace BattleSystem.Interface
     /// </summary>
     public class TargetData
     {
+        /// <summary>
+        /// The location of the target.
+        /// </summary>
         protected Vector3 targetLocation;
+        /// <summary>
+        /// The target's ID.
+        /// </summary>
         protected int targetID;
+        /// <summary>
+        /// The target's name.
+        /// </summary>
         protected string targetName;
+        /// <summary>
+        /// If the target is a player, this will be set to true.
+        /// </summary>
         protected bool isPlayer;
 
         /// <summary>
