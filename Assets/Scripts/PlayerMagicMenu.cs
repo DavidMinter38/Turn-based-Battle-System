@@ -53,7 +53,7 @@ namespace BattleSystem.Interface
         /// <summary>
         /// The amount of magic that the current turn player has.
         /// </summary>
-        int numberOfAvaliableMagic;
+        int numberOfAvailableMagic;
 
         /// <summary>
         /// The maximum number of buttons that are displayed on screen at a time.
@@ -101,7 +101,7 @@ namespace BattleSystem.Interface
                 {
                     inputPressed = true;
                     highlightedButton--;
-                    if (highlightedButton < lowestViewableButton && highlightedButton >= 0 && numberOfAvaliableMagic > maxMagicDisplayed)
+                    if (highlightedButton < lowestViewableButton && highlightedButton >= 0 && numberOfAvailableMagic > maxMagicDisplayed)
                     {
                         magicButtons[highestViewableButton].gameObject.SetActive(false);
                         magicButtons[highlightedButton].gameObject.SetActive(true);
@@ -129,12 +129,12 @@ namespace BattleSystem.Interface
                         lowestViewableButton++;
                         highestViewableButton++;
                         upArrow.gameObject.SetActive(true);
-                        if (highlightedButton == numberOfAvaliableMagic - 1)
+                        if (highlightedButton == numberOfAvailableMagic - 1)
                         {
                             downArrow.gameObject.SetActive(false);
                         }
                     }
-                    if (highlightedButton > numberOfAvaliableMagic - 1)
+                    if (highlightedButton > numberOfAvailableMagic - 1)
                     {
                         GoToTop();
                     }
@@ -148,7 +148,7 @@ namespace BattleSystem.Interface
         }
 
         /// <summary>
-        /// Stores infomation on each avaliable magic that the player has.
+        /// Stores infomation on each available magic that the player has.
         /// </summary>
         /// <remarks>This is used to show the user what each magic does, as well as how much MP is required to use them.</remarks>
         /// <param name="costs">The amount of MP that is needed to use each magic.</param>
@@ -167,14 +167,14 @@ namespace BattleSystem.Interface
             highlightedButton = 0;
             lowestViewableButton = 0;
             upArrow.gameObject.SetActive(false);
-            if (numberOfAvaliableMagic > maxMagicDisplayed)
+            if (numberOfAvailableMagic > maxMagicDisplayed)
             {
                 highestViewableButton = 3;
                 downArrow.gameObject.SetActive(true);
             }
             for (int i = 0; i < magicButtons.Length; i++)
             {
-                if (i < maxMagicDisplayed && i <= numberOfAvaliableMagic - 1)
+                if (i < maxMagicDisplayed && i <= numberOfAvailableMagic - 1)
                 {
                     magicButtons[i].gameObject.SetActive(true);
                 }
@@ -190,17 +190,17 @@ namespace BattleSystem.Interface
         /// </summary>
         private void GoToBottom()
         {
-            highlightedButton = numberOfAvaliableMagic - 1;
+            highlightedButton = numberOfAvailableMagic - 1;
             downArrow.gameObject.SetActive(false);
-            if (numberOfAvaliableMagic > maxMagicDisplayed)
+            if (numberOfAvailableMagic > maxMagicDisplayed)
             {
-                lowestViewableButton = numberOfAvaliableMagic - maxMagicDisplayed;
-                highestViewableButton = numberOfAvaliableMagic - 1;
+                lowestViewableButton = numberOfAvailableMagic - maxMagicDisplayed;
+                highestViewableButton = numberOfAvailableMagic - 1;
                 upArrow.gameObject.SetActive(true);
             }
             for (int i = 0; i < magicButtons.Length; i++)
             {
-                if (i <= numberOfAvaliableMagic - 1 && i >= lowestViewableButton)
+                if (i <= numberOfAvailableMagic - 1 && i >= lowestViewableButton)
                 {
                     magicButtons[i].gameObject.SetActive(true);
                 }
@@ -242,9 +242,9 @@ namespace BattleSystem.Interface
         /// Update how much magic the player has.
         /// </summary>
         /// <param name="magicSize">The amount of magic the player has.</param>
-        public void UpdateNumberOfAvaliableMagic(int magicSize)
+        public void UpdateNumberOfAvailableMagic(int magicSize)
         {
-            numberOfAvaliableMagic = magicSize;
+            numberOfAvailableMagic = magicSize;
         }
 
         /// <summary>

@@ -44,10 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c814598f15acaf046a34f9eee1d6fb36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  players:
+  availablePlayers:
   - {fileID: 3889296162286969292, guid: 5dc8c6b737a3ba54c88478fcdad8ce76, type: 3}
   - {fileID: 2112411792429554278, guid: 35714214c219d334fae39dc35424dc90, type: 3}
-  avaliableEnemies:
+  - {fileID: 6919239966083226440, guid: 4534f20e885c8a44f9e7f9c203788e96, type: 3}
+  - {fileID: 8291109757680378752, guid: 8cc418c3c117a7348bdfa2d6f820607c, type: 3}
+  availableEnemies:
   - {fileID: 532060829256262650, guid: 9bb9c06dabb913f47b83ed2b142eeb1e, type: 3}
   - {fileID: 5877583745144375204, guid: e326fe4cf96d9f34fbb1506dcd253441, type: 3}
   - {fileID: 4542761253343421111, guid: 194d74ff16d7c5f4d8245e45fc030548, type: 3}

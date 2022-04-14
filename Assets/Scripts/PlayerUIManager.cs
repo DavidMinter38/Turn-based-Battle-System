@@ -250,7 +250,7 @@ namespace BattleSystem.Gameplay
             Image[] magicButtons = magicMenu.GetMagicButtons();
             bool[] knownMagic = gameManager.GetCurrentTurnPlayer().GetKnownMagic();
             int playerMagicAmount = gameManager.GetCurrentTurnPlayer().GetCurrentMagic();
-            int numberOfAvaliableMagic = 0;
+            int numberOfAvailableMagic = 0;
             for (int i = 0; i < knownMagic.Length; i++)
             {
                 if (knownMagic[i])
@@ -258,9 +258,9 @@ namespace BattleSystem.Gameplay
                     //Obtain infomation about the magic and set it to the text
                     Magic.MagicStats magic = FindObjectOfType<Magic>().GetMagicInfomation(i);
                     playerMagicInfomation.Add(magic);
-                    if (magicButtons[numberOfAvaliableMagic] != null)
+                    if (magicButtons[numberOfAvailableMagic] != null)
                     {
-                        magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().text = ((Magic.MagicStats)playerMagicInfomation[numberOfAvaliableMagic]).magicName;
+                        magicButtons[numberOfAvailableMagic].GetComponentInChildren<Text>().text = ((Magic.MagicStats)playerMagicInfomation[numberOfAvailableMagic]).magicName;
                     }
                     else
                     {
@@ -269,24 +269,24 @@ namespace BattleSystem.Gameplay
                     if (magic.magicCost > playerMagicAmount)
                     {
                         //Indicate that the player does not have enough mp to use the magic
-                        magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().color = new Color(1f, 0.5f, 0.5f);
+                        magicButtons[numberOfAvailableMagic].GetComponentInChildren<Text>().color = new Color(1f, 0.5f, 0.5f);
                     }
                     else
                     {
-                        magicButtons[numberOfAvaliableMagic].GetComponentInChildren<Text>().color = new Color(0f, 0f, 0f);
+                        magicButtons[numberOfAvailableMagic].GetComponentInChildren<Text>().color = new Color(0f, 0f, 0f);
                     }
-                    numberOfAvaliableMagic++;
+                    numberOfAvailableMagic++;
                 }
             }
-            //If there is less avaliable magic than the max amount of buttons that can be displayed, disable the arrows.
-            if (numberOfAvaliableMagic <= maxMagicButtonsDisplayed)
+            //If there is less available magic than the max amount of buttons that can be displayed, disable the arrows.
+            if (numberOfAvailableMagic <= maxMagicButtonsDisplayed)
             {
                 magicMenu.ActiveArrows(false, false);
                 for (int i = 0; i < maxMagicButtonsDisplayed; i++)
                 {
-                    if (i >= numberOfAvaliableMagic)
+                    if (i <= numberOfAvailableMagic-1)
                     {
-                        magicButtons[i].gameObject.SetActive(false);
+                        magicButtons[i].gameObject.SetActive(true);
                     }
                 }
             }
@@ -301,7 +301,7 @@ namespace BattleSystem.Gameplay
 
             magicMenu.UpdateDescription(((Magic.MagicStats)playerMagicInfomation[magicMenu.GetHighlightedButton()]).magicCost.ToString(), ((Magic.MagicStats)playerMagicInfomation[magicMenu.GetHighlightedButton()]).magicDescription);
             UpdateMagicInfomation();
-            magicMenu.UpdateNumberOfAvaliableMagic(playerMagicInfomation.Count);
+            magicMenu.UpdateNumberOfAvailableMagic(playerMagicInfomation.Count);
         }
 
         /// <summary>

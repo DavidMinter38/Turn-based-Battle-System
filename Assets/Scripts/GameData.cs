@@ -34,10 +34,10 @@ namespace BattleSystem.Data
             public int speed;
             [Header("Player features")]
             public bool knowsMagic;
-            public bool[] avaliableMagic;
+            public bool[] availableMagic;
             [Header("Player status")]
             [Tooltip("If unmarked, the player is not currently a member of the party.")]
-            public bool isAvaliable;
+            public bool isAvailable;
             public bool isConscious;
             [Header("Graphics")]
             public Sprite playerSprite;
@@ -69,7 +69,7 @@ namespace BattleSystem.Data
         }
 
         /// <summary>
-        /// A list of all the player characters that are avaliable.
+        /// A list of all the player characters that are available.
         /// </summary>
         [SerializeField]
         PlayerStats[] playerList;
@@ -81,7 +81,7 @@ namespace BattleSystem.Data
         EnemyStats[] enemyTypes;
 
         /// <summary>
-        /// Retrieves the types of enemies that are avaliable.
+        /// Retrieves the types of enemies that are available.
         /// </summary>
         /// <returns>The array of enemy types.</returns>
         public EnemyStats[] GetEnemyTypes()

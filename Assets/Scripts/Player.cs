@@ -29,13 +29,13 @@ namespace BattleSystem.Characters
         /// </summary>
         /// <remarks>Each boolean value can be compared with the magic list to see if the player can use that magic.
         /// For example, if the first boolean in the array is true, the first magic in the stored list can be used by the player.</remarks>
-        bool[] avaliableMagic;
+        bool[] availableMagic;
 
         /// <summary>
         /// Used to see if the player can be used.
         /// </summary>
         /// <remarks>If set to false, the player will not be instantiated into the scene.</remarks>
-        bool isAvaliable = false;
+        bool isAvailable = false;
         /// <summary>
         /// Indicates if the player is currently conscious.
         /// </summary>
@@ -91,15 +91,18 @@ namespace BattleSystem.Characters
             magicDefence = playerStats.magicDefence;
             speed = playerStats.speed;
             knowsMagic = playerStats.knowsMagic;
-            avaliableMagic = playerStats.avaliableMagic;
-            isAvaliable = playerStats.isAvaliable;
+            availableMagic = playerStats.availableMagic;
+            isAvailable = playerStats.isAvailable;
             isConscious = playerStats.isConscious;
             characterSprite = playerStats.playerSprite;
             playerUI = playerStats.playerHealthUI;
 
-            if (!playerStats.isAvaliable)
+            if (!playerStats.isAvailable)
             {
                 this.gameObject.SetActive(false);
+            } else
+            {
+                playerUI.gameObject.SetActive(true);
             }
 
             this.GetComponent<SpriteRenderer>().sprite = characterSprite;
@@ -312,16 +315,16 @@ namespace BattleSystem.Characters
         /// <returns>An array of boolean values that correlates to the stored magic list.</returns>
         public bool[] GetKnownMagic()
         {
-            return avaliableMagic;
+            return availableMagic;
         }
 
         /// <summary>
-        /// Checks if the player is avaliable to be used in battle.
+        /// Checks if the player is available to be used in battle.
         /// </summary>
-        /// <returns>A boolean value used to indicate if the player is avaliable.</returns>
-        public bool IsAvaliable()
+        /// <returns>A boolean value used to indicate if the player is available.</returns>
+        public bool IsAvailable()
         {
-            return isAvaliable;
+            return isAvailable;
         }
 
         /// <summary>

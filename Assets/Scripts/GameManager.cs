@@ -13,24 +13,30 @@ namespace BattleSystem.Gameplay
     public class GameManager : MonoBehaviour
     {
         /// <summary>
-        /// The player characters that will be used for the battle.
+        /// The player characters that can be used in the battle.
         /// </summary>
         [SerializeField]
+        private Player[] availablePlayers;
+
+        /// <summary>
+        /// The player characters that will be used for the battle.
+        /// </summary>
         private Player[] players;
 
         /// <summary>
         /// The types of enemies that can be used for the battle.
         /// </summary>
         [SerializeField]
-        private Enemy[] avaliableEnemies;
-
-        [SerializeField]
-        private GameObject[] playerSpawnPoints, enemySpawnPoints;
+        private Enemy[] availableEnemies;
 
         /// <summary>
         /// The enemies that will be used in the battle.
         /// </summary>
         private Enemy[] enemies;
+
+        [SerializeField]
+        private GameObject[] playerSpawnPoints, enemySpawnPoints;
+
         /// <summary>
         /// The minimum number of enemies that can appear in a battle.
         /// </summary>
@@ -89,14 +95,25 @@ namespace BattleSystem.Gameplay
             int characterID = 0;
 
             //If there are no players, send an error message.
-            if (players.Length <= 0) { Debug.LogError("Could not find player characters."); }
+            if (availablePlayers.Length <= 0) { Debug.LogError("Could not find player characters."); }
+
+            int numberOfAvailablePlayers = 0;
+            for(int i=0; i<availablePlayers.Length; i++)
+            {
+                GameData.PlayerStats currentPlayerStats = gameData.GetPlayerStats(availablePlayers[i].GetPlayerID());
+                if (currentPlayerStats.isAvailable)
+                {
+                    numberOfAvailablePlayers++;
+                }
+            }
+            players = new Player[numberOfAvailablePlayers];
 
             for(int i=0; i < players.Length; i++)
             {
-                GameData.PlayerStats currentPlayerStats = gameData.GetPlayerStats(players[i].GetPlayerID());
-                if (currentPlayerStats.isAvaliable)
+                GameData.PlayerStats currentPlayerStats = gameData.GetPlayerStats(availablePlayers[i].GetPlayerID());
+                if (currentPlayerStats.isAvailable)
                 {
-                    Player thePlayer = Instantiate(players[i], playerSpawnPoints[i].transform.position, Quaternion.identity);
+                    Player thePlayer = Instantiate(availablePlayers[i], playerSpawnPoints[i].transform.position, Quaternion.identity);
                     thePlayer.SetID(characterID);
                     characterID++;
                     players[i] = thePlayer;
@@ -104,12 +121,12 @@ namespace BattleSystem.Gameplay
             }
 
             //Create a random selection of enemies from a pool and spawn them into the scene
-            if (avaliableEnemies.Length <= 0) { Debug.LogError("No enemies are avaliable."); }
+            if (availableEnemies.Length <= 0) { Debug.LogError("No enemies are available."); }
 
             enemies = new Enemy[Random.Range(minEnemies, maxEnemies+1)];
             for(int i=0; i<enemies.Length; i++)
             {
-                Enemy theEnemy = Instantiate(avaliableEnemies[Random.Range(0, avaliableEnemies.Length)], enemySpawnPoints[i].transform.position, Quaternion.identity);
+                Enemy theEnemy = Instantiate(availableEnemies[Random.Range(0, availableEnemies.Length)], enemySpawnPoints[i].transform.position, Quaternion.identity);
                 theEnemy.SetID(characterID);
                 characterID++;
                 enemies[i] = theEnemy;
@@ -199,10 +216,10 @@ namespace BattleSystem.Gameplay
             else
             {
                 battleMessenger.UpdateMessage(attackingCharacter.GetCharacterName() + " attacks!");
-                //Check if attacking a guarding player
                 if (defendingCharacter.IsPlayer())
                 {
                     Player defendingPlayer = (Player)defendingCharacter;
+                    //Check if attacking a guarding player
                     if (defendingPlayer.IsGuarding())
                     {
                         attackingCharacter.Attack(defendingCharacter, (CalculateDamage(attackingCharacter.GetAttack(), defendingCharacter.GetDefence()) / 2));
@@ -620,7 +637,7 @@ namespace BattleSystem.Gameplay
         }
 
         /// <summary>
-        /// Retrieve a character from the avaliable characters in the battle.
+        /// Retrieve a character from the available characters in the battle.
         /// </summary>
         /// <param name="id">The ID of the character that is needed.</param>
         /// <returns>The character if found, otherwise null.</returns>

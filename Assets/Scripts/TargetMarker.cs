@@ -27,7 +27,7 @@ namespace BattleSystem.Interface
         readonly float distanceAboveTarget = 1.5f;
 
         /// <summary>
-        /// Infomation of the avaliable targets.
+        /// Infomation of the available targets.
         /// </summary>
         TargetData[] targets;
         /// <summary>
@@ -210,7 +210,7 @@ namespace BattleSystem.Interface
     }
 
     /// <summary>
-    /// The TargetData class is used to store infomation on the avaliable targets.
+    /// The TargetData class is used to store infomation on the available targets.
     /// </summary>
     public class TargetData
     {

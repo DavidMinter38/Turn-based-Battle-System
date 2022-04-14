@@ -97,7 +97,7 @@ namespace BattleSystem.Characters
         /// </summary>
         protected virtual void KillCharacter()
         {
-            Debug.Log("This message should not appear!");
+
         }
 
         /// <summary>

@@ -27,7 +27,7 @@ namespace BattleSystem.Data
         }
 
         /// <summary>
-        /// A list of all the magic that is avaliable to be used.
+        /// A list of all the magic that is available to be used.
         /// </summary>
         [SerializeField]
         MagicStats[] magicList;

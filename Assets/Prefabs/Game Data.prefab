@@ -57,8 +57,8 @@ MonoBehaviour:
     magicDefence: 4
     speed: 15
     knowsMagic: 0
-    avaliableMagic: 
-    isAvaliable: 1
+    availableMagic: 
+    isAvailable: 1
     isConscious: 1
     playerSprite: {fileID: 21300000, guid: f69e3fc9d43f3424aab3dfb4313963f2, type: 3}
     playerHealthUI: {fileID: 0}
@@ -74,43 +74,43 @@ MonoBehaviour:
     magicDefence: 7
     speed: 25
     knowsMagic: 1
-    avaliableMagic: 0101010101
-    isAvaliable: 1
+    availableMagic: 0101010101
+    isAvailable: 1
     isConscious: 1
     playerSprite: {fileID: 21300000, guid: 43950c207fdba3644914384a2ffa78bb, type: 3}
     playerHealthUI: {fileID: 0}
   - playerID: 2
     playerName: Commander
-    currentHP: 0
-    maxHP: 0
+    currentHP: 30
+    maxHP: 30
     currentMP: 0
     maxMP: 0
-    attack: 0
-    defence: 0
-    magicAttack: 0
-    magicDefence: 0
-    speed: 0
+    attack: 10
+    defence: 8
+    magicAttack: 1
+    magicDefence: 2
+    speed: 8
     knowsMagic: 0
-    avaliableMagic: 
-    isAvaliable: 0
-    isConscious: 0
+    availableMagic: 
+    isAvailable: 0
+    isConscious: 1
     playerSprite: {fileID: 21300000, guid: e38b7faa036035f47925944d7950c527, type: 3}
     playerHealthUI: {fileID: 0}
   - playerID: 3
     playerName: Squire
-    currentHP: 0
-    maxHP: 0
-    currentMP: 0
-    maxMP: 0
-    attack: 0
-    defence: 0
-    magicAttack: 0
-    magicDefence: 0
-    speed: 0
-    knowsMagic: 0
-    avaliableMagic: 
-    isAvaliable: 0
-    isConscious: 0
+    currentHP: 40
+    maxHP: 40
+    currentMP: 20
+    maxMP: 20
+    attack: 8
+    defence: 3
+    magicAttack: 7
+    magicDefence: 3
+    speed: 12
+    knowsMagic: 1
+    availableMagic: 0100000001
+    isAvailable: 0
+    isConscious: 1
     playerSprite: {fileID: 21300000, guid: e38b7faa036035f47925944d7950c527, type: 3}
     playerHealthUI: {fileID: 0}
   enemyTypes:
